@@ -38,5 +38,3 @@ markers = [
   "real_model: downloads/runs the real pretrained model",
   "cuda: requires a CUDA-capable PyTorch runtime",
 ]
-
-\n

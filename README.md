@@ -39,5 +39,3 @@ Real-model smoke checks are deliberately separate because they download a checkp
 - `docs/cookbook`: source index for later evidence-backed cookbook creation.
 
 See `PROJECT_STATUS.md` for verified versus pending work and `LIMITATIONS.md` before making scientific claims.
-
-\n

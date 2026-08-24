@@ -39,4 +39,3 @@ credentials*.json
 *.tmp
 Thumbs.db
 .DS_Store
-\n

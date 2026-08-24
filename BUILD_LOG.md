@@ -13,7 +13,7 @@ Status vocabulary: PASS, FAIL, BLOCKED, SKIPPED.
 - PASS — Initial source, safety boundary, documentation, API, model adapters, tests, and frontend created.
 - FAIL — First Python dependency attempt timed out; repaired by splitting core/ML installs and increasing the read timeout.
 - FAIL — First backend collection failed because the tests lacked a package marker; added `backend/tests/__init__.py` and reran without weakening tests.
-- PASS — Backend fast suite: 13 passed in 0.65 seconds initially and 1.77 seconds in final regression.
+- PASS — Backend fast suite: 13 passed in 0.65 seconds initially and 1.66 seconds after final repair.
 - FAIL — First frontend test lacked explicit Vitest imports; added them and reran.
 - FAIL — Initial frontend production compile exposed missing Vite CSS types and conflicting config; corrected the strict TypeScript config.
 - PASS — Frontend component test: 1 passed. Production build completed in 456 ms of Vite build time.
@@ -21,7 +21,8 @@ Status vocabulary: PASS, FAIL, BLOCKED, SKIPPED.
 - PASS — PyTorch 2.12.1+cu130, CUDA 13.0 runtime, CUDA allocation, RTX 5060, and Transformers 5.15.1 observed; `pip check` found no broken requirements.
 - PASS — Real Depth Anything V2 Small CPU smoke: 34.916 seconds, finite float32 59×73 relative output.
 - PASS — Real CUDA smoke: 5.402 seconds, finite float32 59×73 relative output.
-- PASS — Real CUDA upload-to-artifacts API smoke: 5.250 seconds; six artifact downloads and hashes verified; metric remained disabled.
+- PASS — Real CUDA upload-to-artifacts API smoke: 4.773 seconds after final repair; six artifact downloads and hashes verified; metric remained disabled.
 - PASS — Browser workflow rendered real progress, preview, provenance, exports, and a 1177×446 WebGL canvas; viewer buttons changed state.
 - PASS — Offline audit removed the only remote font request. npm production audit found 0 vulnerabilities.
-\n
+- FAIL — An EOF-normalization command appended a literal `\n` suffix to staged text and trailing bytes to the synthetic PNG; the manifest generator detected the Python syntax error before any remote push or ZIP.
+- PASS — Repaired every text suffix, compiled all Python, regenerated the PNG byte-for-byte from source, verified its decoder/hash, and reran backend, frontend, production build, and real CUDA API checks.

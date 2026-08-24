@@ -13,5 +13,3 @@ This index prevents the final cookbook from inventing evidence.
 | Evaluation/tasting | `RESULTS.md` | no dataset/metrics yet |
 | Packaging/serving | `scripts/`, handoff pending | source launcher present |
 | Troubleshooting | future verified failures and repairs | pending |
-
-\n

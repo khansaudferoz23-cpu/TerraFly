@@ -38,5 +38,3 @@ First-person mode, point comparison, GLB, output GeoTIFF, tiled inference, calib
 ## Git/remote
 
 Local milestone commit and private GitHub remote status are recorded after the final source audit in this task's closing update.
-
-\n

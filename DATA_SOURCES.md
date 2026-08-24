@@ -22,4 +22,3 @@ The repository includes one original, CC0 synthetic asymmetric image at `sample_
 ## Future training gate
 
 Fine-tuning requires aligned RGB, target DSM/DTM/nDSM, valid mask, source-scene identity, units, alignment/resolution metadata, and hashes. Split by geographic scene before cropping. RGB-only inputs do not pass this gate.
-\n

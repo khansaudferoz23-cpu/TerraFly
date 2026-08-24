@@ -17,5 +17,3 @@ class Prediction:
 
 class InferenceAdapter(Protocol):
     def predict(self, rgb: np.ndarray) -> Prediction: ...
-
-\n

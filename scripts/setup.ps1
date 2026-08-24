@@ -16,4 +16,3 @@ if (-not (Test-Path -LiteralPath "$projectRoot\.venv\Scripts\python.exe")) {
 Push-Location "$projectRoot\frontend"
 try { npm install } finally { Pop-Location }
 Write-Host "TerraFly setup complete." -ForegroundColor Green
-\n

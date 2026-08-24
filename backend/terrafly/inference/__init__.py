@@ -1,3 +1,1 @@
 """Interchangeable inference adapters."""
-
-\n

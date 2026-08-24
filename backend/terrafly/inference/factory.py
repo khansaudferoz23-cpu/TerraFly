@@ -14,5 +14,3 @@ def create_adapter(settings: Settings) -> InferenceAdapter:
             raise RuntimeError("The deterministic adapter is test-only and disabled for normal runs.")
         return DeterministicTestAdapter()
     raise RuntimeError(f"Unknown inference adapter: {settings.model_adapter}")
-
-\n

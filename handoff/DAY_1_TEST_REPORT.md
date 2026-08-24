@@ -4,15 +4,15 @@ Status vocabulary is restricted to PASS, FAIL, BLOCKED, or SKIPPED.
 
 | Test | Result | Duration | Evidence |
 |---|---:|---:|---|
-| Backend safe upload, adapter, artifacts, and GeoTIFF suite (13 tests) | PASS | 1.77 s | final pytest output; artifact response hashes asserted |
-| Frontend scientific-contract component | PASS | 19.57 s | final Vitest output |
-| Strict TypeScript/Vite production build | PASS | 0.456 s | final build output |
+| Backend safe upload, adapter, artifacts, and GeoTIFF suite (13 tests) | PASS | 1.66 s | final repair pytest output; artifact response hashes asserted |
+| Frontend scientific-contract component | PASS | 19.59 s | final repair Vitest output |
+| Strict TypeScript/Vite production build | PASS | 0.178 s | final repair build output |
 | Python dependency consistency | PASS | <1 s | `No broken requirements found` |
 | npm production dependency audit | PASS | 1.2 s | `found 0 vulnerabilities` |
 | CUDA tensor allocation | PASS | <1 s after import | RTX 5060; PyTorch 2.12.1+cu130; CUDA runtime 13.0 |
 | Real Depth Anything V2 Small CPU inference | PASS | 34.916 s | revision `5426e4f0f36572d16453bbda7a8389317b1bef99`; finite float32 59×73 output |
 | Real Depth Anything V2 Small CUDA inference | PASS | 5.402 s | same revision/input; finite float32 59×73 output |
-| Real CUDA upload-to-six-artifact API workflow | PASS | 5.250 s | every downloaded artifact SHA-256 matched the manifest |
+| Real CUDA upload-to-six-artifact API workflow | PASS | 4.773 s | every downloaded artifact SHA-256 matched the manifest after sample regeneration |
 | Browser upload/progress/result/Three.js workflow | PASS | interactive | 1177×446 WebGL canvas; screenshot in task outputs |
 | Metric claim gate for ordinary PNG | PASS | included above | state `Relative`; units `relative_0_1`; metric output false |
 | GeoTIFF CRS/transform/NoData preservation | PASS | included above | EPSG:32643 asymmetric fixture; still `Georeferenced Relative` |
@@ -26,5 +26,3 @@ Status vocabulary is restricted to PASS, FAIL, BLOCKED, or SKIPPED.
 - CUDA output SHA-256: `85694d61d0fce957aac4adc04d892a6bfa7ca05fc9333d2a2266587b91be5e8d`
 
 CPU and CUDA hashes are not expected to be byte-identical because floating-point kernels differ; both passed shape, dtype, finite-value, and range checks.
-
-\n

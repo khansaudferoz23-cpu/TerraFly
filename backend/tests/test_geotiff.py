@@ -41,5 +41,3 @@ def test_geotiff_metadata_is_preserved_but_not_called_metric(client):
     assert job["geospatial"]["nodata"] == 0.0
     assert job["calibration"]["metric_output_allowed"] is False
     assert any("does not establish vertical scale" in warning for warning in job["warnings"])
-
-\n

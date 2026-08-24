@@ -66,4 +66,3 @@ def run_job(job_id: str, settings: Settings) -> None:
         manifest.warnings.append("The job failed without claiming a scientific result.")
         manifest.configuration["diagnostic"] = traceback.format_exc(limit=8)
         store.save(manifest)
-\n

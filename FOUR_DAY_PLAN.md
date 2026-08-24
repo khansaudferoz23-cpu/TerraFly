@@ -17,5 +17,3 @@ GeoTIFF round trips, compatible reference DSM/DTM alignment, GCP calibration wit
 Promise audit, complete regressions, portable Windows folder, spaces-in-path extracted smoke, screenshots, diagrams, reports, checksums, demo script, judge Q&A, source/release archives, and final private GitHub milestone.
 
 Priority remains: relative pipeline → 3D viewer → GeoTIFF correctness → evaluation → calibration → packaging → optional fine-tuning.
-
-\n

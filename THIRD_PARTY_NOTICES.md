@@ -14,5 +14,3 @@ TerraFly source is being assembled from original project code and the listed dep
 - Rasterio: BSD-3-Clause.
 
 No model weights are committed or redistributed by this repository. Before a release, exact installed package versions and license texts will be captured into the release notice bundle.
-
-\n

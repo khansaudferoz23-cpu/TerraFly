@@ -32,4 +32,3 @@ Greenfield bootstrap. The authenticated GitHub account `khansaudferoz23-cpu` own
 ## Not yet complete
 
 First-person navigation, point comparison, calibration, evaluation, GeoTIFF result export, GLB export, tiled inference, extracted portable release, and Day 2–4 judge packaging.
-\n

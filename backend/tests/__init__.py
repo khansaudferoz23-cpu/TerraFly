@@ -1,3 +1,1 @@
 """TerraFly backend tests."""
-
-\n

@@ -156,5 +156,3 @@ export function SurfaceViewer({ gridUrl, textureUrl }: Props) {
     </div>
   );
 }
-
-\n

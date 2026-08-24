@@ -69,4 +69,3 @@ def test_capabilities_state_the_metric_contract(client):
         "Georeferenced Relative",
         "Metric Calibrated",
     ]
-\n

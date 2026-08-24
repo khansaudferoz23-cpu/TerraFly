@@ -93,5 +93,3 @@ class DepthAnythingV2Adapter:
             device=self._device,
             warnings=notes,
         )
-
-\n

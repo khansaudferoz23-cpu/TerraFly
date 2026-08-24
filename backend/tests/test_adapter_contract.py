@@ -21,5 +21,3 @@ def test_test_adapter_cannot_be_enabled_accidentally(tmp_path):
     settings = Settings(jobs_root=tmp_path, model_adapter="deterministic", allow_test_adapter=False)
     with pytest.raises(RuntimeError, match="test-only"):
         create_adapter(settings)
-
-\n

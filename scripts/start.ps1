@@ -16,4 +16,3 @@ try {
     if (-not $backend.HasExited) { Stop-Process -Id $backend.Id }
     if (-not $frontend.HasExited) { Stop-Process -Id $frontend.Id }
 }
-\n

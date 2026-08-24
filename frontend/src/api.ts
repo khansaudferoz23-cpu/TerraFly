@@ -20,5 +20,3 @@ export async function getJob(jobId: string): Promise<Job> {
 export function artifactUrl(jobId: string, artifactName: string): string {
   return `/api/jobs/${jobId}/artifacts/${artifactName}`;
 }
-
-\n

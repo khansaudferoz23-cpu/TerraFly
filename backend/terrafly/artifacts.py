@@ -71,4 +71,3 @@ def write_surface_artifacts(job_dir: Path, relative: np.ndarray, rgb: np.ndarray
         _artifact("height_texture", height_path, "image/png"),
         _artifact("surface_grid", grid_path, "application/json"),
     ]
-\n

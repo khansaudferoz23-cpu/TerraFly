@@ -27,5 +27,3 @@ class DeterministicTestAdapter:
                 "TEST-ONLY deterministic adapter output: not pretrained inference and not scientific evidence."
             ],
         )
-
-\n

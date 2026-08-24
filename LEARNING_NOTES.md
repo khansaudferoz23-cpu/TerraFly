@@ -15,5 +15,3 @@ The real adapter proves the application can use a pretrained model. The determin
 ## Display exaggeration
 
 The viewer may multiply vertex heights so small relative differences are visible. The stored float32 array never changes, and the UI labels the multiplier as display-only.
-
-\n

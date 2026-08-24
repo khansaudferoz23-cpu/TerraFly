@@ -23,5 +23,3 @@ export type Job = {
   error: string | null;
   artifacts: Artifact[];
 };
-
-\n

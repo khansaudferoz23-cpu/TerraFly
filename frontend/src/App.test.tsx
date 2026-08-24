@@ -9,4 +9,3 @@ describe("TerraFly scientific contract", () => {
     expect(screen.getByRole("button", { name: /generate relative surface/i })).toBeDisabled();
   });
 });
-\n

@@ -45,5 +45,3 @@ def encoded_image(mode: str = "RGB", size: tuple[int, int] = (37, 23), fmt: str 
     buffer = io.BytesIO()
     Image.fromarray(array, mode=mode).save(buffer, format=fmt)
     return buffer.getvalue()
-
-\n

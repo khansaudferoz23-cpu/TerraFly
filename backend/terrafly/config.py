@@ -19,5 +19,3 @@ class Settings:
     max_upload_bytes: int = int(os.getenv("TERRAFLY_MAX_UPLOAD_BYTES", str(25 * 1024 * 1024)))
     max_pixels: int = int(os.getenv("TERRAFLY_MAX_PIXELS", "50000000"))
     allow_test_adapter: bool = os.getenv("TERRAFLY_ALLOW_TEST_ADAPTER", "0") == "1"
-
-\n

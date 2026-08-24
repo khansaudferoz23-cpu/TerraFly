@@ -67,5 +67,3 @@ class JobStore:
         if not path.is_file():
             raise KeyError(job_id)
         return JobManifest.model_validate(json.loads(path.read_text(encoding="utf-8")))
-
-\n

@@ -156,5 +156,3 @@ def inspect_image(data: bytes, filename: str, max_pixels: int) -> InspectedImage
     except (UnidentifiedImageError, OSError, Image.DecompressionBombError, Image.DecompressionBombWarning) as exc:
         raise HTTPException(status_code=400, detail="The image is corrupt or unsafe to decode.") from exc
     return InspectedImage(rgb=rgb, metadata=metadata, geospatial=None, warnings=[])
-
-\n

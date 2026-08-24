@@ -54,5 +54,3 @@ class Capabilities(BaseModel):
     default_model: str
     scientific_states: list[str]
     metric_requires_calibration: bool = True
-
-\n

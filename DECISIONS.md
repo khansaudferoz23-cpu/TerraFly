@@ -19,5 +19,3 @@ The pretrained model predicts relative depth. TerraFly robustly normalizes it an
 ## D-005 — CUDA wheel
 
 Use the official PyTorch 2.12.1 CUDA 13.0 wheel. PyTorch documents CUDA 13.0 as the default current wheel and suitable for Blackwell; the observed Windows driver 610.88 exceeds the documented minimum 580.88. CPU fallback remains mandatory.
-
-\n
