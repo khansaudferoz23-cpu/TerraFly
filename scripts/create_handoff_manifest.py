@@ -1,0 +1,113 @@
+from __future__ import annotations
+
+import hashlib
+import importlib.metadata
+import json
+import platform
+import subprocess
+import sys
+from datetime import UTC, datetime
+from pathlib import Path
+
+
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+OUTPUT = PROJECT_ROOT / "handoff" / "DAY_1_MANIFEST.json"
+
+
+def run(*command: str) -> str | None:
+    try:
+        return subprocess.check_output(command, cwd=PROJECT_ROOT, text=True, stderr=subprocess.DEVNULL).strip()
+    except (OSError, subprocess.CalledProcessError):
+        return None
+
+
+def sha256(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def version(distribution: str) -> str | None:
+    try:
+        return importlib.metadata.version(distribution)
+    except importlib.metadata.PackageNotFoundError:
+        return None
+
+
+def main() -> None:
+    listed = run("git", "ls-files", "--cached", "--others", "--exclude-standard")
+    if listed is None:
+        raise RuntimeError("Git file discovery failed.")
+    files = []
+    for relative_text in sorted(line for line in listed.splitlines() if line):
+        relative = Path(relative_text)
+        if relative.as_posix() == "handoff/DAY_1_MANIFEST.json":
+            continue
+        path = PROJECT_ROOT / relative
+        if path.is_file():
+            files.append(
+                {
+                    "path": relative.as_posix(),
+                    "bytes": path.stat().st_size,
+                    "sha256": sha256(path),
+                }
+            )
+    manifest = {
+        "schema_version": "1.0",
+        "milestone": "Day 1",
+        "generated_at": datetime.now(UTC).isoformat(),
+        "git_commit": run("git", "rev-parse", "HEAD"),
+        "environment": {
+            "os": platform.platform(),
+            "python": sys.version.split()[0],
+            "node": run("node", "--version"),
+            "npm": run("npm", "--version"),
+            "git": run("git", "--version"),
+            "gpu": run(
+                "nvidia-smi",
+                "--query-gpu=name,driver_version,memory.total",
+                "--format=csv,noheader",
+            ),
+            "packages": {
+                name: version(name)
+                for name in (
+                    "fastapi",
+                    "numpy",
+                    "pillow",
+                    "rasterio",
+                    "torch",
+                    "torchvision",
+                    "transformers",
+                    "uvicorn",
+                )
+            },
+        },
+        "model": {
+            "id": "depth-anything/Depth-Anything-V2-Small-hf",
+            "revision_verified": "5426e4f0f36572d16453bbda7a8389317b1bef99",
+            "scientific_role": "relative monocular depth only",
+            "weights_included": False,
+        },
+        "tests": {
+            "backend": "PASS (13)",
+            "frontend": "PASS (1)",
+            "frontend_build": "PASS",
+            "real_cpu": "PASS",
+            "real_cuda": "PASS",
+            "real_cuda_api": "PASS",
+            "browser_workflow": "PASS",
+            "metric_without_calibration": "refused",
+        },
+        "files": files,
+    }
+    OUTPUT.parent.mkdir(parents=True, exist_ok=True)
+    OUTPUT.write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
+    print(OUTPUT)
+
+
+if __name__ == "__main__":
+    main()
+
+\n

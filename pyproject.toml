@@ -1,0 +1,42 @@
+[build-system]
+requires = ["setuptools>=75"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "terrafly"
+version = "0.1.0"
+description = "Truthful relative surface inference and 3D exploration from a single optical image"
+requires-python = ">=3.11,<3.14"
+dependencies = [
+  "fastapi>=0.115,<1",
+  "httpx>=0.28,<1",
+  "numpy>=2,<3",
+  "pillow>=11,<13",
+  "pydantic>=2.10,<3",
+  "python-multipart>=0.0.20,<1",
+  "rasterio>=1.4,<2",
+  "uvicorn[standard]>=0.34,<1",
+]
+
+[project.optional-dependencies]
+ml = [
+  "safetensors>=0.5,<1",
+  "transformers>=4.49,<6",
+]
+test = [
+  "pytest>=8,<10",
+  "pytest-cov>=6,<8",
+]
+
+[tool.setuptools.packages.find]
+where = ["backend"]
+
+[tool.pytest.ini_options]
+testpaths = ["backend/tests"]
+addopts = "-ra --strict-markers"
+markers = [
+  "real_model: downloads/runs the real pretrained model",
+  "cuda: requires a CUDA-capable PyTorch runtime",
+]
+
+\n
