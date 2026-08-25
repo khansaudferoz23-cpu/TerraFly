@@ -1,8 +1,8 @@
 {
   "schema_version": "1.0",
   "milestone": "Day 2",
-  "generated_at": "2026-08-25T10:17:05.798644+00:00",
-  "git_commit": "8c5d404aa1e2581d74625f3e333aab95411563f5",
+  "generated_at": "2026-08-25T10:18:41.155212+00:00",
+  "git_commit": "aa8a31d16fc026831225e17ea3656e059e3a9718",
   "environment": {
     "os": "Windows-11-10.0.26200-SP0",
     "python": "3.12.13",
@@ -60,8 +60,8 @@
     },
     {
       "path": "BUILD_LOG.md",
-      "bytes": 7316,
-      "sha256": "270cb150f09c71ce8ada461ab87b91f41b8df197bf13771144f3c6d9128a9da5"
+      "bytes": 7468,
+      "sha256": "fbe9b4bf3cef365494bac2085bc125eb2b5f9a1579341941414c51caff641592"
     },
     {
       "path": "DATA_SOURCES.md",
@@ -95,8 +95,8 @@
     },
     {
       "path": "PROJECT_STATUS.md",
-      "bytes": 4435,
-      "sha256": "1a302fc36ddfefa0920a52324df02fd27e59f0aeb20ddd3527476815487cbee9"
+      "bytes": 4589,
+      "sha256": "14ce2b7200bbc185e056ad2a58186fd78e41ad5dac2ec11efacfce4cf5f7b97e"
     },
     {
       "path": "README.md",
@@ -105,8 +105,8 @@
     },
     {
       "path": "RESULTS.md",
-      "bytes": 3262,
-      "sha256": "e0421e065c3079ce82c0166c2c26789da4295f949558ca92ae3328036e6b06dd"
+      "bytes": 3374,
+      "sha256": "de0d79458ea3943e48df50b652c0465b32f59d864ce113177967af90e33222f8"
     },
     {
       "path": "Start-TerraFly.cmd",
@@ -340,8 +340,8 @@
     },
     {
       "path": "handoff/DAY_2_TEST_REPORT.md",
-      "bytes": 2007,
-      "sha256": "9f38e996a2ccf4ca77131d87c5bb8793a60d0e9c08d6ba7c3bbd6e5f067dc9d3"
+      "bytes": 2146,
+      "sha256": "81dd76964c5afaad6f8490731a63e6ed2e0c75d1fbb5de469cd15ef62a69e8ea"
     },
     {
       "path": "pyproject.toml",
