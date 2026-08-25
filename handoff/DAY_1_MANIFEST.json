@@ -1,0 +1,347 @@
+{
+  "schema_version": "1.0",
+  "milestone": "Day 1",
+  "generated_at": "2026-08-25T00:00:05.003884+00:00",
+  "git_commit": "321e99e0ae1417676cb0c7979dc8849cc9329e10",
+  "environment": {
+    "os": "Windows-11-10.0.26200-SP0",
+    "python": "3.12.13",
+    "node": "v22.23.1",
+    "npm": null,
+    "git": "git version 2.53.0.windows.3",
+    "gpu": "NVIDIA GeForce RTX 5060, 610.88, 8151 MiB",
+    "packages": {
+      "fastapi": "0.141.1",
+      "numpy": "2.5.2",
+      "pillow": "12.3.0",
+      "rasterio": "1.5.1",
+      "torch": "2.12.1+cu130",
+      "torchvision": "0.27.1+cu130",
+      "transformers": "5.15.1",
+      "uvicorn": "0.52.4"
+    }
+  },
+  "model": {
+    "id": "depth-anything/Depth-Anything-V2-Small-hf",
+    "revision_verified": "5426e4f0f36572d16453bbda7a8389317b1bef99",
+    "scientific_role": "relative monocular depth only",
+    "weights_included": false
+  },
+  "tests": {
+    "backend": "PASS (13)",
+    "frontend": "PASS (1)",
+    "frontend_build": "PASS",
+    "real_cpu": "PASS",
+    "real_cuda": "PASS",
+    "real_cuda_api": "PASS",
+    "browser_workflow": "PASS",
+    "metric_without_calibration": "refused"
+  },
+  "files": [
+    {
+      "path": ".env.example",
+      "bytes": 275,
+      "sha256": "68ed05126c8b38b5e1cb6a47f854ecf7d4b6f280d61574b59fb129938a44ed87"
+    },
+    {
+      "path": ".gitattributes",
+      "bytes": 210,
+      "sha256": "2f5227b1a61f3b26a9a1a967caef07549b88afa8de4ef799af679cc701a00bb0"
+    },
+    {
+      "path": ".gitignore",
+      "bytes": 505,
+      "sha256": "101c1f6aed7be8ea3e5b98d0bc05a82b8eb75137d89bbe84a9a82a61570bbe95"
+    },
+    {
+      "path": "BUILD_LOG.md",
+      "bytes": 3057,
+      "sha256": "686f5e7a3969db2a36c90c0a346b40361c1d3b3b16ac1fe60850352b68a4a2ba"
+    },
+    {
+      "path": "DATA_SOURCES.md",
+      "bytes": 1189,
+      "sha256": "781a9fad95aa124d619cfd140b48cf7b3edfded1f99e7e083f1ccb98a4236b7d"
+    },
+    {
+      "path": "DECISIONS.md",
+      "bytes": 1199,
+      "sha256": "5c1b75de18a6adb28d8b2c8b1759597c2fa11a50bf2be72575f6f3d908dc5228"
+    },
+    {
+      "path": "FOUR_DAY_PLAN.md",
+      "bytes": 1210,
+      "sha256": "c51b1e84b24de13c5d2c0c1f327ee3b5a79ae79620f716f50e151d2124b47616"
+    },
+    {
+      "path": "LEARNING_NOTES.md",
+      "bytes": 1009,
+      "sha256": "c9734b9198d35ca8f62940c7dce031ee4303a2b4567814d59f36930f655b27da"
+    },
+    {
+      "path": "LIMITATIONS.md",
+      "bytes": 1100,
+      "sha256": "e8ea39afba817529d1ea00e09c4c99605bf399720ed88c912074ea281754d96c"
+    },
+    {
+      "path": "PROJECT_STATUS.md",
+      "bytes": 2001,
+      "sha256": "c8f82edebaa15a8b208940596ca73cfdd8ba2a55dddd78ff661ae06d1d86376f"
+    },
+    {
+      "path": "README.md",
+      "bytes": 2137,
+      "sha256": "13e632eff15476f1d7d2849ec55edd2091b3990d4ae9e4fa4250b04935faf654"
+    },
+    {
+      "path": "RESULTS.md",
+      "bytes": 1652,
+      "sha256": "ddffcb7a91047a2991978f8a016814e581ead812d750529a907e73d9e593a88b"
+    },
+    {
+      "path": "Start-TerraFly.cmd",
+      "bytes": 110,
+      "sha256": "58644e0ac8b51e4c484ebfd8e9e144d0d5b6192315fde9581faf4c7471454dde"
+    },
+    {
+      "path": "THIRD_PARTY_NOTICES.md",
+      "bytes": 843,
+      "sha256": "13f5ec4c5d546ac2c7420f6d04b9f32870cef0cb5f4495636cd510a43b2c08e6"
+    },
+    {
+      "path": "backend/terrafly/__init__.py",
+      "bytes": 55,
+      "sha256": "2a59cc509f06156e5a2fb642fc64d15507786748ccead9184463da0ebfae0c24"
+    },
+    {
+      "path": "backend/terrafly/artifacts.py",
+      "bytes": 2876,
+      "sha256": "df34c6357308c69b7c4a3ba05757385995f4a4549da7fb7be973a323494d0d2a"
+    },
+    {
+      "path": "backend/terrafly/config.py",
+      "bytes": 798,
+      "sha256": "d94cddb184d91efb8ae6c8284017985f210c010ef63c52c7045fd248e1f3ef87"
+    },
+    {
+      "path": "backend/terrafly/imaging.py",
+      "bytes": 6769,
+      "sha256": "da3e7f2fc7d328402f942eba813ab58f881a09ff52d49e13b2ffc4525027dcad"
+    },
+    {
+      "path": "backend/terrafly/inference/__init__.py",
+      "bytes": 42,
+      "sha256": "8dd92ba66c3a35887b7a0337df5386bb7846273d493642dbcb18df39e3c256d9"
+    },
+    {
+      "path": "backend/terrafly/inference/base.py",
+      "bytes": 376,
+      "sha256": "dab4b949092f08901262e03ed4fa1ed158bb00bf90bba48d1f459919633c8a37"
+    },
+    {
+      "path": "backend/terrafly/inference/depth_anything_v2.py",
+      "bytes": 4064,
+      "sha256": "08d65bccc2db6d70c405c10e327f319432fa42df78a42398389878a2c9e2910c"
+    },
+    {
+      "path": "backend/terrafly/inference/deterministic.py",
+      "bytes": 1155,
+      "sha256": "60a4c268fdb76bd32d3712ca4aee3f63634afcd951e513b9b149f2e42c501f27"
+    },
+    {
+      "path": "backend/terrafly/inference/factory.py",
+      "bytes": 715,
+      "sha256": "3f6c5ed606d71af6e648ce20711e55b620b7b22e75dcab81b1ea386323c5a536"
+    },
+    {
+      "path": "backend/terrafly/jobs.py",
+      "bytes": 2457,
+      "sha256": "68e78a08f2448dee9f2a7c6c1373aba1d63e35fde4a082d210e076cbb0a0e702"
+    },
+    {
+      "path": "backend/terrafly/main.py",
+      "bytes": 3582,
+      "sha256": "1a4b42b45432078f19b4375604074385c69e9e11c6e56d70fec91701f8903e70"
+    },
+    {
+      "path": "backend/terrafly/pipeline.py",
+      "bytes": 2616,
+      "sha256": "2af3af65d5c6211214675d03ad0b30ce26ea765b440ee5b51efa4c376e28d580"
+    },
+    {
+      "path": "backend/terrafly/schemas.py",
+      "bytes": 1231,
+      "sha256": "7367fdada908d9dfa1dc8d5de55cda02b28188f412914b70b9c6141e1b6fbab1"
+    },
+    {
+      "path": "backend/tests/__init__.py",
+      "bytes": 30,
+      "sha256": "50444caf9189781fe5c6f89f77df2eede4dcf1cd41f5b5ecd75f15d9b9ab15b5"
+    },
+    {
+      "path": "backend/tests/conftest.py",
+      "bytes": 1369,
+      "sha256": "56265743fb2b4b1f278ce744af8a1d509dd84eae0e0373faf3359d7ffff1ae5a"
+    },
+    {
+      "path": "backend/tests/test_adapter_contract.py",
+      "bytes": 867,
+      "sha256": "d992dd816b7ca3ddbf210b0ac8a9acd945a06fe382fc50cab3c3aa6dda27740f"
+    },
+    {
+      "path": "backend/tests/test_api.py",
+      "bytes": 2685,
+      "sha256": "074c08aafd1fae8703ffa8ee014e376bd499ea10d98de1df8961dea379b77664"
+    },
+    {
+      "path": "backend/tests/test_geotiff.py",
+      "bytes": 1475,
+      "sha256": "35c83a2183335e0f33854a411270a64ad251935dd29f627f777627f0d00db90b"
+    },
+    {
+      "path": "docs/cookbook/COOKBOOK_SOURCE_INDEX.md",
+      "bytes": 886,
+      "sha256": "87bcd489a6a37784b7ce97abd13a19c4452a2e8b04b9c86574439a89dce59aba"
+    },
+    {
+      "path": "frontend/index.html",
+      "bytes": 374,
+      "sha256": "00ee1f50e464ad36a49ed4d4acc5cfe4c3f3ef5cb8340a268c8554445c0a4ba7"
+    },
+    {
+      "path": "frontend/package-lock.json",
+      "bytes": 85422,
+      "sha256": "78400379ac8bb5ba824d93395f6708ba66398187e6a3b311481850bb144a5659"
+    },
+    {
+      "path": "frontend/package.json",
+      "bytes": 649,
+      "sha256": "4587fd38d54450d44140d7f8e7aa5689e237d00b59184cc441a3ab764d4b2757"
+    },
+    {
+      "path": "frontend/src/App.test.tsx",
+      "bytes": 462,
+      "sha256": "25a0c1d24412f0129649558203090d787a731f578c8a8782b7ba157b273b0c19"
+    },
+    {
+      "path": "frontend/src/App.tsx",
+      "bytes": 7164,
+      "sha256": "c26df6ec216ab47590e2802608faac2ded2270e63d0bc75bf886cd578b1fcdfa"
+    },
+    {
+      "path": "frontend/src/SurfaceViewer.tsx",
+      "bytes": 6007,
+      "sha256": "da77c24df78e94fc6617aea6057fa71849138291b9e6e94cdf664d859c299afc"
+    },
+    {
+      "path": "frontend/src/api.ts",
+      "bytes": 784,
+      "sha256": "8e6e7f2df6bd974e6888b8b4292c471eced9c4b68af4b6a335193ba1d88207f8"
+    },
+    {
+      "path": "frontend/src/main.tsx",
+      "bytes": 196,
+      "sha256": "312a6cac7741d70b566e6a4cba9065179d1411f77fd93d92bca9c4354410c83c"
+    },
+    {
+      "path": "frontend/src/styles.css",
+      "bytes": 7163,
+      "sha256": "1f8b26d8ea07bd366b40126547c6473424e86e0d16ba8fc3e26e9f41feb25d61"
+    },
+    {
+      "path": "frontend/src/test-setup.ts",
+      "bytes": 43,
+      "sha256": "9b328c4843431fa76d8de00008fc159e95f99a840211085ff3b8f25e53d14409"
+    },
+    {
+      "path": "frontend/src/types.ts",
+      "bytes": 670,
+      "sha256": "a6097f75829a779b4da5a232868fd66f22596ed78b9168afef726f64e290cd73"
+    },
+    {
+      "path": "frontend/tsconfig.app.json",
+      "bytes": 555,
+      "sha256": "9b96ad56fe583dbb133f41dc228552c705e79e61d18cec42e8a86e856ebe8efd"
+    },
+    {
+      "path": "frontend/tsconfig.json",
+      "bytes": 119,
+      "sha256": "770b4140bbb581e2dfd9ea9946ffc9c75a1d86ba7d2db5f77c83e37cbdf9d808"
+    },
+    {
+      "path": "frontend/tsconfig.node.json",
+      "bytes": 191,
+      "sha256": "843c35f20f6d101c456338994e7d3d0c8c94182fcc8b7378f1e096c7ed547234"
+    },
+    {
+      "path": "frontend/vite.config.ts",
+      "bytes": 362,
+      "sha256": "1dbc916a22d5273b5a3ee38ea11003d4c13f140becf9eb8b241ca077ebd76782"
+    },
+    {
+      "path": "handoff/DAY_1_HANDOFF.md",
+      "bytes": 2020,
+      "sha256": "08be2d4fd81b80ed1929343731ae09d8489621b6364004f1c64bbb70c7ecb18c"
+    },
+    {
+      "path": "handoff/DAY_1_TEST_REPORT.md",
+      "bytes": 2241,
+      "sha256": "fa4893d119bc39d1401e4c4dddf7bc91f3f3049d5d464976411bc5085bfee025"
+    },
+    {
+      "path": "pyproject.toml",
+      "bytes": 885,
+      "sha256": "1d3cfc4de63bf51c9bf7476709a36c9f4dd519d498b8f0b6d16c56e38960b684"
+    },
+    {
+      "path": "requirements-ml-cu130.txt",
+      "bytes": 255,
+      "sha256": "4c94b8773c19c9f456615c966b19d7e9474986b864f0ef6514046698b0a1f854"
+    },
+    {
+      "path": "sample_data/LICENSE.txt",
+      "bytes": 314,
+      "sha256": "912ea3a9c157425829f13a3a6e40df3245ecb6d1bdb0d649dbefce25f7af14a5"
+    },
+    {
+      "path": "sample_data/README.md",
+      "bytes": 344,
+      "sha256": "cb258d677969984a0d588505e3eb75414fa903eb46c2f93f18a9b1fe88338b24"
+    },
+    {
+      "path": "sample_data/terrafly_synthetic_aerial.png",
+      "bytes": 3070,
+      "sha256": "b3edde0a3336da667ea23b0a61eac4623a53211d140b2e4a2bcaaf6d0aa77cb0"
+    },
+    {
+      "path": "scripts/create_handoff_manifest.py",
+      "bytes": 3465,
+      "sha256": "0d04202e27a321d622d7e75d69bfe2201ffb698cb88aa603978dd2cc9611af80"
+    },
+    {
+      "path": "scripts/create_offline_sample.py",
+      "bytes": 1450,
+      "sha256": "2d34647fdaf46d00d727d82f19a493ae073a73026d8b9ec162c5ce0977ef38a8"
+    },
+    {
+      "path": "scripts/setup.ps1",
+      "bytes": 850,
+      "sha256": "7324a1cb351c0566bee293a12fd7ec47bae006b515ff1ace6d7548bcf9ac97c1"
+    },
+    {
+      "path": "scripts/smoke_real_api.py",
+      "bytes": 2505,
+      "sha256": "836fe27b09bc4b12f2d1a175a40bbb54125f52733d5e6aeee0f7ca326239b923"
+    },
+    {
+      "path": "scripts/smoke_real_model.py",
+      "bytes": 2325,
+      "sha256": "a5cae9c2aa0c6ddfd686976d1c17919cf99150ea1c9b882a43f30bc473193006"
+    },
+    {
+      "path": "scripts/start.ps1",
+      "bytes": 1017,
+      "sha256": "9744b65dd4dd8ee9e11f270ec3d05626dbe57a891e3abfc7d60711db3e62f20c"
+    }
+  ]
+}
