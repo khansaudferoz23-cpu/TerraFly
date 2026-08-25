@@ -41,3 +41,4 @@ Status vocabulary: PASS, FAIL, BLOCKED, SKIPPED.
 - PASS — Phone-size QA at 390×844 showed no horizontal page overflow after the process-line wrap repair.
 - FAIL — The new file-selection component test initially retained the first rendered page; explicit cleanup was added and the isolated suite passed 2/2.
 - PASS — Final revised checks: 13 backend tests, 2 frontend tests, production build, Python compilation/dependency consistency, and PowerShell launcher parsing.
+- PASS — Revised source archive extracted to a fresh path containing spaces; all 64 manifest hashes and all 13 backend tests passed in 1.12 seconds.

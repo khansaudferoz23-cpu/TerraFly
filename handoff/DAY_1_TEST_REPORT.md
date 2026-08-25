@@ -19,7 +19,7 @@ Status vocabulary is restricted to PASS, FAIL, BLOCKED, or SKIPPED.
 | Metric claim gate for ordinary PNG | PASS | included above | state `Relative`; units `relative_0_1`; metric output false |
 | GeoTIFF CRS/transform/NoData preservation | PASS | included above | EPSG:32643 asymmetric fixture; still `Georeferenced Relative` |
 | CPU fallback on forced CUDA OOM | SKIPPED | — | recovery branch implemented; deterministic safe OOM injection test is Day 2 |
-| Extracted revised source archive smoke | PASS | pending final archive refresh | fresh path-with-spaces verification is repeated after the final commit |
+| Extracted revised source archive smoke | PASS | 1.12 s pytest | fresh path containing spaces; 64 committed-file hashes and all 13 backend tests passed |
 
 ## Observable real-model hashes
 

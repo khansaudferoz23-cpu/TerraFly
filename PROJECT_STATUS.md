@@ -34,6 +34,7 @@ Greenfield bootstrap. The authenticated GitHub account `khansaudferoz23-cpu` own
 - PASS — npm reported zero production dependency vulnerabilities.
 - PASS — the Windows launcher parses cleanly, waits for readiness, and opens the app automatically.
 - PASS — private GitHub repository exists at `khansaudferoz23-cpu/TerraFly`; revised Day 1 source is prepared for synchronization.
+- PASS — revised source archive extracted to a fresh path containing spaces; 64 manifest hashes and all 13 backend tests passed from the extracted files.
 
 ## Not yet complete
 

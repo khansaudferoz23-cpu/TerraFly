@@ -21,4 +21,4 @@ The deterministic upload-to-artifact path and the separately implemented real-mo
 | Browser workflow | local app + downloaded TIR preview | PASS | ~8 s inference | external empty/result screenshots | real cached model + warning + WebGL |
 | Responsive browser workflow | 390×844 viewport | PASS | interactive | no horizontal document overflow | completed result state |
 | Windows launcher parse | PowerShell parser | PASS | <1 s | no syntax errors | readiness + auto-open path |
-| Extracted revised source ZIP | manifest verifier + extracted pytest | PASS | pending refresh | `handoff/DAY_1_TEST_REPORT.md` | final archive refresh follows final commit |
+| Extracted revised source ZIP | manifest verifier + extracted pytest | PASS | 1.12 s pytest | `handoff/DAY_1_TEST_REPORT.md` | 64 hashes; fresh path contains spaces |
