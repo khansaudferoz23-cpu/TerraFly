@@ -26,3 +26,6 @@ Status vocabulary: PASS, FAIL, BLOCKED, SKIPPED.
 - PASS — Offline audit removed the only remote font request. npm production audit found 0 vulnerabilities.
 - FAIL — An EOF-normalization command appended a literal `\n` suffix to staged text and trailing bytes to the synthetic PNG; the manifest generator detected the Python syntax error before any remote push or ZIP.
 - PASS — Repaired every text suffix, compiled all Python, regenerated the PNG byte-for-byte from source, verified its decoder/hash, and reran backend, frontend, production build, and real CUDA API checks.
+- FAIL — First two ZIP verification attempts exposed Windows archive line-ending conversion mismatches; no failed ZIP was delivered or retained.
+- PASS — Normalized release text to LF, hashed committed export bytes, and repeated packaging.
+- PASS — Clean path-with-spaces extraction verified all 61 manifest hashes and ran all 13 backend tests from extracted source in 1.12 seconds.

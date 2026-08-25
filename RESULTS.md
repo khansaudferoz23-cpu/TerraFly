@@ -19,3 +19,4 @@ The deterministic upload-to-artifact path and the separately implemented real-mo
 | Real CUDA model | `scripts\\smoke_real_model.py --device cuda` | PASS | 5.402 s | `handoff/DAY_1_TEST_REPORT.md` | RTX 5060 8 GB |
 | Real CUDA API workflow | `scripts\\smoke_real_api.py --device cuda` | PASS | 4.773 s | `handoff/DAY_1_TEST_REPORT.md` | six artifact hashes verified |
 | Browser workflow | local app + synthetic upload | PASS | interactive | external screenshot output | real CUDA result + WebGL |
+| Extracted source ZIP | manifest verifier + extracted pytest | PASS | 1.12 s pytest | `handoff/DAY_1_TEST_REPORT.md` | 61 hashes; path contains spaces |

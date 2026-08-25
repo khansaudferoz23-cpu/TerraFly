@@ -9,3 +9,4 @@
 - Day 1 viewer provides orbit, pan, zoom, reset, wireframe, texture, and display exaggeration; first-person navigation and measurement arrive after orientation tests.
 - Numeric `.npy` is canonical for the current relative result; result GeoTIFF and GLB export are pending.
 - There is no accuracy figure because no compatible ground truth was available.
+- The private GitHub remote is not created/pushed until the user completes GitHub sign-in in the shown browser tab.

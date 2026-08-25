@@ -28,7 +28,8 @@ Greenfield bootstrap. The authenticated GitHub account `khansaudferoz23-cpu` own
 - PASS — real CUDA inference and complete upload-to-six-artifact workflow with verified SHA-256 hashes.
 - PASS — browser upload/progress/result/3D render workflow; screenshot captured outside the source repository.
 - PASS — npm reported zero production dependency vulnerabilities.
+- PASS — source archive extracted to a fresh path containing spaces; 61 manifest hashes and all 13 backend tests passed from the extracted files.
 
 ## Not yet complete
 
-First-person navigation, point comparison, calibration, evaluation, GeoTIFF result export, GLB export, tiled inference, extracted portable release, and Day 2–4 judge packaging.
+First-person navigation, point comparison, calibration, evaluation, GeoTIFF result export, GLB export, tiled inference, dependency-bundled portable release, and Day 2–4 judge packaging.

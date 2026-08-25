@@ -37,4 +37,6 @@ First-person mode, point comparison, GLB, output GeoTIFF, tiled inference, calib
 
 ## Git/remote
 
-Local milestone commit and private GitHub remote status are recorded after the final source audit in this task's closing update.
+PASS — Local `main` contains ordinary, audited milestone commits and has a clean working tree before packaging.
+
+BLOCKED — A private GitHub remote could not be created yet. The connected GitHub account is authenticated for repository reads but exposes no repository-creation action; the available browser requires a fresh GitHub sign-in. No unrelated remote was configured and nothing was pushed.
