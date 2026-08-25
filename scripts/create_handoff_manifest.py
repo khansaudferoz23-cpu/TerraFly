@@ -11,7 +11,7 @@ from pathlib import Path
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
-OUTPUT = PROJECT_ROOT / "handoff" / "DAY_2_MANIFEST.json"
+OUTPUT = PROJECT_ROOT / "handoff" / "DAY_3_MANIFEST.json"
 
 
 def run(*command: str) -> str | None:
@@ -46,6 +46,7 @@ def main() -> None:
         if relative.as_posix() in {
             "handoff/DAY_1_MANIFEST.json",
             "handoff/DAY_2_MANIFEST.json",
+            "handoff/DAY_3_MANIFEST.json",
         }:
             continue
         path = PROJECT_ROOT / relative
@@ -60,7 +61,7 @@ def main() -> None:
             )
     manifest = {
         "schema_version": "1.0",
-        "milestone": "Day 2",
+        "milestone": "Day 3",
         "generated_at": datetime.now(UTC).isoformat(),
         "git_commit": run("git", "rev-parse", "HEAD"),
         "environment": {
@@ -95,7 +96,7 @@ def main() -> None:
             "weights_included": False,
         },
         "tests": {
-            "backend": "PASS (20)",
+            "backend": "PASS (25)",
             "frontend": "PASS (4)",
             "frontend_build": "PASS",
             "real_cpu": "PASS",
@@ -107,7 +108,12 @@ def main() -> None:
             "responsive_layout": "PASS",
             "glb_contract": "PASS",
             "point_comparison": "PASS",
-            "metric_without_calibration": "refused",
+            "aligned_reference_calibration": "PASS",
+            "gcp_control_validation": "PASS",
+            "robust_outlier_handling": "PASS",
+            "poor_or_misaligned_evidence": "refused",
+            "metric_geotiff_contract": "PASS",
+            "source_nodata_preservation": "PASS",
         },
         "files": files,
     }

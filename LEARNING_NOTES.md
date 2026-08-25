@@ -35,3 +35,15 @@ A surface click becomes an image x/y fraction, source pixel coordinate, and bili
 ## What the GLB contains
 
 The GLB is a portable triangle mesh built from the responsive 192×192-or-smaller viewer grid. Its vertical coordinate is the same 0–1 relative value, and scene appearance is stored as vertex colour. The full-resolution `.npy` remains the numeric source of truth.
+
+## What calibration actually fits
+
+TerraFly fits `elevation_metres = scale × relative_value + offset`. Scale says how many metres correspond to one relative unit; offset anchors the zero point. A positive scale is required because the saved relative surface uses larger values for visually higher/nearer structure. This global relation is simple and auditable, but it cannot repair local shape errors.
+
+## Why held-out validation matters
+
+A model can look accurate on the same observations used to fit it. TerraFly therefore hides a spatial subset of an aligned reference DSM before fitting, or accepts separately surveyed GCP validation points. RMSE, MAE, bias, p95 absolute error, and R² are computed only on that independent subset. If any quality gate fails, the report is retained and metric output stays locked.
+
+## Why exact alignment and NoData matter
+
+Comparing different pixel grids can turn a location error into a fake height error. Day 3 accepts only an identical CRS, transform, width, and height. Source NoData pixels remain NoData in metric outputs; TerraFly never fills unknown source regions with invented calibrated elevation.

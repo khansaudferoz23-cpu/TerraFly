@@ -1,12 +1,14 @@
 # Results
 
-No scientific accuracy result is claimed. No ground-truth height dataset was supplied or discovered.
+No real-world scientific accuracy result is claimed. No independent surveyed height dataset was supplied or discovered. Day 3 synthetic truth verifies calibration software and rejection behavior only.
 
 ## Engineering results
 
 The deterministic upload-to-artifact path and the separately implemented real-model path are both verified. The CUDA API smoke downloaded every declared artifact and checked its SHA-256 digest. The revised browser workflow rendered a real result from the downloaded 512×512 TIR preview, showed the required domain warning, and displayed the Three.js surface without presenting it as validated TIR science.
 
 Day 2 verified real four-tile CUDA inference, a seven-artifact workflow including parsed GLB 2.0 output, browser A/B relative sampling, navigation-mode switching, and responsive containment. These are engineering results; scientific accuracy remains unevaluated without compatible height truth.
+
+Day 3 verified exact-grid calibration, robust outlier handling, held-out metrics, poor-evidence refusal, independent GCP validation, source-mask preservation, and gated metric/error artifacts. A real CUDA browser run recovered the known synthetic relation (scale 40, offset 100) with held-out RMSE `3.37×10⁻⁶` m and R² 1.000. That near-zero error is expected because the reference was deliberately derived from the result; it is a pipeline oracle, not model accuracy.
 
 ## Test table
 
@@ -37,3 +39,17 @@ Day 2 verified real four-tile CUDA inference, a seven-artifact workflow includin
 | Browser RGB workflow | PASS | interactive | orbit/first-person switching, A/B samples, GLB link, WebGL |
 | 390×844 browser layout | PASS | interactive | document and repaired canvas remained contained |
 | Extracted Day 2 source ZIP | PASS | 0.78 s pytest | 72 hashes; 20 backend tests; fresh path contains spaces |
+
+## Day 3 test table
+
+| Test | Result | Duration | Evidence |
+|---|---:|---:|---|
+| Backend suite (25) | PASS | 1.35 s | reference/GCP pass, alignment/error rejection, hashes, NoData contract |
+| Frontend suite (4) | PASS | 2.37 s | scientific contract and asymmetric orientation components |
+| Production build | PASS | 0.336 s | strict TypeScript; 23 modules transformed |
+| Real CUDA browser inference + calibration | PASS | interactive | 512×512 RGB GeoTIFF; real model; exact synthetic reference |
+| Robust fit with injected training outliers | PASS | included | scale 40.000; offset 100.000; held-out pixels excluded from fit |
+| Metric GeoTIFF contract | PASS | included | EPSG:32643, original affine, float32, metre/datum tags |
+| Calibrated run artifact integrity | PASS | included | all 13 declared hashes matched |
+| Poor or misaligned evidence | PASS | included | rejected or HTTP 400; no metric artifacts |
+| 390×844 browser layout | PASS | interactive | 375 px document; 351 px panel; 307 px viewer/canvas; no overflow |

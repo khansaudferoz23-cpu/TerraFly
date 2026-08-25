@@ -8,6 +8,34 @@ export type Artifact = {
   bytes: number;
 };
 
+export type Calibration = {
+  method?: string | null;
+  status: "not_requested" | "passed" | "rejected" | string;
+  metric_output_allowed: boolean;
+  reason: string;
+  evidence?: {
+    source_description?: string;
+    vertical_datum?: string;
+    reference_filename?: string;
+  };
+  fit?: {
+    scale_m_per_relative_unit?: number;
+    offset_m?: number;
+    training_inlier_ratio?: number;
+  };
+  evaluation?: {
+    count?: number;
+    rmse_m?: number;
+    mae_m?: number;
+    bias_m?: number;
+    r_squared?: number;
+  };
+  quality_gate?: {
+    declared_max_rmse_m?: number;
+    failures?: string[];
+  };
+};
+
 export type Job = {
   job_id: string;
   status: "queued" | "running" | "complete" | "failed";
@@ -17,7 +45,7 @@ export type Job = {
   scientific_state: ScientificState;
   units: string;
   geospatial: Record<string, unknown> | null;
-  calibration: { metric_output_allowed: boolean; reason: string; status: string };
+  calibration: Calibration;
   model: Record<string, unknown>;
   configuration: Record<string, unknown>;
   warnings: string[];

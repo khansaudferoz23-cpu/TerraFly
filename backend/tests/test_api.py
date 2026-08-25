@@ -76,6 +76,11 @@ def test_capabilities_state_the_metric_contract(client):
     ]
     assert payload["tiled_inference"] is True
     assert payload["tile_size"] > payload["tile_overlap"]
+    assert payload["calibration_methods"] == [
+        "aligned_reference_dsm",
+        "ground_control_points",
+    ]
+    assert payload["reference_dsm_requires_exact_alignment"] is True
 
 
 def test_rejects_dimensions_above_processing_memory_budget(client, settings):

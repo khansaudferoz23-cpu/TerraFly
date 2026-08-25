@@ -39,3 +39,15 @@ Export a dependency-free GLB 2.0 triangle mesh using the same sampled row/column
 ## D-010 — Point comparison reports samples, not distance
 
 Raycast clicks into the rendered mesh, map UV coordinates back to source-image pixels, and bilinearly sample relative values. Show A/B and their absolute difference only in relative units. Do not label the result as metres, slope, or real-world distance before calibration.
+
+## D-011 — Calibration must be fitted and judged on separate evidence
+
+For an aligned reference DSM, reserve a spatial checkerboard subset before fitting. For GCPs, require separate control and validation lists. Fit one robust positive affine relation, reject outliers, and unlock metric output only when independent validation passes declared RMSE plus fixed R², coverage, span, and inlier gates. Training-fit error is never accepted as validation evidence.
+
+## D-012 — Require exact grids and preserve NoData
+
+Day 3 performs no silent reprojection or resampling. A reference DSM must match CRS, dimensions, and affine transform exactly so interpolation cannot hide alignment errors. Metric outputs inherit the input GeoTIFF grid and mask source NoData pixels. A future resampling workflow must be explicit, configurable, and separately tested.
+
+## D-013 — Keep metric files separate from the relative viewer
+
+Calibration changes the exported numeric interpretation, not the evidence used to build the existing 3D viewer. Keep the viewer and A/B comparison in relative units, write metric `.npy`/GeoTIFF as distinct artifacts, and show the vertical datum and held-out diagnostics beside the gate decision.

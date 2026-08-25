@@ -59,3 +59,19 @@ Status vocabulary: PASS, FAIL, BLOCKED, SKIPPED.
 - PASS — Browser QA used the downloaded SAC RGB preview: real result, WebGL mesh, orbit/first-person toggle, A/B samples, evidence links, and no new error-level logs.
 - FAIL — Phone QA found a 320 px canvas inside a 307 px viewer; removed the fixed minimum and reran at 390×844 with exact 307 px containment and no page overflow.
 - PASS — Day 2 source archive verified all 72 committed-file hashes and ran all 20 backend tests in 0.78 seconds from a fresh path containing spaces.
+
+## 2026-08-25 — Day 3 calibration and held-out evaluation
+
+- PASS — Added typed aligned-reference and GCP calibration contracts; normal PNG/JPEG and ungeoreferenced TIFF jobs remain unable to request metric output.
+- PASS — Required exact reference CRS, dimensions, and affine transform with no silent reprojection/resampling.
+- PASS — Added robust positive affine fitting, iterative median-deviation outlier rejection, bounded raster training samples, spatially held-out reference pixels, and independent GCP validation lists.
+- PASS — Enforced relative span, 75% inliers, 40% two-axis coverage, declared RMSE, minimum R², and evaluation-count gates.
+- PASS — Wrote passing-gate metric `.npy`/GeoTIFF, vertical source/datum tags, reference evidence, residual GeoTIFF/preview, calibration report, refreshed manifest, and verified hashes.
+- PASS — Poor but aligned evidence returns a documented rejection and no metric files; misaligned evidence fails before fitting.
+- PASS — Applied the original GeoTIFF mask to calibration and metric outputs; GCPs touching source NoData are refused.
+- PASS — Added a neutral calibration panel with explicit Locked/Passed/Rejected state, exact-grid instructions, held-out metrics, and only real evidence links. GeoTIFF input comparison now uses the generated RGB texture rather than a browser-incompatible TIFF preview.
+- PASS — Final automated gate: 25 backend tests in 1.35 seconds, 4 frontend tests in 2.37 seconds, strict 23-module build in 0.336 seconds, Python compilation, dependency consistency, launcher parsing, and diff whitespace checks.
+- PASS — Visible real CUDA browser workflow calibrated a 512×512 georeferenced RGB run against a reproducible synthetic reference with injected fit outliers: scale 40.000, offset 100.000, held-out RMSE 0.0000034 m, R² 1.000.
+- PASS — All 13 declared calibrated-run artifacts matched hashes; metric GeoTIFF preserved EPSG:32643, the input affine transform, float32 values, metre units, and vertical datum.
+- PASS — Responsive QA at 390×844 found no horizontal overflow; document/panel/viewer/canvas widths were 375/351/307/307 px.
+- LIMIT — The synthetic reference is a software oracle, not independent real-world height truth; no model-accuracy claim was made.

@@ -10,7 +10,16 @@ Upload PNG, JPG/JPEG, or GeoTIFF → validate safely → run an interchangeable 
 
 The normal adapter is the real Apache-2.0 `depth-anything/Depth-Anything-V2-Small-hf` checkpoint. Large inputs use bounded overlapping tiles with overlap scale/offset alignment and feather blending before one global normalization. Automated tests use a deterministic adapter that is technically blocked from normal runs and visibly labels every result as test-only.
 
-Day 2 adds orbit/first-person navigation, two-point relative comparison, a standards-based colour GLB export, explicit orientation contracts, processing-memory refusal, and safe completed-job cleanup. These remain relative inspection tools, not metric measurement.
+Day 3 adds two evidence-driven calibration paths. An exactly aligned reference DSM can be evaluated in the app; surveyed control points plus separate validation points are available through the API. Robust scale/offset fitting, spatially held-out validation, coverage/inlier/RMSE/R² gates, source NoData preservation, and an explicit pass/reject decision prevent a cosmetic “metres” toggle. Only a passing run receives metric `.npy` and GeoTIFF artifacts. The 3D viewer deliberately remains relative.
+
+### Metric calibration workflow
+
+1. Upload a georeferenced input GeoTIFF and generate its relative surface.
+2. In **Metric calibration**, choose an independently sourced single-band DSM with the exact same CRS, width, height, and affine pixel grid.
+3. Name the evidence source and vertical datum, then declare the maximum acceptable held-out RMSE in metres.
+4. Select **Evaluate and calibrate**. A pass unlocks the metric GeoTIFF, metric `.npy`, residual GeoTIFF, and machine-readable report. A rejection retains the evidence/report but creates no metric output.
+
+The included Day 3 fixture proves software correctness with synthetic truth; it is not a real-world accuracy claim. Real operational use requires trustworthy independently surveyed reference data.
 
 ## Beginner launch (Windows)
 
@@ -40,8 +49,8 @@ Real-model smoke checks are deliberately separate because they download a checkp
 
 ## Layout
 
-- `backend/terrafly`: FastAPI, safe image inspection, model adapters, jobs, manifests, and artifacts.
-- `backend/tests`: fast deterministic and geospatial contract tests.
+- `backend/terrafly`: FastAPI, safe image inspection, model adapters, jobs, manifests, artifacts, and calibration gates.
+- `backend/tests`: deterministic inference, geospatial, artifact, tiling, and calibration pass/reject contracts.
 - `frontend`: React/TypeScript/Vite and the Three.js textured surface viewer.
 - `scripts`: project-local setup and Windows launcher.
 - `runtime/jobs`: ignored uploads and generated results.

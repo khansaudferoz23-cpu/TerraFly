@@ -30,12 +30,13 @@ Use this as the answer to “why does this file exist?” Paths are grouped by r
 |---|---|
 | `backend/terrafly/__init__.py` | Marks `terrafly` as a Python package and exposes the package version boundary. |
 | `backend/terrafly/config.py` | Central settings for job storage, upload/memory/tile limits, model ID, adapter, device, and test safety flag. |
-| `backend/terrafly/schemas.py` | Pydantic contracts for scientific states, jobs, artifacts, and capabilities; stops undocumented API shapes. |
-| `backend/terrafly/main.py` | FastAPI routes for health, capabilities, upload, status polling, safe artifact download, and completed-job deletion. |
+| `backend/terrafly/schemas.py` | Pydantic contracts for scientific states, jobs, artifacts, capabilities, and bounded GCP calibration requests; stops undocumented API shapes. |
+| `backend/terrafly/main.py` | FastAPI routes for health, capabilities, upload, status, calibration, safe artifact download, and completed-job deletion. |
 | `backend/terrafly/imaging.py` | Filename/content validation, safe decoding, RGB normalization, GeoTIFF inspection, hashes, and single-band warnings. |
 | `backend/terrafly/jobs.py` | Creates per-run IDs/directories and atomically persists live job state. |
 | `backend/terrafly/pipeline.py` | Enforces the processing-memory budget, orchestrates validation → inference → artifacts, and converts failures into honest job states. |
 | `backend/terrafly/artifacts.py` | Writes numeric, preview, texture, 16-bit, orientation-aware viewer grid, valid GLB, and SHA-256 records. |
+| `backend/terrafly/calibration.py` | Validates reference grids/GCPs, robustly fits scale and offset, performs held-out quality gates, preserves NoData, and writes metric/error evidence only on pass. |
 | `backend/terrafly/inference/__init__.py` | Marks the inference adapter directory as a package. |
 | `backend/terrafly/inference/base.py` | Defines the common prediction result and adapter interface used by real and test implementations. |
 | `backend/terrafly/inference/depth_anything_v2.py` | Real pretrained inference, robust normalization/inversion, CUDA/CPU selection, and OOM fallback. |
@@ -54,6 +55,7 @@ Use this as the answer to “why does this file exist?” Paths are grouped by r
 | `backend/tests/test_geotiff.py` | Proves CRS/transform/NoData survive while vertical metric claims remain locked. |
 | `backend/tests/test_artifacts.py` | Parses the GLB container and proves grid, texture, corner colour, and scientific metadata orientation. |
 | `backend/tests/test_tiling.py` | Proves coverage, overlap blending, affine scale/offset alignment, and maximum-tile refusal. |
+| `backend/tests/test_calibration.py` | Proves reference-DSM pass, outlier robustness, alignment refusal, poor-evidence rejection, GCP validation, metric metadata, and hashes. |
 
 ## Frontend: user experience and 3D inspection
 
@@ -67,11 +69,11 @@ Use this as the answer to “why does this file exist?” Paths are grouped by r
 | `frontend/tsconfig.app.json` | Strict TypeScript settings for browser application source. |
 | `frontend/tsconfig.node.json` | TypeScript settings for Vite configuration code running in Node. |
 | `frontend/src/main.tsx` | Creates the React root and mounts `App`. |
-| `frontend/src/App.tsx` | Complete upload/progress/result/evidence workflow and visible scientific contract. |
+| `frontend/src/App.tsx` | Complete upload/progress/result/calibration/evidence workflow with visible Locked/Passed/Rejected decisions. |
 | `frontend/src/SurfaceViewer.tsx` | Three.js render lifecycle, orbit/first-person controls, raycast point markers, loading/error state, and display-only exaggeration. |
 | `frontend/src/surfaceGeometry.ts` | Pure orientation, mesh-building, pixel mapping, and bilinear point-sampling logic separated for direct tests. |
-| `frontend/src/api.ts` | Small typed boundary for creating jobs, polling status, and resolving artifact URLs. |
-| `frontend/src/types.ts` | TypeScript mirror of the backend job/artifact/scientific-state response. |
+| `frontend/src/api.ts` | Typed boundary for jobs, reference calibration, cleanup, and artifact URLs. |
+| `frontend/src/types.ts` | TypeScript mirror of job, artifact, scientific-state, fit, evaluation, and gate responses. |
 | `frontend/src/styles.css` | Deliberate design tokens, layout hierarchy, responsive behavior, and viewer styling. |
 | `frontend/src/App.test.tsx` | Guards the non-metric promise, clean initial state, real file-selection action, and absence of fake future controls. |
 | `frontend/src/SurfaceViewer.test.ts` | Guards asymmetric image-to-geometry/UV orientation and source-pixel point sampling. |
@@ -87,6 +89,7 @@ Use this as the answer to “why does this file exist?” Paths are grouped by r
 | `scripts/smoke_real_api.py` | Exercises the complete real upload-to-artifacts API path, including hashes. |
 | `scripts/smoke_tiled_model.py` | Forces four real CUDA tiles and verifies strategy metadata, shape, range, dtype, finiteness, and output hash. |
 | `scripts/create_offline_sample.py` | Regenerates the deterministic CC0 orientation/workflow fixture from code. |
+| `scripts/create_calibration_demo.py` | Reproducibly wraps an RGB image as a georeferenced test input and derives an aligned synthetic reference from a saved relative surface. |
 | `scripts/create_handoff_manifest.py` | Hashes all committed source files into the current milestone handoff manifest. |
 
 ## Documentation: team ownership and later evidence
@@ -117,6 +120,9 @@ The downloaded SAC TIR/RGB preview PNGs are **not committed** here because they 
 | `handoff/DAY_2_HANDOFF.md` | Day 2 launch, working-feature, next-step, and known-limit summary. |
 | `handoff/DAY_2_TEST_REPORT.md` | Day 2 automated, real tiled CUDA, API artifact, browser, responsive, and launcher evidence. |
 | `handoff/DAY_2_MANIFEST.json` | Machine-readable SHA-256 list for the final Day 2 source revision. |
+| `handoff/DAY_3_HANDOFF.md` | Day 3 calibration contract, launch, evidence, limits, and Day 4 entry point. |
+| `handoff/DAY_3_TEST_REPORT.md` | Day 3 automated, real-model browser, metric-artifact, rejection, and responsive evidence. |
+| `handoff/DAY_3_MANIFEST.json` | Machine-readable SHA-256 list for the final Day 3 source revision. |
 
 ## Generated but intentionally untracked
 

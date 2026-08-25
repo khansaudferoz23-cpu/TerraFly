@@ -4,7 +4,7 @@ Read this before presenting the project. The goal is not to memorize code; it is
 
 ## The 30-second explanation
 
-TerraFly accepts one PNG, JPEG, or GeoTIFF. It validates the file, converts readable image bands into RGB, and runs the pretrained Depth Anything V2 Small model. That model estimates **relative monocular depth**, not physical elevation. TerraFly robustly normalizes and inverts that result into a 0–1 display surface, writes reproducible artifacts, and renders the input texture on an interactive Three.js mesh. Metre-scale outputs remain locked until external vertical calibration succeeds.
+TerraFly accepts one PNG, JPEG, or GeoTIFF. It validates the file and runs Depth Anything V2 Small, which estimates **relative monocular depth**, not physical elevation. TerraFly creates a 0–1 surface and an interactive 3D inspection view. A georeferenced run may then be calibrated only with independent vertical evidence. Robust scale/offset fitting and held-out quality gates decide whether separate metric GeoTIFF/`.npy` files exist; the viewer always stays relative.
 
 ## Request flow
 
@@ -24,6 +24,13 @@ Relative surface ── normalize depth, invert for display, preserve 0–1 valu
 Artifact writer ── .npy + preview + texture + viewer grid + GLB + manifest
   ▼
 React polls progress ── Three.js renders orbit/first-person inspection + A/B samples
+
+Georeferenced completed job
+  │ aligned DSM OR control + separate validation GCPs
+  ▼
+Calibration gate ── robust fit → held-out RMSE/MAE/bias/p95/R² + coverage/inliers
+  ├─ reject: report only; state stays Georeferenced Relative
+  └─ pass: metric .npy + GeoTIFF + residual evidence; state becomes Metric Calibrated
 ```
 
 ## Why the result is relative
@@ -44,8 +51,13 @@ A GeoTIFF can add a coordinate reference system, pixel size, map position, and b
 | `relative_surface.glb` | GLB 2.0 triangle mesh with embedded vertex colours and relative Y | Portable 3D inspection in compatible tools | Metric or full-resolution elevation |
 | `job.json` | Live persisted job state | Lets progress survive separate API requests | Final immutable evidence |
 | `job_manifest.json` | Final input/model/warning/artifact record | Reproducibility and audit trail | A secret or credential file |
+| `calibration_reference.tif` | Exact submitted aligned DSM evidence | Reproduce the gate decision and its source hash | Automatically trustworthy ground truth |
+| `calibration_report.json` | Source/datum, fit, held-out metrics, thresholds, failures, and decision | Explain exactly why metres were unlocked or refused | A substitute for understanding reference quality |
+| `metric_surface.npy` | Full-resolution float32 calibrated array in metres | Lossless numeric metric result after a pass | The relative viewer grid |
+| `metric_surface.tif` | Calibrated float32 elevation with source CRS/transform/NoData and vertical tags | GIS-compatible passing-gate result | Available after a rejection |
+| `calibration_error.tif` | Candidate metric surface minus aligned reference, in metres | Spatial residual diagnosis | Absolute truth about every object |
 
-The web UI offers four outputs useful to a normal user: preview, numeric surface, colour GLB, and final manifest. Viewer-only support files remain internal.
+The web UI always offers preview, relative numeric surface, colour GLB, and manifest. Calibration/report/metric/residual files appear only when they actually exist.
 
 ## The model adapters
 
@@ -94,7 +106,7 @@ Yes, AI accelerated implementation. The team owns the decisions and can explain 
 
 ### “Is this a digital elevation model?”
 
-Not yet. The Day 1 result is a relative surface proxy. Calling it a metric DSM would be scientifically false. Day 3 introduces a strict calibration/evaluation path using compatible reference elevation or ground control evidence.
+The first result is always a relative surface proxy. For a georeferenced input, TerraFly can produce a metric DSM-like GeoTIFF only after independent vertical evidence passes its documented gate. A synthetic pass proves the software path; a real scientific claim still depends on trustworthy surveyed evidence and domain evaluation.
 
 ### “Why Depth Anything if it was trained on normal images?”
 
@@ -120,13 +132,25 @@ Relative differences can be visually small. The slider changes vertex display on
 
 It compares two bilinearly sampled values from the relative surface and reports their difference in relative units. It does not claim metres, slope, or geographic distance.
 
-### “Why is GLB available but GeoTIFF is still locked?”
+### “Why can GLB be available while metric GeoTIFF is locked?”
 
-GLB is an inspection format and explicitly stores relative values. A metric GeoTIFF would imply calibrated elevation tied to a vertical reference, which the current evidence cannot support. Portability and metric validity are different questions.
+GLB is an inspection format and explicitly stores relative values. Metric GeoTIFF implies a vertical scale, offset, units, and datum, so it exists only after independent evidence passes. Portability and metric validity are different questions.
 
 ### “Why tile instead of shrinking every large image?”
 
 Shrinking discards local detail. Tiles bound per-pass memory while retaining more spatial structure. TerraFly aligns crop scale/offset in overlaps and records the strategy, but still requires evaluation before claiming greater remote-sensing accuracy.
+
+### “How do you prevent calibration from cheating?”
+
+Reference-raster pixels are split spatially before fitting; GCP requests contain separate control and validation sets. Held-out observations never fit scale or offset. The gate also requires positive scale, sufficient relative span, at least 75% fit inliers, at least 40% coverage on both axes, RMSE below the declared limit, and R² of at least 0.50.
+
+### “Why no automatic reprojection?”
+
+Silent resampling can blur edges and hide misregistration. Day 3 fails closed unless CRS, dimensions, and affine transform match exactly. That narrow contract is easier to explain and verify; explicit reprojection can be a later tested feature.
+
+### “Why does the 3D viewer remain relative after a metric pass?”
+
+The viewer is a responsive downsampled inspection surface and the A/B tool was designed around relative ordering. Metric values are preserved separately at full resolution. Keeping those roles separate prevents a display mesh from being mistaken for surveyed measurement.
 
 ## Team learning split
 
@@ -150,5 +174,8 @@ Without looking at this file, explain:
 7. How hashes and the manifest support reproducibility.
 8. Why tile overlaps need scale/offset alignment before blending.
 9. Why a GLB can be valid while still non-metric.
+10. Why calibration controls and validation evidence must be separate.
+11. Which six checks can keep metric export locked.
+12. Why a synthetic calibration pass is not a real accuracy claim.
 
 If an answer is unclear, open the named source file in `FILE_GUIDE.md` and trace the relevant function.

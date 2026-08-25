@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "terrafly"
-version = "0.2.0"
+version = "0.3.0"
 description = "Truthful relative surface inference and 3D exploration from a single optical image"
 requires-python = ">=3.11,<3.14"
 dependencies = [

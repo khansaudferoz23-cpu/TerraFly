@@ -26,6 +26,11 @@ Greenfield bootstrap. The authenticated GitHub account `khansaudferoz23-cpu` own
 - Orbit and pointer-lock first-person navigation plus two-point relative comparison with source pixel coordinates.
 - Standards-based GLB 2.0 mesh export with embedded vertex colours and explicit non-metric metadata.
 - Completed-result deletion and launcher reuse/port/log diagnostics without killing unknown processes.
+- Exact-grid aligned reference-DSM calibration with robust affine outlier handling and spatially held-out evaluation.
+- Ground-control calibration with separate control and validation point sets, bilinear relative sampling, and coverage gates.
+- Strict positive-scale, relative-span, inlier-ratio, axis-coverage, RMSE, and R² gate before metric state/output exists.
+- Source NoData preservation, calibrated float32 `.npy`/GeoTIFF, residual GeoTIFF/preview, retained reference evidence, and calibration report hashes.
+- Professional calibration panel with explicit Locked/Passed/Rejected states and dynamically truthful evidence downloads.
 
 ## Verified Day 1 baseline
 
@@ -44,7 +49,7 @@ Greenfield bootstrap. The authenticated GitHub account `khansaudferoz23-cpu` own
 
 ## Not yet complete
 
-Calibration, evaluation, calibrated GeoTIFF result export, compatible reference-raster/GCP intake, dependency-bundled portable release, and Day 3–4 judge packaging.
+Real-world accuracy evaluation against an independently surveyed dataset, dependency-bundled portable release, final cookbook/judge materials, and Day 4 packaging.
 
 ## Verified Day 2 baseline
 
@@ -55,3 +60,13 @@ Calibration, evaluation, calibrated GeoTIFF result export, compatible reference-
 - PASS — 390×844 responsive QA with page width and canvas width contained; no new browser errors after the canvas repair.
 - PASS — PowerShell launcher syntax, explicit occupied-port diagnostics, readable service logs, reuse of an already-running TerraFly service, and a persistent CMD error message.
 - PASS — Day 2 source archive extracted to a fresh path containing spaces; 72 manifest hashes and all 20 backend tests passed from the extracted files.
+
+## Verified Day 3 baseline
+
+- PASS — 25 backend tests, including exact reference-grid checks, robust outlier handling, poor-evidence rejection, independent GCP validation, source NoData preservation, metric GeoTIFF metadata, and artifact hashes.
+- PASS — 4 frontend tests and strict 23-module TypeScript/Vite production build.
+- PASS — visible browser workflow using a real CUDA Depth Anything V2 run on a 512×512 georeferenced RGB fixture.
+- PASS — reference DSM gate recovered scale 40.000 and offset 100.000 despite injected training outliers; held-out RMSE was 0.0000034 m with R² 1.000 on synthetic truth.
+- PASS — all 13 real calibrated-run artifact hashes matched; output GeoTIFF preserved EPSG:32643, affine transform, float32 type, metre units, and vertical datum tags.
+- PASS — 390×844 responsive QA: document contained at 375 px, calibration panel 351 px, viewer/canvas both 307 px, and no horizontal overflow.
+- LIMIT — this is a synthetic calibration correctness result, not a real-world remote-sensing accuracy score.

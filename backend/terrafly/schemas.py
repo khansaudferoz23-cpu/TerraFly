@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from enum import StrEnum
-from typing import Any
+from typing import Annotated, Any
 
 from pydantic import BaseModel, Field
 
@@ -58,3 +58,25 @@ class Capabilities(BaseModel):
     tile_overlap: int
     scientific_states: list[str]
     metric_requires_calibration: bool = True
+    calibration_methods: list[str] = Field(
+        default_factory=lambda: ["aligned_reference_dsm", "ground_control_points"]
+    )
+    reference_dsm_requires_exact_alignment: bool = True
+
+
+FiniteNumber = Annotated[float, Field(allow_inf_nan=False)]
+PixelCoordinate = Annotated[float, Field(ge=0, allow_inf_nan=False)]
+
+
+class CalibrationPoint(BaseModel):
+    column: PixelCoordinate
+    row: PixelCoordinate
+    elevation_m: FiniteNumber
+
+
+class GcpCalibrationRequest(BaseModel):
+    source_description: str = Field(min_length=3, max_length=300)
+    vertical_datum: str = Field(min_length=2, max_length=100)
+    max_rmse_m: float = Field(gt=0, le=100_000, allow_inf_nan=False)
+    controls: list[CalibrationPoint] = Field(min_length=6, max_length=500)
+    validation: list[CalibrationPoint] = Field(min_length=3, max_length=500)

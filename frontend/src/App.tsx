@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { artifactUrl, createJob, deleteJob, getJob } from "./api";
+import { artifactUrl, calibrateWithReference, createJob, deleteJob, getJob } from "./api";
 import { SurfaceViewer } from "./SurfaceViewer";
 import type { InspectedPoint } from "./surfaceGeometry";
 import type { Artifact, Job } from "./types";
@@ -33,6 +33,10 @@ function fileSize(bytes: number) {
   return `${(bytes / 1024 / 1024).toFixed(2)} MB`;
 }
 
+function metric(value: number | undefined, digits = 3) {
+  return typeof value === "number" && Number.isFinite(value) ? value.toFixed(digits) : "—";
+}
+
 export default function App() {
   const [file, setFile] = useState<File | null>(null);
   const [job, setJob] = useState<Job | null>(null);
@@ -40,6 +44,12 @@ export default function App() {
   const [dragging, setDragging] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [points, setPoints] = useState<InspectedPoint[]>([]);
+  const [referenceFile, setReferenceFile] = useState<File | null>(null);
+  const [sourceDescription, setSourceDescription] = useState("");
+  const [verticalDatum, setVerticalDatum] = useState("");
+  const [maxRmse, setMaxRmse] = useState("2");
+  const [calibrating, setCalibrating] = useState(false);
+  const [calibrationError, setCalibrationError] = useState<string | null>(null);
   const localPreview = useMemo(() => (file ? URL.createObjectURL(file) : null), [file]);
 
   useEffect(() => () => { if (localPreview) URL.revokeObjectURL(localPreview); }, [localPreview]);
@@ -64,6 +74,11 @@ export default function App() {
     setJob(null);
     setError(null);
     setPoints([]);
+    setReferenceFile(null);
+    setSourceDescription("");
+    setVerticalDatum("");
+    setMaxRmse("2");
+    setCalibrationError(null);
   }
 
   async function clearResult() {
@@ -95,11 +110,38 @@ export default function App() {
     }
   }
 
+  async function evaluateCalibration() {
+    if (!job || !referenceFile || !sourceDescription.trim() || !verticalDatum.trim()) return;
+    const threshold = Number(maxRmse);
+    if (!Number.isFinite(threshold) || threshold <= 0) {
+      setCalibrationError("Enter a positive held-out RMSE limit in metres.");
+      return;
+    }
+    setCalibrating(true);
+    setCalibrationError(null);
+    try {
+      setJob(await calibrateWithReference(
+        job.job_id,
+        referenceFile,
+        sourceDescription.trim(),
+        verticalDatum.trim(),
+        threshold,
+      ));
+    } catch (reason) {
+      setCalibrationError(reason instanceof Error ? reason.message : "Calibration could not be evaluated.");
+    } finally {
+      setCalibrating(false);
+    }
+  }
+
   const complete = job?.status === "complete";
   const artifact = (name: string) => complete ? artifactUrl(job.job_id, name) : "#";
   const artifactRecord = (name: string): Artifact | undefined => job?.artifacts.find((item) => item.name === name);
   const currentStage = stages.indexOf((job?.stage ?? "") as (typeof stages)[number]);
   const isSingleBand = job?.input.mode === "L" || job?.input.bands === 1;
+  const isTiff = file ? /\.tiff?$/i.test(file.name) : false;
+  const metricAllowed = job?.calibration.metric_output_allowed === true;
+  const evaluation = job?.calibration.evaluation;
 
   return (
     <main className="app-shell">
@@ -116,8 +158,8 @@ export default function App() {
         </div>
         <aside className="scope-note" aria-label="Scientific output scope">
           <span>Output scope</span>
-          <strong>Relative surface · 0–1</strong>
-          <p>A normal image cannot establish elevation in metres. Metric export remains locked until valid vertical calibration exists.</p>
+          <strong>{metricAllowed ? "Metric calibrated · metres" : "Relative surface · 0–1"}</strong>
+          <p>{metricAllowed ? "Independent evidence passed the declared held-out quality gate. The viewer remains relative; metric files are separate." : "A normal image cannot establish elevation in metres. Metric export remains locked until valid vertical calibration exists."}</p>
         </aside>
       </header>
 
@@ -151,7 +193,7 @@ export default function App() {
               accept=".png,.jpg,.jpeg,.tif,.tiff,image/png,image/jpeg,image/tiff"
               onChange={(event) => selectFile(event.target.files?.[0] ?? null)}
             />
-            {file && localPreview ? <img src={localPreview} alt="Selected scene preview" /> : <ContourMark />}
+            {file && localPreview && !isTiff ? <img src={localPreview} alt="Selected scene preview" /> : <ContourMark />}
             <div>
               <strong>{file ? file.name : "Choose a file or drop it here"}</strong>
               <span>{file ? `${fileSize(file.size)} · ready to analyse` : "Your file stays on this computer."}</span>
@@ -177,12 +219,12 @@ export default function App() {
         </div>
       </section>
 
-      {complete && localPreview && <>
+      {complete && <>
         <section className="result-section" aria-labelledby="result-title">
           <div className="section-heading result-heading">
             <div><p className="section-label">Completed run</p><h2 id="result-title">Relative surface analysis</h2></div>
             <div className="result-actions">
-              <div className="result-state"><strong>{job.scientific_state}</strong><span>Values are relative, not metres</span></div>
+              <div className="result-state"><strong>{job.scientific_state}</strong><span>3D viewer values remain relative</span></div>
               <button className="quiet-action" type="button" disabled={busy} onClick={clearResult}>Clear result</button>
             </div>
           </div>
@@ -198,7 +240,7 @@ export default function App() {
             </div>
             <aside className="result-inspector">
               <div className="comparison-pair">
-                <figure><img src={localPreview} alt="Uploaded scene" /><figcaption>Input scene</figcaption></figure>
+                <figure><img src={artifact("texture")} alt="Uploaded scene" /><figcaption>Input scene</figcaption></figure>
                 <figure><img src={artifact("preview")} alt="Colourized relative surface" /><figcaption>Relative map</figcaption></figure>
               </div>
               <div className="interpretation">
@@ -233,6 +275,54 @@ export default function App() {
           </div>
         </section>
 
+        {job.geospatial && <section className="calibration-section" aria-labelledby="calibration-title">
+          <div className="section-heading calibration-heading">
+            <div><p className="section-label">Vertical evidence gate</p><h2 id="calibration-title">Metric calibration</h2></div>
+            <span className={`gate-status gate-${job.calibration.status}`}>
+              {job.calibration.status === "passed" ? "Passed" : job.calibration.status === "rejected" ? "Rejected" : "Locked"}
+            </span>
+          </div>
+          <div className="calibration-layout">
+            <div className="calibration-copy">
+              <h3>Use an independently sourced, pixel-aligned DSM</h3>
+              <p>It must have the exact same CRS, dimensions, and pixel grid as this input. TerraFly fits scale and offset on one spatial set, then judges the result on separate held-out pixels.</p>
+              <dl className="alignment-facts">
+                <div><dt>Input CRS</dt><dd>{String(job.geospatial.crs)}</dd></div>
+                <div><dt>Input grid</dt><dd>{String(job.input.width)} × {String(job.input.height)} pixels</dd></div>
+                <div><dt>Viewer</dt><dd>Remains relative for honest visual comparison</dd></div>
+              </dl>
+            </div>
+            <div className="calibration-form">
+              <label className="reference-picker">
+                <span>Reference DSM · GeoTIFF</span>
+                <input aria-label="Reference DSM" type="file" accept=".tif,.tiff,image/tiff" onChange={(event) => { setReferenceFile(event.target.files?.[0] ?? null); setCalibrationError(null); }} />
+                <strong>{referenceFile?.name ?? "Choose aligned DSM"}</strong>
+              </label>
+              <label><span>Evidence source</span><input aria-label="Evidence source" value={sourceDescription} onChange={(event) => setSourceDescription(event.target.value)} placeholder="Agency, survey, product, and date" /></label>
+              <div className="calibration-fields">
+                <label><span>Vertical datum</span><input aria-label="Vertical datum" value={verticalDatum} onChange={(event) => setVerticalDatum(event.target.value)} placeholder="e.g. EGM96 orthometric" /></label>
+                <label><span>Maximum held-out RMSE · m</span><input aria-label="Maximum held-out RMSE" type="number" min="0.001" step="0.1" value={maxRmse} onChange={(event) => setMaxRmse(event.target.value)} /></label>
+              </div>
+              <button className="primary-action" type="button" disabled={calibrating || !referenceFile || !sourceDescription.trim() || !verticalDatum.trim()} onClick={evaluateCalibration}>
+                {calibrating ? "Evaluating evidence…" : "Evaluate and calibrate"}
+              </button>
+              {calibrationError && <div className="error" role="alert">{calibrationError}</div>}
+            </div>
+          </div>
+
+          {job.calibration.status !== "not_requested" && <div className={`gate-result ${metricAllowed ? "gate-pass" : "gate-fail"}`} aria-live="polite">
+            <div><span>Decision</span><strong>{metricAllowed ? "Metric export unlocked" : "Metric export remains locked"}</strong><p>{job.calibration.reason}</p></div>
+            {evaluation && <dl>
+              <div><dt>Held-out RMSE</dt><dd>{metric(evaluation.rmse_m)} m</dd></div>
+              <div><dt>MAE</dt><dd>{metric(evaluation.mae_m)} m</dd></div>
+              <div><dt>Bias</dt><dd>{metric(evaluation.bias_m)} m</dd></div>
+              <div><dt>R²</dt><dd>{metric(evaluation.r_squared)}</dd></div>
+              <div><dt>Fit scale</dt><dd>{metric(job.calibration.fit?.scale_m_per_relative_unit)} m / relative unit</dd></div>
+              <div><dt>Vertical datum</dt><dd>{job.calibration.evidence?.vertical_datum ?? "—"}</dd></div>
+            </dl>}
+          </div>}
+        </section>}
+
         <section className="evidence-section" aria-labelledby="evidence-title">
           <div className="section-heading">
             <div><p className="section-label">Reproducible outputs</p><h2 id="evidence-title">Evidence bundle</h2></div>
@@ -255,8 +345,24 @@ export default function App() {
               <span><strong>{artifactRecord("manifest")?.filename ?? "job_manifest.json"}</strong><small>Audit record containing input hash, model revision, device, warnings, and artifact hashes.</small></span>
               <b>Download · {fileSize(artifactRecord("manifest")?.bytes ?? 0)}</b>
             </a>
+            {artifactRecord("calibration_report") && <a href={artifact("calibration_report")} download>
+              <span><strong>{artifactRecord("calibration_report")?.filename}</strong><small>Calibration evidence, fitted scale and offset, held-out metrics, gate thresholds, and final decision.</small></span>
+              <b>Download · {fileSize(artifactRecord("calibration_report")?.bytes ?? 0)}</b>
+            </a>}
+            {artifactRecord("metric_geotiff") && <a href={artifact("metric_geotiff")} download>
+              <span><strong>{artifactRecord("metric_geotiff")?.filename}</strong><small>Float32 calibrated elevation with the source CRS, affine transform, vertical datum, and metre units.</small></span>
+              <b>Download · {fileSize(artifactRecord("metric_geotiff")?.bytes ?? 0)}</b>
+            </a>}
+            {artifactRecord("metric_surface") && <a href={artifact("metric_surface")} download>
+              <span><strong>{artifactRecord("metric_surface")?.filename}</strong><small>Lossless float32 calibrated elevation array in metres; separate from the relative viewer grid.</small></span>
+              <b>Download · {fileSize(artifactRecord("metric_surface")?.bytes ?? 0)}</b>
+            </a>}
+            {artifactRecord("error_geotiff") && <a href={artifact("error_geotiff")} download>
+              <span><strong>{artifactRecord("error_geotiff")?.filename}</strong><small>Spatial residual map: calibrated estimate minus aligned reference DSM, in metres.</small></span>
+              <b>Download · {fileSize(artifactRecord("error_geotiff")?.bytes ?? 0)}</b>
+            </a>}
           </div>
-          <p className="metric-lock">Metric GeoTIFF is intentionally absent: TerraFly will add it only after a documented calibration passes.</p>
+          <p className={`metric-lock ${metricAllowed ? "metric-open" : ""}`}>{metricAllowed ? "Metric GeoTIFF is available because the documented held-out gate passed. The 3D viewer remains relative by design." : job.calibration.status === "rejected" ? "The submitted evidence was retained with its rejection report; no metric elevation file was produced." : "Metric GeoTIFF is intentionally absent. Submit valid vertical evidence above to evaluate the gate."}</p>
         </section>
 
         {job.warnings.length > 0 && <section className="warning-section">
@@ -271,11 +377,11 @@ export default function App() {
           <p><strong>1. Validate.</strong> Check filename, format, size, pixel count, and geospatial metadata before decoding.</p>
           <p><strong>2. Infer.</strong> Depth Anything V2 estimates relative monocular depth; large images use bounded overlapping tiles.</p>
           <p><strong>3. Inspect.</strong> TerraFly builds a 0–1 surface for orbit, first-person navigation, and two-point comparison.</p>
-          <p><strong>4. Preserve evidence.</strong> Numeric data, GLB mesh, previews, hashes, model identity, and warnings are stored per run.</p>
+          <p><strong>4. Calibrate only with evidence.</strong> An aligned DSM or independent control/check points must pass held-out error gates before metric export exists.</p>
         </div>
       </details>
 
-      <footer><span>TerraFly · Day 2 robust 3D baseline</span><span>Local processing · explicit scientific limits · reproducible outputs</span></footer>
+      <footer><span>TerraFly · Day 3 calibration and evaluation</span><span>Local processing · held-out quality gates · reproducible outputs</span></footer>
     </main>
   );
 }

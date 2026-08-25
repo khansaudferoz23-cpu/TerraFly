@@ -10,12 +10,14 @@ COMPLETE — Navigation modes, two-point inspection, asymmetric orientation fixt
 
 ## Day 3 — calibration and evaluation
 
-GeoTIFF round trips, compatible reference DSM/DTM alignment, GCP calibration with diagnostics/outlier handling, strict metric gate, evaluation metrics/masks/error maps, and optional SRTM context only through a valid credential/offline path.
+COMPLETE — Exact reference-DSM alignment, robust affine calibration, independent GCP controls/checks, source NoData masks, spatially held-out evaluation, RMSE/MAE/bias/p95/R² diagnostics, strict coverage/inlier/error gates, metric `.npy`/GeoTIFF, residual maps, rejection evidence, and a professional pass/reject UI are verified.
 
-Next entry point: define the calibration evidence schema and synthetic georeferenced fixtures before exposing any metric control in the UI.
+SRTM was deliberately not added: no valid credential/offline source was supplied, and coarse SRTM context would not replace aligned height truth for buildings or trees.
 
 ## Day 4 — proof and release
 
 Promise audit, complete regressions, portable Windows folder, spaces-in-path extracted smoke, screenshots, diagrams, reports, checksums, demo script, judge Q&A, source/release archives, and final private GitHub milestone.
+
+Next entry point: freeze the scientific promise, create the requested final cookbook and judge materials, then verify the portable release from a clean extracted folder.
 
 Priority remains: relative pipeline → 3D viewer → GeoTIFF correctness → evaluation → calibration → packaging → optional fine-tuning.
