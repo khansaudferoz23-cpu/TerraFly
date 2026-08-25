@@ -54,3 +54,4 @@ Calibration, evaluation, calibrated GeoTIFF result export, compatible reference-
 - PASS — browser RGB upload, real inference, WebGL render, orbit/first-person switching, two-point comparison, GLB link, and completed-result presentation.
 - PASS — 390×844 responsive QA with page width and canvas width contained; no new browser errors after the canvas repair.
 - PASS — PowerShell launcher syntax, explicit occupied-port diagnostics, readable service logs, reuse of an already-running TerraFly service, and a persistent CMD error message.
+- PASS — Day 2 source archive extracted to a fresh path containing spaces; 72 manifest hashes and all 20 backend tests passed from the extracted files.

@@ -36,3 +36,4 @@ Day 2 verified real four-tile CUDA inference, a seven-artifact workflow includin
 | Real CUDA upload-to-seven-artifact API | PASS | 5.101 s | GLB and every declared artifact hash matched |
 | Browser RGB workflow | PASS | interactive | orbit/first-person switching, A/B samples, GLB link, WebGL |
 | 390×844 browser layout | PASS | interactive | document and repaired canvas remained contained |
+| Extracted Day 2 source ZIP | PASS | 0.78 s pytest | 72 hashes; 20 backend tests; fresh path contains spaces |

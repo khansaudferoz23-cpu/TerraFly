@@ -58,3 +58,4 @@ Status vocabulary: PASS, FAIL, BLOCKED, SKIPPED.
 - PASS — Real CUDA API completed in 5.101 seconds and verified seven artifact downloads including GLB.
 - PASS — Browser QA used the downloaded SAC RGB preview: real result, WebGL mesh, orbit/first-person toggle, A/B samples, evidence links, and no new error-level logs.
 - FAIL — Phone QA found a 320 px canvas inside a 307 px viewer; removed the fixed minimum and reran at 390×844 with exact 307 px containment and no page overflow.
+- PASS — Day 2 source archive verified all 72 committed-file hashes and ran all 20 backend tests in 0.78 seconds from a fresh path containing spaces.

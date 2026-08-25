@@ -17,6 +17,7 @@ Status vocabulary is restricted to PASS, FAIL, BLOCKED, or SKIPPED.
 | Phone-size result workflow | PASS | interactive | 390×844; 307 px viewer and canvas matched; no horizontal overflow |
 | Browser console after final reload | PASS | interactive | no new warnings or errors after deprecated-clock removal |
 | Completed-job deletion | PASS | included | HTTP 204 then job 404; unsafe identifier refused |
+| Extracted Day 2 source archive | PASS | 0.78 s pytest | fresh path containing spaces; 72 source hashes and all 20 backend tests passed |
 
 ## Real tiled output
 
