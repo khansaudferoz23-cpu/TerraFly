@@ -1,0 +1,526 @@
+{
+  "schema_version": "1.0",
+  "milestone": "TerraFly 1.0 final release",
+  "generated_at": "2026-08-25T14:29:58.437719+00:00",
+  "git_commit": "f5f794c03b6cf3e8ec80e70402f56b7c84a29f1a",
+  "environment": {
+    "os": "Windows-11-10.0.26200-SP0",
+    "python": "3.12.13",
+    "node": "v22.23.1",
+    "npm": "10.9.8",
+    "git": "git version 2.53.0.windows.3",
+    "gpu": "NVIDIA GeForce RTX 5060, 610.88, 8151 MiB",
+    "packages": {
+      "fastapi": "0.141.1",
+      "numpy": "2.5.2",
+      "pillow": "12.3.0",
+      "rasterio": "1.5.1",
+      "torch": "2.12.1+cu130",
+      "torchvision": "0.27.1+cu130",
+      "transformers": "5.15.1",
+      "uvicorn": "0.52.4"
+    }
+  },
+  "model": {
+    "id": "depth-anything/Depth-Anything-V2-Small-hf",
+    "revision_verified": "5426e4f0f36572d16453bbda7a8389317b1bef99",
+    "scientific_role": "relative monocular depth only",
+    "weights_included": false
+  },
+  "tests": {
+    "backend": "PASS (26)",
+    "frontend": "PASS (4)",
+    "frontend_build": "PASS",
+    "real_cpu": "PASS",
+    "real_cuda": "PASS",
+    "real_cuda_api": "PASS",
+    "real_tiled_cuda": "PASS (4 tiles)",
+    "browser_workflow": "PASS",
+    "single_band_domain_gate": "PASS",
+    "responsive_layout": "PASS",
+    "glb_contract": "PASS",
+    "point_comparison": "PASS",
+    "aligned_reference_calibration": "PASS",
+    "gcp_control_validation": "PASS",
+    "robust_outlier_handling": "PASS",
+    "poor_or_misaligned_evidence": "refused",
+    "metric_geotiff_contract": "PASS",
+    "source_nodata_preservation": "PASS",
+    "single_server_production_ui": "PASS",
+    "real_final_calibration_workflow": "PASS (13 artifact hashes)",
+    "release_archives_and_checksums": "PASS",
+    "clean_extracted_path_with_spaces": "PASS"
+  },
+  "files": [
+    {
+      "path": ".env.example",
+      "bytes": 548,
+      "sha256": "09a614ce1f828bfdb5b3214c5159edd499c34538db3e2faad5a7b2e78842b7f7"
+    },
+    {
+      "path": ".gitattributes",
+      "bytes": 213,
+      "sha256": "93a97b884933102f77e1355a66a083f300db33757269cced69c662400c13a05a"
+    },
+    {
+      "path": ".gitignore",
+      "bytes": 505,
+      "sha256": "101c1f6aed7be8ea3e5b98d0bc05a82b8eb75137d89bbe84a9a82a61570bbe95"
+    },
+    {
+      "path": "BUILD_LOG.md",
+      "bytes": 11994,
+      "sha256": "c337b9e442c37209bcc228d6083304d886437b9a90115871b534aaebeb12480d"
+    },
+    {
+      "path": "Check-TerraFly.cmd",
+      "bytes": 305,
+      "sha256": "183243b9c2e6e7456213832a459f73bc121f6250727ebf7edff7878529f0a2ca"
+    },
+    {
+      "path": "DATA_SOURCES.md",
+      "bytes": 4764,
+      "sha256": "1c0efa33c8ee2bcff6b2eaceb45cba48591ab4be318db93ba6db51eed86113ff"
+    },
+    {
+      "path": "DECISIONS.md",
+      "bytes": 5441,
+      "sha256": "06c70f59257fe90cf73f722f3b4def8f07379a9fc9ed299eceb813a922b1430d"
+    },
+    {
+      "path": "FILE_GUIDE.md",
+      "bytes": 14828,
+      "sha256": "f85bd013d8437e30dff26c11850cd405f2e1d02306845c7407a21ecff16dd6f8"
+    },
+    {
+      "path": "FOUR_DAY_PLAN.md",
+      "bytes": 1895,
+      "sha256": "963efb8fb35695e00697dce455ce7d3cef9a21a0b3a7a5716277a485958d1020"
+    },
+    {
+      "path": "LEARNING_NOTES.md",
+      "bytes": 5017,
+      "sha256": "86ca2af1c6de88d56384d6ccbb10c17c9cfb73c1a59411b0f00e14fdc520a3a6"
+    },
+    {
+      "path": "LIMITATIONS.md",
+      "bytes": 2797,
+      "sha256": "a2bb82a9fb8cbc3a8140303d108b99c51cb67b5c0e6809502a81994c18ee5297"
+    },
+    {
+      "path": "PROJECT_STATUS.md",
+      "bytes": 8174,
+      "sha256": "4a3a30a9f75d7d8d321fb96f7f71838a58e208e5ee8382708f85995309d02e35"
+    },
+    {
+      "path": "README.md",
+      "bytes": 5546,
+      "sha256": "8055c9281ef7db946332bc34237c0b0892bf0352e4ee99bd2da7d35e3a084181"
+    },
+    {
+      "path": "RESULTS.md",
+      "bytes": 6425,
+      "sha256": "7e8b429893f5c62c9f230339768e756e6569070cd9a5cf5c9f4208a7c14f313c"
+    },
+    {
+      "path": "Start-TerraFly.cmd",
+      "bytes": 228,
+      "sha256": "d2aebaf9a88aa14de7025340daef3d249adf6670a01df65b28fbfd4135dc962d"
+    },
+    {
+      "path": "THIRD_PARTY_NOTICES.md",
+      "bytes": 1716,
+      "sha256": "3fb7817cc60c4c3ba929c613dbcfb18a1f4de7f8f541bdbc51bcaac4d0e14fa4"
+    },
+    {
+      "path": "backend/terrafly/__init__.py",
+      "bytes": 55,
+      "sha256": "dd0975ae61eedf35ea614344fede5e71d3c1ca1a283348d25b6b870cbfbbe1a3"
+    },
+    {
+      "path": "backend/terrafly/artifacts.py",
+      "bytes": 7986,
+      "sha256": "6819714f88e2612c192a1957bc5a1ca06d12606b68213bb70f74271484800bcf"
+    },
+    {
+      "path": "backend/terrafly/calibration.py",
+      "bytes": 20820,
+      "sha256": "2765d3d305322b0dfbdb35ffd101b3945ac0c542e106110827db8fe03e626763"
+    },
+    {
+      "path": "backend/terrafly/config.py",
+      "bytes": 1322,
+      "sha256": "4c690ed9e8585f39808dda2d8252e350a0d9d89df35e828edb958dd7e4b6060c"
+    },
+    {
+      "path": "backend/terrafly/imaging.py",
+      "bytes": 7604,
+      "sha256": "036959ee3deb972f951c0d5fff88cf158361eb0b88ebe10f2e4b40514211db3e"
+    },
+    {
+      "path": "backend/terrafly/inference/__init__.py",
+      "bytes": 42,
+      "sha256": "8dd92ba66c3a35887b7a0337df5386bb7846273d493642dbcb18df39e3c256d9"
+    },
+    {
+      "path": "backend/terrafly/inference/base.py",
+      "bytes": 410,
+      "sha256": "05bb68c3763453f550ffe0058f17f5d1b522fc1cc988258b89fb308be3bb06a6"
+    },
+    {
+      "path": "backend/terrafly/inference/depth_anything_v2.py",
+      "bytes": 6509,
+      "sha256": "63be9e4d203dbf06e378d3473fec45eb0c05710165c10851a1d991c763b1c129"
+    },
+    {
+      "path": "backend/terrafly/inference/deterministic.py",
+      "bytes": 1228,
+      "sha256": "a0c6a3e46c91390c5595ea30a11678ed3598987ba2c4a1b5c310db3fce3da933"
+    },
+    {
+      "path": "backend/terrafly/inference/factory.py",
+      "bytes": 944,
+      "sha256": "159aeb434ac15d7b86b208349e61d8824878757418cb017cafd38397b53776b5"
+    },
+    {
+      "path": "backend/terrafly/inference/tiling.py",
+      "bytes": 4270,
+      "sha256": "e15dff87929554d6aa70166b622dfae1095343328d558d34662942d6eee8fd1e"
+    },
+    {
+      "path": "backend/terrafly/jobs.py",
+      "bytes": 2457,
+      "sha256": "68e78a08f2448dee9f2a7c6c1373aba1d63e35fde4a082d210e076cbb0a0e702"
+    },
+    {
+      "path": "backend/terrafly/main.py",
+      "bytes": 7968,
+      "sha256": "702653aaa30e40da6f9e4a34e1f6184c707973c69682081f61f02ffd59b5dccf"
+    },
+    {
+      "path": "backend/terrafly/pipeline.py",
+      "bytes": 3304,
+      "sha256": "dc355a77585141d90f46035ab72d6501df311819c0a25f9e0a6ce679b3f09e67"
+    },
+    {
+      "path": "backend/terrafly/schemas.py",
+      "bytes": 2199,
+      "sha256": "4b5a29a17982e03bbb1ca9d19c6457d9477d2b0a24af6750b07d512be4c5790c"
+    },
+    {
+      "path": "backend/tests/__init__.py",
+      "bytes": 30,
+      "sha256": "50444caf9189781fe5c6f89f77df2eede4dcf1cd41f5b5ecd75f15d9b9ab15b5"
+    },
+    {
+      "path": "backend/tests/conftest.py",
+      "bytes": 1419,
+      "sha256": "1fc41e29cf0a04182c5892e1b0c8c5f1b0701460f767c7b24e1905967c8edad0"
+    },
+    {
+      "path": "backend/tests/test_adapter_contract.py",
+      "bytes": 867,
+      "sha256": "d992dd816b7ca3ddbf210b0ac8a9acd945a06fe382fc50cab3c3aa6dda27740f"
+    },
+    {
+      "path": "backend/tests/test_api.py",
+      "bytes": 4637,
+      "sha256": "ef0f5177bfa5ee8653a68cb02c8b2a94ec7825d0e4bdfcb4a74da8e194cb570e"
+    },
+    {
+      "path": "backend/tests/test_artifacts.py",
+      "bytes": 2369,
+      "sha256": "dc700af301a45a6625f75a9d21cfd454600ba31b9cc62e5f2787a77c3c4b2208"
+    },
+    {
+      "path": "backend/tests/test_calibration.py",
+      "bytes": 9639,
+      "sha256": "2bd26bb6e03bdc20626e879360a5daa3fdbfde4317d8cc83924b308ac593447b"
+    },
+    {
+      "path": "backend/tests/test_geotiff.py",
+      "bytes": 1475,
+      "sha256": "35c83a2183335e0f33854a411270a64ad251935dd29f627f777627f0d00db90b"
+    },
+    {
+      "path": "backend/tests/test_tiling.py",
+      "bytes": 2258,
+      "sha256": "664b244b361ecc039a55835e443e3a82af072a6326eeb485ca42c16b7389d85c"
+    },
+    {
+      "path": "docs/ARCHITECTURE.md",
+      "bytes": 2756,
+      "sha256": "941593769ed88eb50c1a9be5aada0da02e8615396a7b4e072c5ecd5982c94dd6"
+    },
+    {
+      "path": "docs/DEMO_SCRIPT.md",
+      "bytes": 4071,
+      "sha256": "a3c63929d2640a395bbeb5ac6f4ab4df00b625570f60e13c0aa8b23555cc71cd"
+    },
+    {
+      "path": "docs/JUDGE_QA.md",
+      "bytes": 5205,
+      "sha256": "6674144f0cbb51d92cfeb67152d9fd49e4b0442f67f3774b340739735fe92af9"
+    },
+    {
+      "path": "docs/OPERATOR_GUIDE.md",
+      "bytes": 6795,
+      "sha256": "93f123d46579f2895aaa8a47e7359e7104c75777c46bcca8f83f9c03ecef8a43"
+    },
+    {
+      "path": "docs/TEAM_TECHNICAL_GUIDE.md",
+      "bytes": 13362,
+      "sha256": "d4d7dac77240457dded81026deb2b2e6be7edf595e38a4cb097d372565a2b207"
+    },
+    {
+      "path": "docs/UX_RATIONALE.md",
+      "bytes": 4415,
+      "sha256": "b32f315b86b7b5ddb295c5468aa36524b45e2e39b88b71e8671de74cab8cd6fe"
+    },
+    {
+      "path": "docs/cookbook/COOKBOOK_SOURCE_INDEX.md",
+      "bytes": 1118,
+      "sha256": "d30452ce7a4fe38d3f0ccd69494bcf73faac99934be88d02e9c24535e2c49755"
+    },
+    {
+      "path": "docs/cookbook/TERRAFLY_COOKBOOK.md",
+      "bytes": 10454,
+      "sha256": "7b156cbf87e215582be982c0dd7793121ec1b1813d732617cb4fcd45842337ab"
+    },
+    {
+      "path": "frontend/index.html",
+      "bytes": 375,
+      "sha256": "c4f4a7c201b53d12cb56f79a11fcf06de928dbc218fe254be93dcf672fcfb813"
+    },
+    {
+      "path": "frontend/package-lock.json",
+      "bytes": 85422,
+      "sha256": "d64ba2926ef50c9f11a7aeeecdbeec88cafb83e5986a96bab0698491334393c0"
+    },
+    {
+      "path": "frontend/package.json",
+      "bytes": 649,
+      "sha256": "ba6c91a49adaf6463414fd87370fbac9bfe16194f8416bce5f426041b72c1d44"
+    },
+    {
+      "path": "frontend/src/App.test.tsx",
+      "bytes": 1175,
+      "sha256": "8a1f9c1a6380086b906125b1c2ef004c9de40778be037b3d686a22d8005ed855"
+    },
+    {
+      "path": "frontend/src/App.tsx",
+      "bytes": 22025,
+      "sha256": "e026af73689da40af9b685615360df70b5b046cb83140cfc13949a609d598d24"
+    },
+    {
+      "path": "frontend/src/SurfaceViewer.test.ts",
+      "bytes": 1725,
+      "sha256": "2c7a839cf6dd355ad901107737bdabbd2345681360f6fa6185b4e00117320d25"
+    },
+    {
+      "path": "frontend/src/SurfaceViewer.tsx",
+      "bytes": 12920,
+      "sha256": "f96b9410576b546541abb5951e17bb7ceecc75775b27eb1516bf2ef993b393fd"
+    },
+    {
+      "path": "frontend/src/api.ts",
+      "bytes": 1892,
+      "sha256": "64cb6255f917cc7a92157c185f67e0bc1c39cbb1aaf9a1a9ab5a93396cf98a2f"
+    },
+    {
+      "path": "frontend/src/main.tsx",
+      "bytes": 196,
+      "sha256": "312a6cac7741d70b566e6a4cba9065179d1411f77fd93d92bca9c4354410c83c"
+    },
+    {
+      "path": "frontend/src/styles.css",
+      "bytes": 17642,
+      "sha256": "ff8f2e3e4d097c0d9e1f075508d2002a2e50d185267628ded21c1fb392f1c5e2"
+    },
+    {
+      "path": "frontend/src/surfaceGeometry.ts",
+      "bytes": 3039,
+      "sha256": "2f99385d0e0c7144180761ff2f8b74ba4ca94b1e7c0e5fd0cf56f4a522f005f3"
+    },
+    {
+      "path": "frontend/src/test-setup.ts",
+      "bytes": 43,
+      "sha256": "9b328c4843431fa76d8de00008fc159e95f99a840211085ff3b8f25e53d14409"
+    },
+    {
+      "path": "frontend/src/types.ts",
+      "bytes": 1267,
+      "sha256": "4314f22f02aa58d51044dadd057887df969f197c9695905efb30e16740a899c7"
+    },
+    {
+      "path": "frontend/tsconfig.app.json",
+      "bytes": 555,
+      "sha256": "9b96ad56fe583dbb133f41dc228552c705e79e61d18cec42e8a86e856ebe8efd"
+    },
+    {
+      "path": "frontend/tsconfig.json",
+      "bytes": 119,
+      "sha256": "770b4140bbb581e2dfd9ea9946ffc9c75a1d86ba7d2db5f77c83e37cbdf9d808"
+    },
+    {
+      "path": "frontend/tsconfig.node.json",
+      "bytes": 191,
+      "sha256": "843c35f20f6d101c456338994e7d3d0c8c94182fcc8b7378f1e096c7ed547234"
+    },
+    {
+      "path": "frontend/vite.config.ts",
+      "bytes": 512,
+      "sha256": "80810a8440bd2bb8950afc4a4b03c9aae537ac51c462a132bb18a8f665b2a0da"
+    },
+    {
+      "path": "handoff/DAY_1_HANDOFF.md",
+      "bytes": 2679,
+      "sha256": "3896b49409c999126c7256c303a53456618913b24352adf336a41bb4bd31895e"
+    },
+    {
+      "path": "handoff/DAY_1_MANIFEST.json",
+      "bytes": 11366,
+      "sha256": "45d92cb367fe509ad2ac5ea7ccd5cf1cd0af7f035e53c8d325d084ba540daa39"
+    },
+    {
+      "path": "handoff/DAY_1_TEST_REPORT.md",
+      "bytes": 2683,
+      "sha256": "960e695e10178c5a5d9617ec8c91a7f127bfdee64ce643d803aca05b0af779c2"
+    },
+    {
+      "path": "handoff/DAY_2_HANDOFF.md",
+      "bytes": 2300,
+      "sha256": "df4f13376df0eac5abc4e79ee365d10c572087a213dc9997fcd196e5d7663000"
+    },
+    {
+      "path": "handoff/DAY_2_MANIFEST.json",
+      "bytes": 12790,
+      "sha256": "c5f164e64dc851ff38dbfd4f8b863ee581b1b51c9c5e526c24ea069f04b9504a"
+    },
+    {
+      "path": "handoff/DAY_2_TEST_REPORT.md",
+      "bytes": 2146,
+      "sha256": "81dd76964c5afaad6f8490731a63e6ed2e0c75d1fbb5de469cd15ef62a69e8ea"
+    },
+    {
+      "path": "handoff/DAY_3_HANDOFF.md",
+      "bytes": 2300,
+      "sha256": "2dd4457e1df6525c0fd49f35e4ad23a9a7c1f9aa17368b19760898f7b4bf7dfe"
+    },
+    {
+      "path": "handoff/DAY_3_MANIFEST.json",
+      "bytes": 13822,
+      "sha256": "04efd935aecfa3b770cee87c911e8bec622342d155b27fdd3ca7733280a8b822"
+    },
+    {
+      "path": "handoff/DAY_3_TEST_REPORT.md",
+      "bytes": 2142,
+      "sha256": "71b494c23d3fbf1652176e2792b6d8e150e34a8d99f11b78e2e26a856f083817"
+    },
+    {
+      "path": "handoff/FINAL_HANDOFF.md",
+      "bytes": 2962,
+      "sha256": "a9cad03e0274265c19273db1abcf8627bb30624971d11b03af51e83eda650c06"
+    },
+    {
+      "path": "handoff/FINAL_TEST_REPORT.md",
+      "bytes": 3705,
+      "sha256": "49de742b75201ac8bad3200063ac38a9fe2a8fb8f8e9d2bbc810808d8e0b40d5"
+    },
+    {
+      "path": "pyproject.toml",
+      "bytes": 885,
+      "sha256": "3cf92d6e891bbb2765e5dd49f7cb5323945dbe4a010785e896dba1eaf1ff0666"
+    },
+    {
+      "path": "requirements-ml-cu130.txt",
+      "bytes": 255,
+      "sha256": "4c94b8773c19c9f456615c966b19d7e9474986b864f0ef6514046698b0a1f854"
+    },
+    {
+      "path": "sample_data/LICENSE.txt",
+      "bytes": 314,
+      "sha256": "912ea3a9c157425829f13a3a6e40df3245ecb6d1bdb0d649dbefce25f7af14a5"
+    },
+    {
+      "path": "sample_data/README.md",
+      "bytes": 1061,
+      "sha256": "b53eb8d00bd764e4d04cd915dd872a22752fc938a7b7493f9fedbe29b3173fb0"
+    },
+    {
+      "path": "sample_data/terrafly_calibration_demo_input.tif",
+      "bytes": 9657,
+      "sha256": "f3d2a85c934434ba3f19196a6d3357eee2b6be4d7cc412631edea0ac11e62091"
+    },
+    {
+      "path": "sample_data/terrafly_calibration_demo_metadata.json",
+      "bytes": 1096,
+      "sha256": "884bf65c63673cd533059459f81f0fd12f25753fca889d4d1cb9699db49e9b49"
+    },
+    {
+      "path": "sample_data/terrafly_calibration_demo_reference.tif",
+      "bytes": 182179,
+      "sha256": "a7888e98b488159f9dc168912f53acc8f8a7fcdd98f1f8000cc888d536107aef"
+    },
+    {
+      "path": "sample_data/terrafly_synthetic_aerial.png",
+      "bytes": 3070,
+      "sha256": "b3edde0a3336da667ea23b0a61eac4623a53211d140b2e4a2bcaaf6d0aa77cb0"
+    },
+    {
+      "path": "scripts/create_calibration_demo.py",
+      "bytes": 6302,
+      "sha256": "c6a40c28d08d97566cfeabfab9f9729f2297f9d10447893310aaf4b16b7dd7d4"
+    },
+    {
+      "path": "scripts/create_handoff_manifest.py",
+      "bytes": 4221,
+      "sha256": "fcac0831281ed38d3ca9def6cfea3a2add67a92f195bde6092097076ed55e2f3"
+    },
+    {
+      "path": "scripts/create_offline_sample.py",
+      "bytes": 1450,
+      "sha256": "2d34647fdaf46d00d727d82f19a493ae073a73026d8b9ec162c5ce0977ef38a8"
+    },
+    {
+      "path": "scripts/package_release.ps1",
+      "bytes": 1931,
+      "sha256": "78631bdc046919b83bfd03f4ce8e7b240378f85776da54db7a88b1057083c273"
+    },
+    {
+      "path": "scripts/setup.ps1",
+      "bytes": 867,
+      "sha256": "c22646de4fce05db53439b3ff3db0f6148165e259cb4bd8b30f5f733dc9c4925"
+    },
+    {
+      "path": "scripts/smoke_final_workflow.py",
+      "bytes": 5669,
+      "sha256": "5f02f737c34f1f49aa08c8404e615ecca2750cba51df4d1ec9b44ea3d40122bb"
+    },
+    {
+      "path": "scripts/smoke_real_api.py",
+      "bytes": 2505,
+      "sha256": "836fe27b09bc4b12f2d1a175a40bbb54125f52733d5e6aeee0f7ca326239b923"
+    },
+    {
+      "path": "scripts/smoke_real_model.py",
+      "bytes": 2325,
+      "sha256": "a5cae9c2aa0c6ddfd686976d1c17919cf99150ea1c9b882a43f30bc473193006"
+    },
+    {
+      "path": "scripts/smoke_tiled_model.py",
+      "bytes": 1854,
+      "sha256": "24b65df492c7649daa5327bfea79a137ebfe7aea8191e91e53938720fde03656"
+    },
+    {
+      "path": "scripts/start.ps1",
+      "bytes": 4400,
+      "sha256": "3f62483ae2808a9497eca0809b7e628e124cdc97457c0032ec8ecf4029bdd9cf"
+    },
+    {
+      "path": "scripts/verify.ps1",
+      "bytes": 2397,
+      "sha256": "a8ec7d8ef7d53a98bfacf32b3c504bfea538c14ebc5ddaa0a07175b82bb28a2f"
+    }
+  ]
+}
