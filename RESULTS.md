@@ -53,3 +53,4 @@ Day 3 verified exact-grid calibration, robust outlier handling, held-out metrics
 | Calibrated run artifact integrity | PASS | included | all 13 declared hashes matched |
 | Poor or misaligned evidence | PASS | included | rejected or HTTP 400; no metric artifacts |
 | 390×844 browser layout | PASS | interactive | 375 px document; 351 px panel; 307 px viewer/canvas; no overflow |
+| Extracted Day 3 source ZIP | PASS | 1.44 s pytest | 77 hashes; 25 backend tests; fresh path contains spaces |

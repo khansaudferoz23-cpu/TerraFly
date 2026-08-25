@@ -74,4 +74,5 @@ Status vocabulary: PASS, FAIL, BLOCKED, SKIPPED.
 - PASS — Visible real CUDA browser workflow calibrated a 512×512 georeferenced RGB run against a reproducible synthetic reference with injected fit outliers: scale 40.000, offset 100.000, held-out RMSE 0.0000034 m, R² 1.000.
 - PASS — All 13 declared calibrated-run artifacts matched hashes; metric GeoTIFF preserved EPSG:32643, the input affine transform, float32 values, metre units, and vertical datum.
 - PASS — Responsive QA at 390×844 found no horizontal overflow; document/panel/viewer/canvas widths were 375/351/307/307 px.
+- PASS — Day 3 source archive verified all 77 committed-file hashes and ran all 25 backend tests in 1.44 seconds from a fresh path containing spaces.
 - LIMIT — The synthetic reference is a software oracle, not independent real-world height truth; no model-accuracy claim was made.

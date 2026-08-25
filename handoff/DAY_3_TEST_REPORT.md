@@ -17,6 +17,7 @@ Status vocabulary is restricted to PASS, FAIL, BLOCKED, or SKIPPED.
 | Browser metric gate | PASS | interactive | scale 40.000, offset 100.000, held-out RMSE 0.0000034 m, R² 1.000 |
 | Browser evidence presentation | PASS | interactive | report, metric GeoTIFF/NPY, residual map, truthful relative viewer labels |
 | 390×844 responsive layout | PASS | interactive | no page overflow; 307 px viewer and canvas match |
+| Extracted Day 3 source archive | PASS | 1.44 s pytest | fresh path containing spaces; 77 source hashes and all 25 backend tests passed |
 
 ## Interpretation
 

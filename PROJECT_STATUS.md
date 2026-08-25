@@ -69,4 +69,5 @@ Real-world accuracy evaluation against an independently surveyed dataset, depend
 - PASS — reference DSM gate recovered scale 40.000 and offset 100.000 despite injected training outliers; held-out RMSE was 0.0000034 m with R² 1.000 on synthetic truth.
 - PASS — all 13 real calibrated-run artifact hashes matched; output GeoTIFF preserved EPSG:32643, affine transform, float32 type, metre units, and vertical datum tags.
 - PASS — 390×844 responsive QA: document contained at 375 px, calibration panel 351 px, viewer/canvas both 307 px, and no horizontal overflow.
+- PASS — Day 3 source archive extracted to a fresh path containing spaces; all 77 manifest hashes and all 25 backend tests passed from extracted source.
 - LIMIT — this is a synthetic calibration correctness result, not a real-world remote-sensing accuracy score.
