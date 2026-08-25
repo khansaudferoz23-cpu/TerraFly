@@ -1,15 +1,16 @@
-# Cookbook source index
+# Final cookbook source index
 
-This index prevents the final cookbook from inventing evidence.
+This index shows which final evidence grounds each cookbook section.
 
-| Cookbook section | Current source | Evidence status |
+| Cookbook section | Final source | Evidence status |
 |---|---|---|
-| Problem | `README.md`, `LIMITATIONS.md` | source present; screenshots pending |
-| Ingredients/environment | `BUILD_LOG.md`, environment manifest pending | observations recorded |
-| Preparation/upload | `backend/terrafly/imaging.py`, upload tests | tests pending first run |
-| Inference | `backend/terrafly/inference/` | real adapter present; real run pending |
-| Calibration | `DECISIONS.md`, `LIMITATIONS.md` | honest refusal only |
-| 3D plating | `frontend/src/SurfaceViewer.tsx` | build/browser proof pending |
-| Evaluation/tasting | `RESULTS.md` | no dataset/metrics yet |
-| Packaging/serving | `scripts/`, handoff pending | source launcher present |
-| Troubleshooting | future verified failures and repairs | pending |
+| Problem and scientific states | `README.md`, `LIMITATIONS.md`, schemas/tests | verified |
+| Ingredients/environment | `BUILD_LOG.md`, final manifest | verified versions/environment |
+| Preparation/upload | `imaging.py`, API/geospatial tests | verified pass/refusal paths |
+| Inference/tiling | real/test adapters, tiling tests, CUDA smokes | verified |
+| Calibration | `calibration.py`, calibration tests, real final smoke | verified synthetic oracle + refusal paths |
+| 3D plating | viewer/geometry tests and browser QA | verified desktop/mobile/WebGL |
+| Evaluation | calibration report, `RESULTS.md`, final test report | verified software metrics; no real accuracy claim |
+| Packaging/serving | setup/start/verify/package scripts, extracted release | verified |
+| Troubleshooting | `BUILD_LOG.md`, launcher/parser/browser repairs | verified observed failures/repairs |
+| Judge explanation | decisions, file guide, team guide, Q&A | traceable |

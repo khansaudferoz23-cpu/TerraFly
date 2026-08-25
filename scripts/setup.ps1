@@ -14,5 +14,8 @@ if (-not (Test-Path -LiteralPath "$projectRoot\.venv\Scripts\python.exe")) {
 & "$projectRoot\.venv\Scripts\python.exe" -m pip install -e "$projectRoot[test,ml]"
 & "$projectRoot\.venv\Scripts\python.exe" -m pip install -r "$projectRoot\requirements-ml-cu130.txt"
 Push-Location "$projectRoot\frontend"
-try { npm install } finally { Pop-Location }
+try {
+    npm ci
+    npm run build
+} finally { Pop-Location }
 Write-Host "TerraFly setup complete." -ForegroundColor Green

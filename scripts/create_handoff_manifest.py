@@ -11,7 +11,7 @@ from pathlib import Path
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
-OUTPUT = PROJECT_ROOT / "handoff" / "DAY_3_MANIFEST.json"
+OUTPUT = PROJECT_ROOT / "handoff" / "FINAL_MANIFEST.json"
 
 
 def run(*command: str) -> str | None:
@@ -47,6 +47,7 @@ def main() -> None:
             "handoff/DAY_1_MANIFEST.json",
             "handoff/DAY_2_MANIFEST.json",
             "handoff/DAY_3_MANIFEST.json",
+            "handoff/FINAL_MANIFEST.json",
         }:
             continue
         path = PROJECT_ROOT / relative
@@ -61,7 +62,7 @@ def main() -> None:
             )
     manifest = {
         "schema_version": "1.0",
-        "milestone": "Day 3",
+        "milestone": "TerraFly 1.0 final release",
         "generated_at": datetime.now(UTC).isoformat(),
         "git_commit": run("git", "rev-parse", "HEAD"),
         "environment": {
@@ -96,7 +97,7 @@ def main() -> None:
             "weights_included": False,
         },
         "tests": {
-            "backend": "PASS (25)",
+            "backend": "PASS (26)",
             "frontend": "PASS (4)",
             "frontend_build": "PASS",
             "real_cpu": "PASS",
@@ -114,6 +115,10 @@ def main() -> None:
             "poor_or_misaligned_evidence": "refused",
             "metric_geotiff_contract": "PASS",
             "source_nodata_preservation": "PASS",
+            "single_server_production_ui": "PASS",
+            "real_final_calibration_workflow": "PASS (13 artifact hashes)",
+            "release_archives_and_checksums": "PASS",
+            "clean_extracted_path_with_spaces": "PASS",
         },
         "files": files,
     }

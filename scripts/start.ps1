@@ -2,6 +2,9 @@ $ErrorActionPreference = "Stop"
 $projectRoot = Split-Path -Parent $PSScriptRoot
 $python = Join-Path $projectRoot ".venv\Scripts\python.exe"
 $logRoot = Join-Path $projectRoot "runtime\logs"
+$productionIndex = Join-Path $projectRoot "frontend\dist\index.html"
+$productionMode = Test-Path -LiteralPath $productionIndex
+$interfaceUrl = if ($productionMode) { "http://127.0.0.1:8000" } else { "http://127.0.0.1:5173" }
 
 function Test-TerraFlyEndpoint {
     param(
@@ -34,7 +37,11 @@ $env:HF_HOME = Join-Path $projectRoot "runtime\model-cache"
 $backend = $null
 $frontend = $null
 $backendReady = Test-TerraFlyEndpoint "http://127.0.0.1:8000/api/health" '"service":"TerraFly"'
-$frontendReady = Test-TerraFlyEndpoint "http://127.0.0.1:5173" "TerraFly"
+$frontendReady = Test-TerraFlyEndpoint $interfaceUrl "TerraFly"
+
+if ($backendReady -and $productionMode -and -not $frontendReady) {
+    throw "An older TerraFly backend is already using port 8000. Close its launcher window, then start this release again."
+}
 
 try {
     if (-not $backendReady) {
@@ -48,7 +55,7 @@ try {
         Write-Host "Using the TerraFly backend that is already running." -ForegroundColor DarkGray
     }
 
-    if (-not $frontendReady) {
+    if (-not $productionMode -and -not $frontendReady) {
         Assert-PortAvailable 5173
         $frontend = Start-Process -FilePath "npm.cmd" -ArgumentList @("run", "dev") `
             -WorkingDirectory (Join-Path $projectRoot "frontend") -WindowStyle Hidden -PassThru `
@@ -58,11 +65,14 @@ try {
         Write-Host "Using the TerraFly interface that is already running." -ForegroundColor DarkGray
     }
 
-    Write-Host "TerraFly is starting at http://127.0.0.1:5173" -ForegroundColor Green
+    if ($productionMode) {
+        Write-Host "Using the prebuilt release interface (no development server required)." -ForegroundColor DarkGray
+    }
+    Write-Host "TerraFly is starting at $interfaceUrl" -ForegroundColor Green
     for ($attempt = 0; $attempt -lt 60; $attempt++) {
         if (($backend -and $backend.HasExited) -or ($frontend -and $frontend.HasExited)) { break }
         $backendReady = Test-TerraFlyEndpoint "http://127.0.0.1:8000/api/health" '"service":"TerraFly"'
-        $frontendReady = Test-TerraFlyEndpoint "http://127.0.0.1:5173" "TerraFly"
+        $frontendReady = Test-TerraFlyEndpoint $interfaceUrl "TerraFly"
         if ($backendReady -and $frontendReady) { break }
         Start-Sleep -Milliseconds 500
     }
@@ -71,7 +81,7 @@ try {
         throw "TerraFly did not become ready. Review the readable logs in runtime\logs, then run this launcher again."
     }
 
-    Start-Process "http://127.0.0.1:5173"
+    Start-Process $interfaceUrl
     Write-Host "TerraFly is ready. Your browser should open automatically." -ForegroundColor Green
     Write-Host "Keep this window open. Press Ctrl+C here to stop services started by this launcher."
     while (($null -eq $backend -or -not $backend.HasExited) -and ($null -eq $frontend -or -not $frontend.HasExited)) {

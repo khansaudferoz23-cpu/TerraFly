@@ -47,8 +47,21 @@ class DepthAnythingV2Adapter:
             raise RuntimeError(f"Unsupported inference device: {self.requested_device}")
         if device == "cuda" and not torch.cuda.is_available():
             device = "cpu"
-        self._processor = AutoImageProcessor.from_pretrained(self.model_id)
-        self._model = AutoModelForDepthEstimation.from_pretrained(self.model_id).to(device).eval()
+        try:
+            processor = AutoImageProcessor.from_pretrained(
+                self.model_id, local_files_only=True
+            )
+            model = AutoModelForDepthEstimation.from_pretrained(
+                self.model_id, local_files_only=True
+            )
+        except OSError:
+            # A prepared demonstration machine must not pause for network probes.
+            # On the first machine setup, fall back to the normal authenticated
+            # Hugging Face download and let its cache serve later runs.
+            processor = AutoImageProcessor.from_pretrained(self.model_id)
+            model = AutoModelForDepthEstimation.from_pretrained(self.model_id)
+        self._processor = processor
+        self._model = model.to(device).eval()
         self._torch = torch
         self._device = device
 

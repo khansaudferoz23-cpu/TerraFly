@@ -15,6 +15,7 @@ from terrafly.main import create_app
 def settings(tmp_path):
     return Settings(
         jobs_root=tmp_path / "jobs",
+        frontend_dist=tmp_path / "frontend-dist",
         model_adapter="deterministic",
         model_id="terrafly/deterministic-test-adapter",
         device="cpu",

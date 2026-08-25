@@ -6,6 +6,7 @@ from pathlib import Path
 from fastapi import BackgroundTasks, FastAPI, Form, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
 
 from .calibration import CalibrationInputError, calibrate_gcps, calibrate_reference
 from .config import Settings
@@ -17,7 +18,7 @@ from .schemas import Capabilities, GcpCalibrationRequest, JobManifest, JobStatus
 
 def create_app(settings: Settings | None = None) -> FastAPI:
     active_settings = settings or Settings()
-    app = FastAPI(title="TerraFly API", version="0.3.0")
+    app = FastAPI(title="TerraFly API", version="1.0.0")
     app.state.settings = active_settings
     app.add_middleware(
         CORSMiddleware,
@@ -29,7 +30,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
 
     @app.get("/api/health")
     def health() -> dict[str, str]:
-        return {"status": "ok", "service": "TerraFly", "version": "0.3.0"}
+        return {"status": "ok", "service": "TerraFly", "version": "1.0.0"}
 
     @app.get("/api/capabilities", response_model=Capabilities)
     def capabilities() -> Capabilities:
@@ -158,6 +159,14 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             raise HTTPException(status_code=409, detail="A running job cannot be cleared.")
         directory = store.job_dir(job_id)
         shutil.rmtree(directory)
+
+    frontend_index = active_settings.frontend_dist / "index.html"
+    if frontend_index.is_file():
+        app.mount(
+            "/",
+            StaticFiles(directory=str(active_settings.frontend_dist), html=True),
+            name="frontend",
+        )
 
     return app
 

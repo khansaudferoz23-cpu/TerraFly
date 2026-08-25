@@ -23,6 +23,7 @@ Use this as the answer to “why does this file exist?” Paths are grouped by r
 | `pyproject.toml` | Python package metadata, pinned runtime/test dependencies, pytest configuration, and source path. |
 | `requirements-ml-cu130.txt` | Explicit CUDA 13.0 PyTorch installation set for the observed RTX 5060 environment. |
 | `Start-TerraFly.cmd` | Beginner Windows entry point; changes into the repository and invokes the PowerShell launcher. |
+| `Check-TerraFly.cmd` | Beginner Windows verification entry point; keeps the window open and reports the final automated gate clearly. |
 
 ## Backend: application and scientific pipeline
 
@@ -31,7 +32,7 @@ Use this as the answer to “why does this file exist?” Paths are grouped by r
 | `backend/terrafly/__init__.py` | Marks `terrafly` as a Python package and exposes the package version boundary. |
 | `backend/terrafly/config.py` | Central settings for job storage, upload/memory/tile limits, model ID, adapter, device, and test safety flag. |
 | `backend/terrafly/schemas.py` | Pydantic contracts for scientific states, jobs, artifacts, capabilities, and bounded GCP calibration requests; stops undocumented API shapes. |
-| `backend/terrafly/main.py` | FastAPI routes for health, capabilities, upload, status, calibration, safe artifact download, and completed-job deletion. |
+| `backend/terrafly/main.py` | FastAPI routes for health, capabilities, upload, status, calibration, safe artifact download, completed-job deletion, and final prebuilt-interface serving. |
 | `backend/terrafly/imaging.py` | Filename/content validation, safe decoding, RGB normalization, GeoTIFF inspection, hashes, and single-band warnings. |
 | `backend/terrafly/jobs.py` | Creates per-run IDs/directories and atomically persists live job state. |
 | `backend/terrafly/pipeline.py` | Enforces the processing-memory budget, orchestrates validation → inference → artifacts, and converts failures into honest job states. |
@@ -83,14 +84,17 @@ Use this as the answer to “why does this file exist?” Paths are grouped by r
 
 | File | Purpose and reason to keep it |
 |---|---|
-| `scripts/setup.ps1` | Creates the local Python environment and installs Python/frontend dependencies without changing global Python. |
-| `scripts/start.ps1` | Reuses healthy services, refuses unknown port owners, records readable logs, waits for both services, opens the browser, and stops only children it started. |
+| `scripts/setup.ps1` | Creates the local Python environment, installs Python/frontend dependencies, and builds the final interface without changing global Python. |
+| `scripts/start.ps1` | Reuses a healthy TerraFly 1.0 service, refuses unknown port owners, serves the prebuilt interface/API at one address, records readable logs, opens the browser, and stops only children it started. |
+| `scripts/verify.ps1` | Runs dependency, backend, frontend, production-build, health, and optional full real-model calibration checks behind one command. |
+| `scripts/package_release.ps1` | Creates the tracked-source ZIP, Windows source/prebuilt-interface folder and ZIP, and SHA-256 checksum record without overwriting an existing release. |
+| `scripts/smoke_final_workflow.py` | Executes the real GeoTIFF → relative → aligned-reference → metric path and verifies all 13 hashes plus metre/CRS GeoTIFF tags. |
 | `scripts/smoke_real_model.py` | Measures a direct real-model inference and records device/revision/output statistics. |
 | `scripts/smoke_real_api.py` | Exercises the complete real upload-to-artifacts API path, including hashes. |
 | `scripts/smoke_tiled_model.py` | Forces four real CUDA tiles and verifies strategy metadata, shape, range, dtype, finiteness, and output hash. |
 | `scripts/create_offline_sample.py` | Regenerates the deterministic CC0 orientation/workflow fixture from code. |
-| `scripts/create_calibration_demo.py` | Reproducibly wraps an RGB image as a georeferenced test input and derives an aligned synthetic reference from a saved relative surface. |
-| `scripts/create_handoff_manifest.py` | Hashes all committed source files into the current milestone handoff manifest. |
+| `scripts/create_calibration_demo.py` | Reproducibly creates the bundled georeferenced input/reference software-oracle pair and its metadata; never claims survey truth. |
+| `scripts/create_handoff_manifest.py` | Hashes all committed source files into the final handoff manifest and records the verified environment/model/test boundary. |
 
 ## Documentation: team ownership and later evidence
 
@@ -99,6 +103,11 @@ Use this as the answer to “why does this file exist?” Paths are grouped by r
 | `docs/TEAM_TECHNICAL_GUIDE.md` | Architecture, output meanings, technology roles, SAC distinction, judge answers, and team learning split. |
 | `docs/UX_RATIONALE.md` | What was right/wrong with the first UI and the human design rationale for the revision. |
 | `docs/cookbook/COOKBOOK_SOURCE_INDEX.md` | Curated evidence/source index reserved for the later requested cookbook deliverable. |
+| `docs/cookbook/TERRAFLY_COOKBOOK.md` | Final team cookbook explaining the promise, architecture, inference, files, calibration math, tests, limitations, and judge defence. |
+| `docs/OPERATOR_GUIDE.md` | Exact setup/launch, 3D orbit and drone controls, bundled calibration run, visual checks, and troubleshooting. |
+| `docs/ARCHITECTURE.md` | Compact diagrams for runtime ownership, state transitions, evidence gating, and file responsibilities. |
+| `docs/DEMO_SCRIPT.md` | Timed 6–8 minute judge demonstration with exact clicks, spoken claims, and fallback path. |
+| `docs/JUDGE_QA.md` | Defensible short answers to scientific, UI, architecture, AI-use, `.npy`, and limitation questions. |
 
 ## Sample data
 
@@ -107,6 +116,9 @@ Use this as the answer to “why does this file exist?” Paths are grouped by r
 | `sample_data/terrafly_synthetic_aerial.png` | Small deterministic asymmetric scene for offline orientation/workflow checks; explicitly not real remote sensing or height truth. |
 | `sample_data/README.md` | Explains exactly how the fixture may and may not be used. |
 | `sample_data/LICENSE.txt` | CC0 declaration for the generated fixture so redistribution is unambiguous. |
+| `sample_data/terrafly_calibration_demo_input.tif` | Small georeferenced RGB input used to exercise the final aligned-reference workflow. |
+| `sample_data/terrafly_calibration_demo_reference.tif` | Pixel-aligned synthetic software oracle for gate/metadata testing only; never real ground truth. |
+| `sample_data/terrafly_calibration_demo_metadata.json` | Reproducibility facts, generator relation, hashes, model revision, and disclaimer for the pair. |
 
 The downloaded SAC TIR/RGB preview PNGs are **not committed** here because they belong to a separate challenge repository and no project license was supplied. Their source, hashes, dimensions, and meanings are recorded in `DATA_SOURCES.md`.
 
@@ -123,13 +135,16 @@ The downloaded SAC TIR/RGB preview PNGs are **not committed** here because they 
 | `handoff/DAY_3_HANDOFF.md` | Day 3 calibration contract, launch, evidence, limits, and Day 4 entry point. |
 | `handoff/DAY_3_TEST_REPORT.md` | Day 3 automated, real-model browser, metric-artifact, rejection, and responsive evidence. |
 | `handoff/DAY_3_MANIFEST.json` | Machine-readable SHA-256 list for the final Day 3 source revision. |
+| `handoff/FINAL_HANDOFF.md` | Human final handoff: what is done, exact launch/demo/check sequence, release files, and remaining scientific boundary. |
+| `handoff/FINAL_TEST_REPORT.md` | Final automated, real-model, browser, responsive, launcher, artifact, archive, and extracted-folder evidence. |
+| `handoff/FINAL_MANIFEST.json` | Machine-readable SHA-256 list of the final committed source plus environment/test/model record. |
 
 ## Generated but intentionally untracked
 
 | Path | Why it stays outside Git |
 |---|---|
 | `.venv/` | Large machine-specific Python environment that setup can recreate. |
-| `frontend/node_modules/` and `frontend/dist/` | Recreated from the lockfile/source; committing them causes noise and platform issues. |
+| `frontend/node_modules/` and repository `frontend/dist/` | Recreated from the lockfile/source; `dist` is copied into the Windows release ZIP so final operation needs no Vite server. |
 | `runtime/model-cache/` | Downloaded model weights are large third-party binaries. |
 | `runtime/jobs/` | Contains user uploads and generated outputs; may be private and is not source code. |
 | `outputs/*.zip` | Release deliverables are derived artifacts with separate checksums, not editable source. |

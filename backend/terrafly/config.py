@@ -11,6 +11,9 @@ REPOSITORY_ROOT = Path(__file__).resolve().parents[2]
 @dataclass(slots=True)
 class Settings:
     jobs_root: Path = Path(os.getenv("TERRAFLY_JOBS_ROOT", REPOSITORY_ROOT / "runtime" / "jobs"))
+    frontend_dist: Path = Path(
+        os.getenv("TERRAFLY_FRONTEND_DIST", REPOSITORY_ROOT / "frontend" / "dist")
+    )
     model_adapter: str = os.getenv("TERRAFLY_MODEL_ADAPTER", "depth-anything-v2")
     model_id: str = os.getenv(
         "TERRAFLY_MODEL_ID", "depth-anything/Depth-Anything-V2-Small-hf"

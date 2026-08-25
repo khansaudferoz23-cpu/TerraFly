@@ -76,3 +76,18 @@ Status vocabulary: PASS, FAIL, BLOCKED, SKIPPED.
 - PASS — Responsive QA at 390×844 found no horizontal overflow; document/panel/viewer/canvas widths were 375/351/307/307 px.
 - PASS — Day 3 source archive verified all 77 committed-file hashes and ran all 25 backend tests in 1.44 seconds from a fresh path containing spaces.
 - LIMIT — The synthetic reference is a software oracle, not independent real-world height truth; no model-accuracy claim was made.
+
+## 2026-08-25 — Day 4 final proof and release
+
+- PASS — Froze TerraFly 1.0’s promise and version: relative monocular structure first; metric outputs only after independently judged vertical evidence; viewer stays relative.
+- PASS — Changed final operation to one local service/address: FastAPI serves the prebuilt React/Three.js interface at `127.0.0.1:8000`; Vite remains a development fallback only.
+- PASS — Added a beginner checker, full real-model checker, non-overwriting release packager, and a 13-artifact calibrated workflow smoke.
+- PASS — Added the reproducible CC0 georeferenced calibration input/reference pair and metadata. The reference identifies itself as a synthetic software oracle, with a fixed relation and training-only outliers.
+- PASS — Added the final cookbook, operator guide, architecture/state/gate diagrams, timed demo script, judge Q&A, final handoff, file ledger updates, and exact dependency/release boundaries.
+- PASS — Automated gate: 26 backend tests, 4 frontend tests, strict production build, Python dependency consistency, and production health/version.
+- PASS — Real CUDA final smoke completed in 4.924 seconds, reached Metric Calibrated, verified all 13 hashes, and inspected CRS/metre/float32 GeoTIFF tags.
+- PASS — Visible production browser QA covered real upload/inference, WebGL texture/wireframe, Orbit/First-person selection, A/B sampling, calibration, evidence links, and full desktop presentation.
+- PASS — Phone-size QA at 390×844 found a 375 px document inside the viewport with no horizontal overflow.
+- INFO — Automated Chromium cannot grant pointer lock and logged its own denial when first-person was clicked; the mode, help/key contract, and normal manual-browser controls are documented for rehearsal.
+- PASS — Final archives were extracted to a fresh path containing spaces, source hashes/tests/static serving were verified, and archive SHA-256 values were recorded in the final report.
+- LIMIT — No independent surveyed dataset exists in scope; the final release makes no real-world height-accuracy claim.

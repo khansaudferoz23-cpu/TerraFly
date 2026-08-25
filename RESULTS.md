@@ -54,3 +54,19 @@ Day 3 verified exact-grid calibration, robust outlier handling, held-out metrics
 | Poor or misaligned evidence | PASS | included | rejected or HTTP 400; no metric artifacts |
 | 390×844 browser layout | PASS | interactive | 375 px document; 351 px panel; 307 px viewer/canvas; no overflow |
 | Extracted Day 3 source ZIP | PASS | 1.44 s pytest | 77 hashes; 25 backend tests; fresh path contains spaces |
+
+## Day 4 final-release test table
+
+| Test | Result | Evidence |
+|---|---:|---|
+| Backend suite (26) | PASS | safety, serving, inference, artifacts, tiling, geospatial, calibration, rejection |
+| Frontend suite (4) | PASS | scientific contract, real file action, asymmetric orientation and point sampling |
+| Production interface build | PASS | strict TypeScript/Vite; interface served by FastAPI without Vite |
+| Full real-model workflow | PASS | CUDA; `Metric Calibrated`; 13/13 artifact hashes; 4.924 s direct smoke |
+| Bundled robust calibration oracle | PASS | scale 39.99999998, offset 100.0, held-out RMSE 0.0000035 m, R² 1.0 |
+| Metric GeoTIFF | PASS | EPSG:32643, matching affine/dimensions, float32, metre units, datum tags |
+| Production browser workflow | PASS | upload, progress, real WebGL, Orbit/First-person modes, A/B, toggles, calibration, exports |
+| Responsive 390×844 | PASS | 390 px viewport, 375 px document, no horizontal overflow |
+| Final Windows/source packages | PASS | SHA-256 checksums and clean path-with-spaces extraction in `handoff/FINAL_TEST_REPORT.md` |
+
+The synthetic oracle result is deliberately almost perfect because it is derived from the generated relative surface. It validates the implementation and its refusal rules; it must never be quoted as satellite/aerial height accuracy.

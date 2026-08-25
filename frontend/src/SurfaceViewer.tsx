@@ -220,7 +220,7 @@ export function SurfaceViewer({ gridUrl, textureUrl, onPointsChange }: Props) {
       if (navigationModeRef.current === "orbit") {
         orbit.update();
       } else if (walk.isLocked) {
-        const speed = 4.2 * delta;
+        const speed = (keys.has("ShiftLeft") || keys.has("ShiftRight") ? 10 : 4.2) * delta;
         if (keys.has("KeyW") || keys.has("ArrowUp")) walk.moveForward(speed);
         if (keys.has("KeyS") || keys.has("ArrowDown")) walk.moveForward(-speed);
         if (keys.has("KeyA") || keys.has("ArrowLeft")) walk.moveRight(-speed);
@@ -288,7 +288,7 @@ export function SurfaceViewer({ gridUrl, textureUrl, onPointsChange }: Props) {
       <p className="viewer-help">
         {navigationMode === "orbit"
           ? "Drag to orbit · right-drag to pan · scroll to zoom · click the surface to compare points"
-          : "Click the viewer to enter · mouse to look · W/A/S/D to move · Q/E down/up · Esc to exit"}
+          : "Click to enter · mouse to look · W/A/S/D move · Q/E down/up · hold Shift for boost · Esc exits"}
       </p>
     </div>
   );

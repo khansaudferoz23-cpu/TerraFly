@@ -6,6 +6,16 @@ No private dataset, paired RGB/height ground truth, GCP set, reference DSM/DTM, 
 
 The repository includes one original, CC0 synthetic asymmetric image at `sample_data/terrafly_synthetic_aerial.png`. It exists only for offline workflow/orientation demonstrations and is not real remote-sensing data or height ground truth.
 
+The final release also includes a reproducible synthetic calibration pair:
+
+| File | SHA-256 | Role |
+|---|---|---|
+| `terrafly_calibration_demo_input.tif` | `f3d2a85fdcd6a6673d42e4762b5e778222fbd4199e8f05091f56a3b87fda2091` | 480×320 RGB GeoTIFF input with EPSG:32643 and a fixed affine grid |
+| `terrafly_calibration_demo_reference.tif` | `a7888e944436c775759449ce52cc3a89e1c313f5397d6ba3c50d2e3bd1d7aef` | Aligned synthetic software oracle defined as `40 × relative + 100`, with 12 training-only outliers |
+| `terrafly_calibration_demo_metadata.json` | Reproducibility record | Generator inputs, model revision/device, hashes, affine relation, and exact disclaimer |
+
+This pair is allowed only for software demonstration: it proves grid validation, robust fitting, held-out evaluation, state transitions, artifact integrity, and GeoTIFF metadata. It is not independently surveyed evidence and cannot establish real-world height accuracy.
+
 ## Official SAC reference
 
 - Repository: `IMG-PROCESS-SAC/SIH-DepthWizard-2026`
@@ -47,6 +57,7 @@ Depth Anything V2 was not validated here for TIR. TerraFly repeats readable sing
 - Checkpoint identifier: `depth-anything/Depth-Anything-V2-Small-hf`
 - Intended role: relative monocular depth only.
 - Weight files are downloaded to local caches and ignored by Git.
+- Verified checkpoint revision: `5426e4f0f36572d16453bbda7a8389317b1bef99`.
 
 ## Future training gate
 

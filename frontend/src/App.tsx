@@ -381,7 +381,7 @@ export default function App() {
         </div>
       </details>
 
-      <footer><span>TerraFly · Day 3 calibration and evaluation</span><span>Local processing · held-out quality gates · reproducible outputs</span></footer>
+      <footer><span>TerraFly · Final verified release</span><span>Local processing · held-out quality gates · reproducible outputs</span></footer>
     </main>
   );
 }

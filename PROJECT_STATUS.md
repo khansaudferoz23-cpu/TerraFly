@@ -47,9 +47,11 @@ Greenfield bootstrap. The authenticated GitHub account `khansaudferoz23-cpu` own
 - PASS — private GitHub repository exists at `khansaudferoz23-cpu/TerraFly`; revised Day 1 source is prepared for synchronization.
 - PASS — revised source archive extracted to a fresh path containing spaces; 64 manifest hashes and all 13 backend tests passed from the extracted files.
 
-## Not yet complete
+## Final release status
 
-Real-world accuracy evaluation against an independently surveyed dataset, dependency-bundled portable release, final cookbook/judge materials, and Day 4 packaging.
+TerraFly 1.0 is feature-complete for the four-day build: relative inference, geospatial preservation, interactive 3D inspection, evidence-gated calibration, reproducible artifacts, professional responsive UI, one-address Windows launch, automated/full checkers, final cookbook/judge materials, and checked archives are complete.
+
+The remaining scientific work is intentionally outside this software milestone: real-world accuracy evaluation against compatible, independently surveyed height evidence. The Windows release includes the prebuilt interface but not the large third-party Python/npm environments or model weights; first-machine setup still requires internet access.
 
 ## Verified Day 2 baseline
 
@@ -71,3 +73,13 @@ Real-world accuracy evaluation against an independently surveyed dataset, depend
 - PASS — 390×844 responsive QA: document contained at 375 px, calibration panel 351 px, viewer/canvas both 307 px, and no horizontal overflow.
 - PASS — Day 3 source archive extracted to a fresh path containing spaces; all 77 manifest hashes and all 25 backend tests passed from extracted source.
 - LIMIT — this is a synthetic calibration correctness result, not a real-world remote-sensing accuracy score.
+
+## Verified Day 4 final release
+
+- PASS — 26 backend tests, 4 frontend tests, strict production build, Python dependency consistency, and final launcher/checker parser checks.
+- PASS — complete real CUDA calibration smoke in 4.924 seconds: `Metric Calibrated`, 13 artifact hashes, EPSG:32643, float32 metre GeoTIFF, scale 40, offset 100, held-out RMSE 0.0000035 m, and R² 1.0 on the bundled synthetic oracle.
+- PASS — backend serves the prebuilt React/Three.js interface and API together at `127.0.0.1:8000`; no Vite process is required for final operation.
+- PASS — visible production browser workflow: real CUDA inference, WebGL 3D result, A/B inspection, orbit/first-person mode, texture/wireframe toggles, calibration pass, and truthful evidence links.
+- PASS — responsive production QA at 390×844 with document width contained and no horizontal page overflow.
+- PASS — final source/release ZIP checksums and clean extracted-folder-with-spaces verification are recorded in `handoff/FINAL_TEST_REPORT.md`.
+- LIMIT — pointer lock cannot be granted by automated browser control; the first-person mode/help/key contract was verified and the normal interactive browser path remains the manual acceptance step.

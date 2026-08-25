@@ -179,3 +179,12 @@ Without looking at this file, explain:
 12. Why a synthetic calibration pass is not a real accuracy claim.
 
 If an answer is unclear, open the named source file in `FILE_GUIDE.md` and trace the relevant function.
+
+## Final operation every member must rehearse
+
+1. Double-click `Start-TerraFly.cmd`; the final API and interface share `127.0.0.1:8000`.
+2. Use Orbit for left-drag rotate, right-drag pan, wheel zoom, and A/B point comparison.
+3. Use First-person for mouse-look, `W/A/S/D`, `Q/E`, Shift boost, and `Esc` release.
+4. Run the bundled GeoTIFF/reference pair and say “synthetic software oracle” before showing the near-zero error.
+5. Double-click `Check-TerraFly.cmd`, and know that `scripts\verify.ps1 -Full` adds the real model, 13 artifact hashes, and metric GeoTIFF inspection.
+6. If asked for the final release proof, open `handoff/FINAL_TEST_REPORT.md`; if asked how anything works, open `docs/cookbook/TERRAFLY_COOKBOOK.md`.

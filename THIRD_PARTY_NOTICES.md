@@ -13,4 +13,12 @@ TerraFly source is being assembled from original project code and the listed dep
 - Pillow: HPND License.
 - Rasterio: BSD-3-Clause.
 
-No model weights are committed or redistributed by this repository. Before a release, exact installed package versions and license texts will be captured into the release notice bundle.
+No model weights, Python environment, or `node_modules` tree are committed or redistributed. Package lockfiles and declared dependency pins are the install record; each installed distribution retains its own bundled license/metadata.
+
+## Final verified environment
+
+The final checks ran with Python 3.12.13 and these direct scientific/runtime packages: FastAPI 0.141.1, NumPy 2.5.2, Pillow 12.3.0, Rasterio 1.5.1, PyTorch 2.12.1+cu130, Torchvision 0.27.1+cu130, Transformers 5.15.1, and Uvicorn 0.52.4.
+
+The final interface lockfile resolved React/React DOM 19.2.8, Three.js 0.185.1, Vite 8.2.2, TypeScript 7.0.2, and Vitest 4.1.11. `npm audit --omit=dev` and Python `pip check` are rerun as release gates; exact transitive versions remain in `frontend/package-lock.json` and the Python environment installer metadata.
+
+The bundled `sample_data` fixtures are original generated work released under CC0 through `sample_data/LICENSE.txt`. The related SAC preview files are not redistributed because their inspected repository did not provide a project license.

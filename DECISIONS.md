@@ -51,3 +51,15 @@ Day 3 performs no silent reprojection or resampling. A reference DSM must match 
 ## D-013 — Keep metric files separate from the relative viewer
 
 Calibration changes the exported numeric interpretation, not the evidence used to build the existing 3D viewer. Keep the viewer and A/B comparison in relative units, write metric `.npy`/GeoTIFF as distinct artifacts, and show the vertical datum and held-out diagnostics beside the gate decision.
+
+## D-014 — One production server, one address
+
+Build the React/Three.js interface during setup and let FastAPI serve it after all API routes. Final users launch only `http://127.0.0.1:8000`; Vite remains a development fallback when no build exists. This removes a second terminal/service from the judge workflow without changing the typed API boundary.
+
+## D-015 — Bundle a synthetic oracle, label it precisely
+
+Include a small georeferenced input and aligned synthetic reference so any judge can exercise the complete gate without private data. The reference is generated from the model output with a known affine relation and training-only outliers. It proves alignment, fitting, held-out validation, metadata, and export behavior—not remote-sensing accuracy.
+
+## D-016 — Release source plus prebuilt interface, not third-party caches
+
+The final Windows ZIP contains all tracked source and `frontend/dist`, while Python/npm environments and model weights remain reproducible setup downloads governed by their own licenses. This keeps the release auditable and reasonably sized; it must not be described as fully offline or dependency-bundled.

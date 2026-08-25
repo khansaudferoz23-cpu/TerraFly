@@ -5,6 +5,9 @@ import hashlib
 
 import numpy as np
 import pytest
+from fastapi.testclient import TestClient
+
+from terrafly.main import create_app
 
 from .conftest import encoded_image
 
@@ -100,3 +103,15 @@ def test_completed_job_can_be_cleared_without_path_escape(client):
     assert client.delete(f"/api/jobs/{job_id}").status_code == 204
     assert client.get(f"/api/jobs/{job_id}").status_code == 404
     assert client.delete("/api/jobs/not-a-job").status_code == 404
+
+
+def test_prebuilt_frontend_is_served_without_a_development_server(settings):
+    settings.frontend_dist.mkdir(parents=True)
+    (settings.frontend_dist / "index.html").write_text(
+        "<!doctype html><title>TerraFly release shell</title>", encoding="utf-8"
+    )
+    with TestClient(create_app(settings)) as release_client:
+        response = release_client.get("/")
+        assert response.status_code == 200
+        assert "TerraFly release shell" in response.text
+        assert release_client.get("/api/health").json()["version"] == "1.0.0"

@@ -47,3 +47,15 @@ A model can look accurate on the same observations used to fit it. TerraFly ther
 ## Why exact alignment and NoData matter
 
 Comparing different pixel grids can turn a location error into a fake height error. Day 3 accepts only an identical CRS, transform, width, and height. Source NoData pixels remain NoData in metric outputs; TerraFly never fills unknown source regions with invented calibrated elevation.
+
+## Why the final app uses one server
+
+Vite is excellent while editing the interface, but judges should not need two running services. Setup builds static HTML/CSS/JavaScript once; FastAPI then serves those files after its `/api` routes. The browser and API therefore use one local address, while the source still keeps frontend/backend responsibilities separate.
+
+## What “portable Windows release” means here
+
+The release ZIP includes the full tracked source and prebuilt interface, so it does not need Vite during normal use. It deliberately does not redistribute multi-gigabyte Python/npm environments or third-party model weights. A new machine performs one internet-connected setup, then can operate from its prepared local environment/cache.
+
+## What the bundled calibration demo proves
+
+The demo reference is calculated from the saved relative surface with `metric = 40 × relative + 100` and a few outliers placed only in fitting cells. Passing it proves exact-grid checks, robust fitting, independent held-out evaluation, state/artifact rules, hashes, and GeoTIFF metadata. Because the same output helped create the oracle, the error is not model accuracy.
