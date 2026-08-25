@@ -1,8 +1,8 @@
 {
   "schema_version": "1.0",
   "milestone": "TerraFly 1.0 final release",
-  "generated_at": "2026-08-25T14:29:58.437719+00:00",
-  "git_commit": "f5f794c03b6cf3e8ec80e70402f56b7c84a29f1a",
+  "generated_at": "2026-08-25T15:51:24.829054+00:00",
+  "git_commit": "ece591a9ead81671c606c85ae7b224c9c12c17b6",
   "environment": {
     "os": "Windows-11-10.0.26200-SP0",
     "python": "3.12.13",
@@ -28,7 +28,7 @@
     "weights_included": false
   },
   "tests": {
-    "backend": "PASS (26)",
+    "backend": "PASS (32)",
     "frontend": "PASS (4)",
     "frontend_build": "PASS",
     "real_cpu": "PASS",
@@ -47,7 +47,7 @@
     "metric_geotiff_contract": "PASS",
     "source_nodata_preservation": "PASS",
     "single_server_production_ui": "PASS",
-    "real_final_calibration_workflow": "PASS (13 artifact hashes)",
+    "real_final_calibration_workflow": "PASS (15 artifact hashes)",
     "release_archives_and_checksums": "PASS",
     "clean_extracted_path_with_spaces": "PASS"
   },
@@ -69,8 +69,8 @@
     },
     {
       "path": "BUILD_LOG.md",
-      "bytes": 11994,
-      "sha256": "c337b9e442c37209bcc228d6083304d886437b9a90115871b534aaebeb12480d"
+      "bytes": 13393,
+      "sha256": "7bff4c34f68f3fc37ded6aed92a56259710e4cce7ef17e889e5f7422cc1aa8f7"
     },
     {
       "path": "Check-TerraFly.cmd",
@@ -84,13 +84,13 @@
     },
     {
       "path": "DECISIONS.md",
-      "bytes": 5441,
-      "sha256": "06c70f59257fe90cf73f722f3b4def8f07379a9fc9ed299eceb813a922b1430d"
+      "bytes": 6316,
+      "sha256": "3aa4793f1c6b26628259c5d444c375229b34b2421fc363d58968ff9426dda0fb"
     },
     {
       "path": "FILE_GUIDE.md",
-      "bytes": 14828,
-      "sha256": "f85bd013d8437e30dff26c11850cd405f2e1d02306845c7407a21ecff16dd6f8"
+      "bytes": 15124,
+      "sha256": "5aeabe229efd27d198dbb13b4b513d262145eb711cf24514353af742fb2781ab"
     },
     {
       "path": "FOUR_DAY_PLAN.md",
@@ -104,23 +104,23 @@
     },
     {
       "path": "LIMITATIONS.md",
-      "bytes": 2797,
-      "sha256": "a2bb82a9fb8cbc3a8140303d108b99c51cb67b5c0e6809502a81994c18ee5297"
+      "bytes": 3063,
+      "sha256": "c3524da7c0cbd86065dc9234350da2e5cbdaea93ce8f3ef259b1d5bc792002f1"
     },
     {
       "path": "PROJECT_STATUS.md",
-      "bytes": 8174,
-      "sha256": "4a3a30a9f75d7d8d321fb96f7f71838a58e208e5ee8382708f85995309d02e35"
+      "bytes": 8928,
+      "sha256": "abfe9e20c3a4c3f4c4e58a09f1da4b2c161a85b311fc57140a1139db1db0d8ff"
     },
     {
       "path": "README.md",
-      "bytes": 5546,
-      "sha256": "8055c9281ef7db946332bc34237c0b0892bf0352e4ee99bd2da7d35e3a084181"
+      "bytes": 5810,
+      "sha256": "ecfb69100e8cf5e658e3d1c162522f5342a046d2cab9c21bcf97f8d274f4be48"
     },
     {
       "path": "RESULTS.md",
-      "bytes": 6425,
-      "sha256": "7e8b429893f5c62c9f230339768e756e6569070cd9a5cf5c9f4208a7c14f313c"
+      "bytes": 7730,
+      "sha256": "39be1d15260df1e686ef6cfe92b57018a22c0ec7982fdf47b45b423ca6ffd702"
     },
     {
       "path": "Start-TerraFly.cmd",
@@ -139,8 +139,8 @@
     },
     {
       "path": "backend/terrafly/artifacts.py",
-      "bytes": 7986,
-      "sha256": "6819714f88e2612c192a1957bc5a1ca06d12606b68213bb70f74271484800bcf"
+      "bytes": 11860,
+      "sha256": "ee9543b2a1ac49b24b3953617da71c60f8ae80fb6f49ec3a99e4611a67d58620"
     },
     {
       "path": "backend/terrafly/calibration.py",
@@ -164,18 +164,23 @@
     },
     {
       "path": "backend/terrafly/inference/base.py",
-      "bytes": 410,
-      "sha256": "05bb68c3763453f550ffe0058f17f5d1b522fc1cc988258b89fb308be3bb06a6"
+      "bytes": 513,
+      "sha256": "473f1b9f23c6d112b146b4a01933256c99b87beb1c4d45fc9157cf80f45028af"
+    },
+    {
+      "path": "backend/terrafly/inference/conventions.py",
+      "bytes": 3571,
+      "sha256": "6a02ba5878dfa8463c4ad63b5d627786b4bf7b49a94bbae4a4b1df60f9ac5772"
     },
     {
       "path": "backend/terrafly/inference/depth_anything_v2.py",
-      "bytes": 6509,
-      "sha256": "63be9e4d203dbf06e378d3473fec45eb0c05710165c10851a1d991c763b1c129"
+      "bytes": 6838,
+      "sha256": "99d6cc64fa21dca53a3b2adf58edb51213c2e04ad2c7bdb2312f20c804227773"
     },
     {
       "path": "backend/terrafly/inference/deterministic.py",
-      "bytes": 1228,
-      "sha256": "a0c6a3e46c91390c5595ea30a11678ed3598987ba2c4a1b5c310db3fce3da933"
+      "bytes": 1681,
+      "sha256": "3186b1cff6f32ce6a42e8e707c6665d50eb87742d89f147f284abecb0553accf"
     },
     {
       "path": "backend/terrafly/inference/factory.py",
@@ -199,8 +204,8 @@
     },
     {
       "path": "backend/terrafly/pipeline.py",
-      "bytes": 3304,
-      "sha256": "dc355a77585141d90f46035ab72d6501df311819c0a25f9e0a6ce679b3f09e67"
+      "bytes": 4073,
+      "sha256": "a0e2e8881f192cd096cccc5879aa0965da8992f0057fa4b98107e36a7974f28b"
     },
     {
       "path": "backend/terrafly/schemas.py",
@@ -219,18 +224,18 @@
     },
     {
       "path": "backend/tests/test_adapter_contract.py",
-      "bytes": 867,
-      "sha256": "d992dd816b7ca3ddbf210b0ac8a9acd945a06fe382fc50cab3c3aa6dda27740f"
+      "bytes": 2444,
+      "sha256": "9d515c2c8ba2dc3b6661f109d5ed9aea867d153f839360162cbe1812816157ce"
     },
     {
       "path": "backend/tests/test_api.py",
-      "bytes": 4637,
-      "sha256": "ef0f5177bfa5ee8653a68cb02c8b2a94ec7825d0e4bdfcb4a74da8e194cb570e"
+      "bytes": 5292,
+      "sha256": "9f3e6ff5fe3c097868e393433d58c2426c7c06556d6f0ac63a8c0e305ec630fd"
     },
     {
       "path": "backend/tests/test_artifacts.py",
-      "bytes": 2369,
-      "sha256": "dc700af301a45a6625f75a9d21cfd454600ba31b9cc62e5f2787a77c3c4b2208"
+      "bytes": 4298,
+      "sha256": "34b37377e3b750cc8d8cc2093a6059110bfc2a5ad18b0161f05d0dde9cd8a4db"
     },
     {
       "path": "backend/tests/test_calibration.py",
@@ -259,8 +264,8 @@
     },
     {
       "path": "docs/JUDGE_QA.md",
-      "bytes": 5205,
-      "sha256": "6674144f0cbb51d92cfeb67152d9fd49e4b0442f67f3774b340739735fe92af9"
+      "bytes": 6032,
+      "sha256": "a1c9a100b4cb31ba783155f4c3993a1da881ecc214010626014e6da840b42648"
     },
     {
       "path": "docs/OPERATOR_GUIDE.md",
@@ -269,8 +274,8 @@
     },
     {
       "path": "docs/TEAM_TECHNICAL_GUIDE.md",
-      "bytes": 13362,
-      "sha256": "d4d7dac77240457dded81026deb2b2e6be7edf595e38a4cb097d372565a2b207"
+      "bytes": 14033,
+      "sha256": "6d2dc1212627c02e68f2786dbfa2cbefa1047f6a0d3fef18265c61f9edc091c8"
     },
     {
       "path": "docs/UX_RATIONALE.md",
@@ -284,8 +289,8 @@
     },
     {
       "path": "docs/cookbook/TERRAFLY_COOKBOOK.md",
-      "bytes": 10454,
-      "sha256": "7b156cbf87e215582be982c0dd7793121ec1b1813d732617cb4fcd45842337ab"
+      "bytes": 10937,
+      "sha256": "66f81686c3c5ec9a222923d123546a1f5e4f2a47bbe66199397ee9df9269173b"
     },
     {
       "path": "frontend/index.html",
@@ -309,8 +314,8 @@
     },
     {
       "path": "frontend/src/App.tsx",
-      "bytes": 22025,
-      "sha256": "e026af73689da40af9b685615360df70b5b046cb83140cfc13949a609d598d24"
+      "bytes": 22865,
+      "sha256": "c08755cbb3a3f2faba2ccebb2cf3b146b975f5f1168a980f07157680a35547f5"
     },
     {
       "path": "frontend/src/SurfaceViewer.test.ts",
@@ -419,13 +424,13 @@
     },
     {
       "path": "handoff/FINAL_HANDOFF.md",
-      "bytes": 2962,
-      "sha256": "a9cad03e0274265c19273db1abcf8627bb30624971d11b03af51e83eda650c06"
+      "bytes": 3216,
+      "sha256": "9586211a8840514f4d7104e6124181bc0d0a37145a11618fb44ea860310e57c3"
     },
     {
       "path": "handoff/FINAL_TEST_REPORT.md",
-      "bytes": 3705,
-      "sha256": "49de742b75201ac8bad3200063ac38a9fe2a8fb8f8e9d2bbc810808d8e0b40d5"
+      "bytes": 4054,
+      "sha256": "8bde093813b1549b2d1875db72871578942379168b2103409b1f966c006235a3"
     },
     {
       "path": "pyproject.toml",
@@ -455,12 +460,12 @@
     {
       "path": "sample_data/terrafly_calibration_demo_metadata.json",
       "bytes": 1096,
-      "sha256": "884bf65c63673cd533059459f81f0fd12f25753fca889d4d1cb9699db49e9b49"
+      "sha256": "704cfafb06058f46059045bc12b311a668205bc1905d34f74e2440564895f71b"
     },
     {
       "path": "sample_data/terrafly_calibration_demo_reference.tif",
-      "bytes": 182179,
-      "sha256": "a7888e98b488159f9dc168912f53acc8f8a7fcdd98f1f8000cc888d536107aef"
+      "bytes": 182257,
+      "sha256": "f0c2192284b33e18c1686539faa256e20d9e07ae9e38c2c791db0773d0ee4d45"
     },
     {
       "path": "sample_data/terrafly_synthetic_aerial.png",
@@ -475,7 +480,7 @@
     {
       "path": "scripts/create_handoff_manifest.py",
       "bytes": 4221,
-      "sha256": "fcac0831281ed38d3ca9def6cfea3a2add67a92f195bde6092097076ed55e2f3"
+      "sha256": "e1190e893c5f987d4660519112c40eddd1c08a53b7d67df90615c3a744fa7e40"
     },
     {
       "path": "scripts/create_offline_sample.py",
@@ -494,13 +499,13 @@
     },
     {
       "path": "scripts/smoke_final_workflow.py",
-      "bytes": 5669,
-      "sha256": "5f02f737c34f1f49aa08c8404e615ecca2750cba51df4d1ec9b44ea3d40122bb"
+      "bytes": 5743,
+      "sha256": "c6c4664b755b207dce07514c100574700a06e974b9bb9db7d92fcd3b6cf58c8d"
     },
     {
       "path": "scripts/smoke_real_api.py",
-      "bytes": 2505,
-      "sha256": "836fe27b09bc4b12f2d1a175a40bbb54125f52733d5e6aeee0f7ca326239b923"
+      "bytes": 3103,
+      "sha256": "a165f9b1e663b52d1d791c72d3607c606062f22cc583ee1ca2188c9d367a25e1"
     },
     {
       "path": "scripts/smoke_real_model.py",
