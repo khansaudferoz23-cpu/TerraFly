@@ -1,8 +1,8 @@
 {
   "schema_version": "1.0",
   "milestone": "Day 1",
-  "generated_at": "2026-08-25T00:06:22.946232+00:00",
-  "git_commit": "c9dfe0b90d02c14865d81871a4181de6bf90d6c8",
+  "generated_at": "2026-08-25T09:34:18.310250+00:00",
+  "git_commit": "91e3dc3a07f275606e5af564dce597e171582d0a",
   "environment": {
     "os": "Windows-11-10.0.26200-SP0",
     "python": "3.12.13",
@@ -29,12 +29,14 @@
   },
   "tests": {
     "backend": "PASS (13)",
-    "frontend": "PASS (1)",
+    "frontend": "PASS (2)",
     "frontend_build": "PASS",
     "real_cpu": "PASS",
     "real_cuda": "PASS",
     "real_cuda_api": "PASS",
     "browser_workflow": "PASS",
+    "single_band_domain_gate": "PASS",
+    "responsive_layout": "PASS",
     "metric_without_calibration": "refused"
   },
   "files": [
@@ -55,18 +57,23 @@
     },
     {
       "path": "BUILD_LOG.md",
-      "bytes": 3446,
-      "sha256": "1f6c4334b0638d3a3c4632cd76243e943f4824b88e22321fa282bc652fff74c8"
+      "bytes": 5093,
+      "sha256": "17af55651e91b29b67d3de55df0242b98d13a6c2853227be68adc17a5f59c770"
     },
     {
       "path": "DATA_SOURCES.md",
-      "bytes": 1189,
-      "sha256": "781a9fad95aa124d619cfd140b48cf7b3edfded1f99e7e083f1ccb98a4236b7d"
+      "bytes": 3744,
+      "sha256": "c54e89403d5b061d1df581bd00694c384a4aa36ed7bbc73c1bf77d4d8c57fd14"
     },
     {
       "path": "DECISIONS.md",
-      "bytes": 1199,
-      "sha256": "5c1b75de18a6adb28d8b2c8b1759597c2fa11a50bf2be72575f6f3d908dc5228"
+      "bytes": 1982,
+      "sha256": "653e81d68373838e8bbd6876cf609662536b95b97811ea6b9d902096c8305d47"
+    },
+    {
+      "path": "FILE_GUIDE.md",
+      "bytes": 10087,
+      "sha256": "8474fd7f7d86715947a865ac82c3b485307f5ed4b9048b3adc11320669ef9907"
     },
     {
       "path": "FOUR_DAY_PLAN.md",
@@ -75,28 +82,28 @@
     },
     {
       "path": "LEARNING_NOTES.md",
-      "bytes": 1009,
-      "sha256": "c9734b9198d35ca8f62940c7dce031ee4303a2b4567814d59f36930f655b27da"
+      "bytes": 1697,
+      "sha256": "60d157464c842733a91cbef68471701f0526405577aa8971fa590945c1e55fb5"
     },
     {
       "path": "LIMITATIONS.md",
-      "bytes": 1216,
-      "sha256": "61fadfd0277ad4dbc86279adb519120fdbc10a05919e6e60c0781005f577575f"
+      "bytes": 1453,
+      "sha256": "4f35d60c5458f16ca197c408a42570acb6b09c4e5c3df3ea3d41056b657fe681"
     },
     {
       "path": "PROJECT_STATUS.md",
-      "bytes": 2158,
-      "sha256": "f5ddd6d4205f9bd9813954835e34c85937c2c2369d9364653ed045e0df0fbcfa"
+      "bytes": 2773,
+      "sha256": "0ec27abe8e736f3a0b7aa8f38dfba24962454ec19a741202006280c6164563af"
     },
     {
       "path": "README.md",
-      "bytes": 2137,
-      "sha256": "13e632eff15476f1d7d2849ec55edd2091b3990d4ae9e4fa4250b04935faf654"
+      "bytes": 2692,
+      "sha256": "428c4ad04be8147fdf31c63d4d910e103613ef0d67e05f0a2ea4e967e5ad9aca"
     },
     {
       "path": "RESULTS.md",
-      "bytes": 1806,
-      "sha256": "9f321f9dd834b748a5a4206b74ffd64c3cf3193342c266ac5dcf5ded824e8669"
+      "bytes": 2243,
+      "sha256": "bfb7c945803aee7c82ba0e97b41e0f975f79f069bae20415408200764682d341"
     },
     {
       "path": "Start-TerraFly.cmd",
@@ -125,8 +132,8 @@
     },
     {
       "path": "backend/terrafly/imaging.py",
-      "bytes": 6769,
-      "sha256": "da3e7f2fc7d328402f942eba813ab58f881a09ff52d49e13b2ffc4525027dcad"
+      "bytes": 7268,
+      "sha256": "989a1dac3d5a8b0a0b1ffb33e01931967bd43d7bc2b37de360806aadb6048121"
     },
     {
       "path": "backend/terrafly/inference/__init__.py",
@@ -190,13 +197,23 @@
     },
     {
       "path": "backend/tests/test_api.py",
-      "bytes": 2685,
-      "sha256": "074c08aafd1fae8703ffa8ee014e376bd499ea10d98de1df8961dea379b77664"
+      "bytes": 2959,
+      "sha256": "434169a483190152e12bc15fc04e870944eb6f30995021a892230d1c3f622b83"
     },
     {
       "path": "backend/tests/test_geotiff.py",
       "bytes": 1475,
       "sha256": "35c83a2183335e0f33854a411270a64ad251935dd29f627f777627f0d00db90b"
+    },
+    {
+      "path": "docs/TEAM_TECHNICAL_GUIDE.md",
+      "bytes": 8776,
+      "sha256": "f6d0ac28f65f0ed787e60ba06b9385e5d6678aa75c241aebcbeeb6e06ba11239"
+    },
+    {
+      "path": "docs/UX_RATIONALE.md",
+      "bytes": 4415,
+      "sha256": "b32f315b86b7b5ddb295c5468aa36524b45e2e39b88b71e8671de74cab8cd6fe"
     },
     {
       "path": "docs/cookbook/COOKBOOK_SOURCE_INDEX.md",
@@ -220,18 +237,18 @@
     },
     {
       "path": "frontend/src/App.test.tsx",
-      "bytes": 462,
-      "sha256": "25a0c1d24412f0129649558203090d787a731f578c8a8782b7ba157b273b0c19"
+      "bytes": 1175,
+      "sha256": "8a1f9c1a6380086b906125b1c2ef004c9de40778be037b3d686a22d8005ed855"
     },
     {
       "path": "frontend/src/App.tsx",
-      "bytes": 7164,
-      "sha256": "c26df6ec216ab47590e2802608faac2ded2270e63d0bc75bf886cd578b1fcdfa"
+      "bytes": 11995,
+      "sha256": "50356fc91a332d942bc31ec5877a3a9e0d7c8c5d6132673a01db0fde5799f6f5"
     },
     {
       "path": "frontend/src/SurfaceViewer.tsx",
-      "bytes": 6007,
-      "sha256": "da77c24df78e94fc6617aea6057fa71849138291b9e6e94cdf664d859c299afc"
+      "bytes": 6506,
+      "sha256": "b02a84f2c65ce1ba5c56a86e7ae0aaa37e42056df61bb1d674b0adff5d29ff03"
     },
     {
       "path": "frontend/src/api.ts",
@@ -245,8 +262,8 @@
     },
     {
       "path": "frontend/src/styles.css",
-      "bytes": 7163,
-      "sha256": "1f8b26d8ea07bd366b40126547c6473424e86e0d16ba8fc3e26e9f41feb25d61"
+      "bytes": 12145,
+      "sha256": "0eb8b132b709878494fcfd3cb7f081a23e2290eae03684feaf1b8abac45824f7"
     },
     {
       "path": "frontend/src/test-setup.ts",
@@ -280,13 +297,13 @@
     },
     {
       "path": "handoff/DAY_1_HANDOFF.md",
-      "bytes": 2292,
-      "sha256": "f04965c619032d3c9817a421ab83ee49d66b1b7eda098471b9ac10dba84a24da"
+      "bytes": 2679,
+      "sha256": "3896b49409c999126c7256c303a53456618913b24352adf336a41bb4bd31895e"
     },
     {
       "path": "handoff/DAY_1_TEST_REPORT.md",
-      "bytes": 2296,
-      "sha256": "77a61b675896e3483b23ed36d4e01d2b7d0e54a849d72bb4218bb214aaafde09"
+      "bytes": 2683,
+      "sha256": "479be8714471e966a6175d702f3c44bd6af743598d601f6b55e4c69e80ce2bd0"
     },
     {
       "path": "pyproject.toml",
@@ -315,8 +332,8 @@
     },
     {
       "path": "scripts/create_handoff_manifest.py",
-      "bytes": 3462,
-      "sha256": "39185fd745ad5e401860fd1343cc123d3a831be3c2723d0631aebc96ffe06eff"
+      "bytes": 3550,
+      "sha256": "874edc349ac663e05195ec09a95d086ebb5738490714802f9cb45faad3f9ccc9"
     },
     {
       "path": "scripts/create_offline_sample.py",
@@ -340,8 +357,8 @@
     },
     {
       "path": "scripts/start.ps1",
-      "bytes": 1017,
-      "sha256": "9744b65dd4dd8ee9e11f270ec3d05626dbe57a891e3abfc7d60711db3e62f20c"
+      "bytes": 1678,
+      "sha256": "f278922fe95a1fce035a1beabeb374349b43573301bac00fb2ec4ec20ed3e44c"
     }
   ]
 }
