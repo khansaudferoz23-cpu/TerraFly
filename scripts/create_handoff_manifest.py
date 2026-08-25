@@ -3,6 +3,7 @@ from __future__ import annotations
 import hashlib
 import importlib.metadata
 import json
+import os
 import platform
 import subprocess
 import sys
@@ -43,12 +44,7 @@ def main() -> None:
     files = []
     for relative_text in sorted(line for line in listed.splitlines() if line):
         relative = Path(relative_text)
-        if relative.as_posix() in {
-            "handoff/DAY_1_MANIFEST.json",
-            "handoff/DAY_2_MANIFEST.json",
-            "handoff/DAY_3_MANIFEST.json",
-            "handoff/FINAL_MANIFEST.json",
-        }:
+        if relative.as_posix() == "handoff/FINAL_MANIFEST.json":
             continue
         path = PROJECT_ROOT / relative
         if path.is_file():
@@ -69,7 +65,7 @@ def main() -> None:
             "os": platform.platform(),
             "python": sys.version.split()[0],
             "node": run("node", "--version"),
-            "npm": run("npm", "--version"),
+            "npm": run("npm.cmd" if os.name == "nt" else "npm", "--version"),
             "git": run("git", "--version"),
             "gpu": run(
                 "nvidia-smi",
