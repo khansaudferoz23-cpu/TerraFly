@@ -19,3 +19,11 @@ The pretrained model predicts relative depth. TerraFly robustly normalizes it an
 ## D-005 — CUDA wheel
 
 Use the official PyTorch 2.12.1 CUDA 13.0 wheel. PyTorch documents CUDA 13.0 as the default current wheel and suitable for Blackwell; the observed Windows driver 610.88 exceeds the documented minimum 580.88. CPU fallback remains mandatory.
+
+## D-006 — Task-first professional interface
+
+Replace the decorative dark-green dashboard style with a neutral analysis workbench. Give the 3D result visual priority, use one restrained accent, collapse provenance, explain every downloadable artifact, implement actual drag/drop, and remove disabled future-feature controls. Preserve real progress and the scientific-state contract.
+
+## D-007 — Related SAC TIR files are domain checks, not height data
+
+Document the IR-colorization repository at its exact commit without copying its unlicensed samples. Its `.npy` arrays are TIR/RGB super-resolution and colorization pairs, not elevation supervision. Allow single-band inputs for robust software handling but attach an explicit TIR/out-of-domain warning to the manifest and UI.

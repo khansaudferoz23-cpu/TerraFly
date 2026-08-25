@@ -30,6 +30,11 @@ def test_upload_pipeline_handles_odd_dimensions_and_modes(client, mode):
     assert np.isfinite(surface).all()
     assert 0 <= float(surface.min()) <= float(surface.max()) <= 1
     assert any("TEST-ONLY" in warning for warning in job["warnings"])
+    if mode == "L":
+        assert any("Single-band input" in warning for warning in job["warnings"])
+        assert any("Thermal/TIR" in warning for warning in job["warnings"])
+    else:
+        assert not any("Single-band input" in warning for warning in job["warnings"])
     for artifact in job["artifacts"]:
         downloaded = client.get(f"/api/jobs/{job['job_id']}/artifacts/{artifact['name']}")
         assert downloaded.status_code == 200

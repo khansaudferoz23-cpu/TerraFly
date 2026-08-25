@@ -17,18 +17,23 @@ Greenfield bootstrap. The authenticated GitHub account `khansaudferoz23-cpu` own
 - Per-job input hash, scientific state, model/device/revision, warnings, calibration refusal, and artifact hashes.
 - Numeric `.npy`, colour preview, texture, 16-bit display height texture, and 3D grid exports.
 - React upload/progress/results UI and interactive Three.js orbit/pan/zoom viewer.
+- Task-first neutral UI with working drag/drop, dominant 3D workspace, responsive result inspector, loading/error states, and explained evidence downloads.
+- Explicit single-band/TIR domain warning in the API manifest and visible result UI.
+- Team technical guide, file-by-file repository ledger, UI rationale, and exact related-SAC sample audit.
 
 ## Verified Day 1 baseline
 
 - PASS — 13 backend tests, including unsafe/corrupt/oversized inputs and GeoTIFF metadata.
-- PASS — frontend scientific-contract component test.
+- PASS — 2 frontend tests covering the scientific contract and real file-selection action.
 - PASS — strict TypeScript/Vite production build.
 - PASS — PyTorch 2.12.1+cu130 CUDA allocation on RTX 5060; no broken Python requirements.
 - PASS — real Depth Anything V2 Small CPU inference at revision `5426e4f0f36572d16453bbda7a8389317b1bef99`.
 - PASS — real CUDA inference and complete upload-to-six-artifact workflow with verified SHA-256 hashes.
-- PASS — browser upload/progress/result/3D render workflow; screenshot captured outside the source repository.
+- PASS — browser upload/progress/result/3D render workflow using the downloaded 512×512 TIR preview; domain warning and screenshots captured outside the source repository.
+- PASS — responsive browser check at 390×844 with no horizontal page overflow.
 - PASS — npm reported zero production dependency vulnerabilities.
-- PASS — source archive extracted to a fresh path containing spaces; 61 manifest hashes and all 13 backend tests passed from the extracted files.
+- PASS — the Windows launcher parses cleanly, waits for readiness, and opens the app automatically.
+- PASS — private GitHub repository exists at `khansaudferoz23-cpu/TerraFly`; revised Day 1 source is prepared for synchronization.
 
 ## Not yet complete
 

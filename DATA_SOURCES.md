@@ -2,7 +2,7 @@
 
 ## Current inputs
 
-No private dataset, competition dataset, paired RGB/height ground truth, GCP set, reference DSM/DTM, or SRTM tile has been downloaded or committed.
+No private dataset, paired RGB/height ground truth, GCP set, reference DSM/DTM, or SRTM tile has been committed. Three preview PNGs from the related SAC IR-colorization repository were downloaded by the team and inspected outside this repository; they are documented below and are not height ground truth.
 
 The repository includes one original, CC0 synthetic asymmetric image at `sample_data/terrafly_synthetic_aerial.png`. It exists only for offline workflow/orientation demonstrations and is not real remote-sensing data or height ground truth.
 
@@ -12,6 +12,35 @@ The repository includes one original, CC0 synthetic asymmetric image at `sample_
 - Inspected: 2026-08-25
 - Commit: `feb4dc63596fdf8c801d1a4f07ef8f2ff4e107be`
 - Observed contents: one README saying the repository contains the DepthWizard dataset; GitHub reported repository size 0. No dataset/code was available to inspect.
+
+## Related SAC IR-colorization reference
+
+- Repository: [`IMG-PROCESS-SAC/IR-colorization-BAH2026`](https://github.com/IMG-PROCESS-SAC/IR-colorization-BAH2026)
+- Inspected: 2026-08-25
+- Commit: [`c6735fbffd0d7b08383572357e95d55f91c719e1`](https://github.com/IMG-PROCESS-SAC/IR-colorization-BAH2026/commit/c6735fbffd0d7b08383572357e95d55f91c719e1)
+- Problem: Thermal Infrared super-resolution and colorization, not the DepthWizard/TerraFly height problem.
+- The [official README](https://github.com/IMG-PROCESS-SAC/IR-colorization-BAH2026/blob/c6735fbffd0d7b08383572357e95d55f91c719e1/README.md) says `.npy` files are for training because they preserve radiometric resolution; PNGs are visualization only.
+- The [patch-generation script](https://github.com/IMG-PROCESS-SAC/IR-colorization-BAH2026/blob/c6735fbffd0d7b08383572357e95d55f91c719e1/scripts/create_patches.py) saves these co-registered arrays:
+
+| File | Shape/role from the baseline | Correct interpretation |
+|---|---|---|
+| `tir_200m.npy` | 256×256 low-resolution TIR input | Super-resolution input |
+| `tir_100m_512.npy` | 512×512 higher-resolution TIR target | Super-resolution target and later colorization input |
+| `rgb_100m_512.npy` | 512×512 RGB target | Colorization target |
+
+None is a DSM, DTM, nDSM, depth map, or elevation label. The repository belongs to a different problem statement and cannot supply TerraFly metric-height supervision.
+
+### Team-downloaded preview audit
+
+These files remain in the user's Downloads folder and are deliberately not copied into TerraFly because the source repository does not provide a project license.
+
+| Preview | Mode and dimensions | SHA-256 | Use in TerraFly |
+|---|---|---|---|
+| `tir_200m.png` | single-band `L`, 256×256 | `65b0d79d1ef8462e731738308cfd7ebe68440dbdbaa963d8cd74ee5ca15dce9c` | Software/domain-warning demonstration only |
+| `tir_100m_512.png` | single-band `L`, 512×512 | `93df051dc486187474efb0faaa6cde3ed78d215141f6d6840276333cbd9e6adf` | Software/domain-warning demonstration only |
+| `rgb_100m_512.png` | `RGB`, 512×512 | `49fffd0f4117b042c4318d7256b5f9aaf5369f822632bfec717082e229e0467b` | Optical pipeline demonstration only; still not height truth |
+
+Depth Anything V2 was not validated here for TIR. TerraFly repeats readable single-band inputs into RGB so the pipeline can execute, but the API and UI warn that execution is not scientific validation.
 
 ## Model
 

@@ -44,13 +44,15 @@ export function SurfaceViewer({ gridUrl, textureUrl }: Props) {
   const [textureEnabled, setTextureEnabled] = useState(true);
   const [exaggeration, setExaggeration] = useState(2.2);
   const [resetSignal, setResetSignal] = useState(0);
+  const [viewerStatus, setViewerStatus] = useState<"loading" | "ready" | "error">("loading");
 
   useEffect(() => {
     const host = hostRef.current;
     if (!host) return undefined;
+    setViewerStatus("loading");
     let disposed = false;
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x07110f);
+    scene.background = new THREE.Color(0x121918);
     const camera = new THREE.PerspectiveCamera(42, 1, 0.1, 100);
     camera.position.set(8, 7, 9);
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
@@ -61,17 +63,17 @@ export function SurfaceViewer({ gridUrl, textureUrl }: Props) {
     controls.enableDamping = true;
     controls.target.set(0, 0.8, 0);
     controls.update();
-    scene.add(new THREE.HemisphereLight(0xe4fff4, 0x183128, 2.3));
+    scene.add(new THREE.HemisphereLight(0xf4f7f5, 0x26312e, 2.3));
     const sun = new THREE.DirectionalLight(0xffffff, 2.2);
     sun.position.set(4, 10, 3);
     scene.add(sun);
-    const gridHelper = new THREE.GridHelper(14, 14, 0x276252, 0x15362f);
+    const gridHelper = new THREE.GridHelper(14, 14, 0x52625d, 0x2c3835);
     gridHelper.position.y = -0.04;
     scene.add(gridHelper);
     let mesh: THREE.Mesh | undefined;
     let texture: THREE.Texture | undefined;
     const material = new THREE.MeshStandardMaterial({
-      color: textureEnabled ? 0xffffff : 0x62c98f,
+      color: textureEnabled ? 0xffffff : 0x7d9c92,
       roughness: 0.92,
       metalness: 0,
       side: THREE.DoubleSide,
@@ -95,8 +97,11 @@ export function SurfaceViewer({ gridUrl, textureUrl }: Props) {
         material.needsUpdate = true;
         mesh = new THREE.Mesh(createSurface(grid, exaggeration), material);
         scene.add(mesh);
+        setViewerStatus("ready");
       })
-      .catch(() => undefined);
+      .catch(() => {
+        if (!disposed) setViewerStatus("error");
+      });
 
     const resize = () => {
       const width = Math.max(host.clientWidth, 320);
@@ -131,14 +136,14 @@ export function SurfaceViewer({ gridUrl, textureUrl }: Props) {
   return (
     <div className="viewer-shell">
       <div className="viewer-toolbar" aria-label="3D viewer controls">
-        <button type="button" className={wireframe ? "active" : ""} onClick={() => setWireframe(!wireframe)}>
-          Wireframe
-        </button>
-        <button type="button" className={textureEnabled ? "active" : ""} onClick={() => setTextureEnabled(!textureEnabled)}>
+        <button type="button" aria-pressed={textureEnabled} className={textureEnabled ? "active" : ""} onClick={() => setTextureEnabled(!textureEnabled)}>
           Texture
         </button>
+        <button type="button" aria-pressed={wireframe} className={wireframe ? "active" : ""} onClick={() => setWireframe(!wireframe)}>
+          Wireframe
+        </button>
         <label>
-          Display exaggeration <strong>{exaggeration.toFixed(1)}×</strong>
+          Vertical display <strong>{exaggeration.toFixed(1)}×</strong>
           <input
             aria-label="Display vertical exaggeration"
             type="range"
@@ -149,10 +154,13 @@ export function SurfaceViewer({ gridUrl, textureUrl }: Props) {
             onChange={(event) => setExaggeration(Number(event.target.value))}
           />
         </label>
-        <button type="button" onClick={() => setResetSignal((value) => value + 1)}>Reset view</button>
+        <button type="button" onClick={() => setResetSignal((value) => value + 1)}>Reset</button>
       </div>
-      <div ref={hostRef} className="viewer" aria-label="Interactive textured relative surface" />
-      <p className="viewer-help">Drag to orbit · right-drag to pan · scroll to zoom. Exaggeration changes display only.</p>
+      <div ref={hostRef} className="viewer" aria-label="Interactive textured relative surface">
+        {viewerStatus === "loading" && <div className="viewer-status">Preparing 3D surface…</div>}
+        {viewerStatus === "error" && <div className="viewer-status error" role="alert">The 3D surface could not be loaded.</div>}
+      </div>
+      <p className="viewer-help">Drag: orbit · right-drag: pan · scroll: zoom · vertical display affects the viewer only</p>
     </div>
   );
 }

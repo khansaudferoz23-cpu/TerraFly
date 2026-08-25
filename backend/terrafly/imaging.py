@@ -13,6 +13,11 @@ from PIL import Image, UnidentifiedImageError
 
 
 SUPPORTED_EXTENSIONS = {".png", ".jpg", ".jpeg", ".tif", ".tiff"}
+SINGLE_BAND_WARNING = (
+    "Single-band input was repeated into RGB for compatibility. Thermal/TIR imagery is outside this "
+    "pretrained model's validated optical-image domain; treat the result as a software demonstration, "
+    "not scientific validation."
+)
 
 
 @dataclass(slots=True)
@@ -93,6 +98,8 @@ def _inspect_geotiff(data: bytes, max_pixels: int) -> InspectedImage:
             has_georef = dataset.crs is not None
             geospatial = None
             notes: list[str] = []
+            if dataset.count == 1:
+                notes.append(SINGLE_BAND_WARNING)
             if has_georef:
                 geospatial = {
                     "crs": dataset.crs.to_string(),
@@ -130,6 +137,7 @@ def inspect_image(data: bytes, filename: str, max_pixels: int) -> InspectedImage
     if suffix in {".tif", ".tiff"}:
         return _inspect_geotiff(data, max_pixels)
 
+    notes: list[str] = []
     try:
         with warnings.catch_warnings():
             warnings.simplefilter("error", Image.DecompressionBombWarning)
@@ -151,8 +159,10 @@ def inspect_image(data: bytes, filename: str, max_pixels: int) -> InspectedImage
                     "sha256": hashlib.sha256(data).hexdigest(),
                     "bytes": len(data),
                 }
+                if original_mode in {"1", "L", "I", "I;16", "F"}:
+                    notes.append(SINGLE_BAND_WARNING)
     except HTTPException:
         raise
     except (UnidentifiedImageError, OSError, Image.DecompressionBombError, Image.DecompressionBombWarning) as exc:
         raise HTTPException(status_code=400, detail="The image is corrupt or unsafe to decode.") from exc
-    return InspectedImage(rgb=rgb, metadata=metadata, geospatial=None, warnings=[])
+    return InspectedImage(rgb=rgb, metadata=metadata, geospatial=None, warnings=notes)

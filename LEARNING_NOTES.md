@@ -15,3 +15,11 @@ The real adapter proves the application can use a pretrained model. The determin
 ## Display exaggeration
 
 The viewer may multiply vertex heights so small relative differences are visible. The stored float32 array never changes, and the UI labels the multiplier as display-only.
+
+## Execution is not validation
+
+A grayscale or thermal image can be repeated into three channels, so an RGB model can execute without a shape error. That does not mean the model understands thermal radiance or has been validated for TIR. TerraFly records a warning for single-band inputs and treats SAC TIR previews as software demonstrations only.
+
+## Why `.npy` and PNG have different jobs
+
+An `.npy` file preserves numeric array shape, dtype, and values. A PNG is convenient for human viewing but may be stretched, colorized, or quantized. Training, evaluation, and calibration should use the numeric array when it is the authoritative source; previews are for visual quality checks.

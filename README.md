@@ -14,9 +14,16 @@ The normal adapter is the real Apache-2.0 `depth-anything/Depth-Anything-V2-Smal
 
 1. Run `scripts\setup.ps1` once in PowerShell. The first setup downloads PyTorch and the web packages.
 2. Double-click `Start-TerraFly.cmd`.
-3. Open `http://127.0.0.1:5173` if it does not open automatically.
+3. Keep the launcher window open. TerraFly waits for both services and opens `http://127.0.0.1:5173` automatically.
 
 The app binds only to this computer (`127.0.0.1`). Model weights and uploaded/generated jobs stay in ignored local folders.
+
+## Understand before presenting
+
+- `docs/TEAM_TECHNICAL_GUIDE.md`: architecture, outputs, model limits, SAC sample distinction, judge answers, and team learning split.
+- `FILE_GUIDE.md`: why every tracked source/config/test/document exists.
+- `docs/UX_RATIONALE.md`: what was wrong and right in the first interface and why the revised design looks the way it does.
+- `DATA_SOURCES.md`: exact source commits, local sample hashes, and the boundary between thermal/colorization data and height ground truth.
 
 ## Verification
 

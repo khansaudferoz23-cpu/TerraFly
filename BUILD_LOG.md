@@ -29,3 +29,15 @@ Status vocabulary: PASS, FAIL, BLOCKED, SKIPPED.
 - FAIL — First two ZIP verification attempts exposed Windows archive line-ending conversion mismatches; no failed ZIP was delivered or retained.
 - PASS — Normalized release text to LF, hashed committed export bytes, and repeated packaging.
 - PASS — Clean path-with-spaces extraction verified all 61 manifest hashes and ran all 13 backend tests from extracted source in 1.12 seconds.
+
+## 2026-08-25 — professional UI and explainability hardening
+
+- PASS — Audited the original browser result screens against the team's requested professional direction and the supplied anti-pattern video.
+- PASS — Rebuilt the interface around a neutral palette, one accent, clear hierarchy, one primary action, a dominant 3D workspace, and a compact result inspector; removed decorative badges, repeated card chrome, and fake future exports.
+- PASS — Added file drop, viewer loading/error states, responsive layout, meaningful evidence-download explanations, and a collapsed detailed-method/provenance layer.
+- PASS — Audited the related SAC IR-colorization repository at commit `c6735fbffd0d7b08383572357e95d55f91c719e1`; documented why its `.npy` arrays are radiometric training data for a different problem and why its PNGs are previews rather than height labels.
+- PASS — Added single-band/TIR domain warnings to the backend response and visible UI, with regression assertions that RGB/RGBA inputs do not receive the warning.
+- PASS — Ran the downloaded 512×512 TIR preview through the real cached model in the browser; result, warning, viewer, comparison, and evidence sections rendered successfully.
+- PASS — Phone-size QA at 390×844 showed no horizontal page overflow after the process-line wrap repair.
+- FAIL — The new file-selection component test initially retained the first rendered page; explicit cleanup was added and the isolated suite passed 2/2.
+- PASS — Final revised checks: 13 backend tests, 2 frontend tests, production build, Python compilation/dependency consistency, and PowerShell launcher parsing.
