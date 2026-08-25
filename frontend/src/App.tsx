@@ -334,9 +334,17 @@ export default function App() {
               <b>Download · {fileSize(artifactRecord("preview")?.bytes ?? 0)}</b>
             </a>
             <a href={artifact("numeric_surface")} download>
-              <span><strong>{artifactRecord("numeric_surface")?.filename ?? "relative_surface.npy"}</strong><small>Lossless float32 relative values used for analysis and later calibration.</small></span>
+              <span><strong>{artifactRecord("numeric_surface")?.filename ?? "relative_surface.npy"}</strong><small>Normalized float32 relative heights used directly by the 3D mesh and later calibration.</small></span>
               <b>Download · {fileSize(artifactRecord("numeric_surface")?.bytes ?? 0)}</b>
             </a>
+            {artifactRecord("raw_model_output") && <a href={artifact("raw_model_output")} download>
+              <span><strong>{artifactRecord("raw_model_output")?.filename}</strong><small>Untouched model prediction saved before normalization or height-convention conversion.</small></span>
+              <b>Download · {fileSize(artifactRecord("raw_model_output")?.bytes ?? 0)}</b>
+            </a>}
+            {artifactRecord("height_diagnostics") && <a href={artifact("height_diagnostics")} download>
+              <span><strong>{artifactRecord("height_diagnostics")?.filename}</strong><small>Machine-readable convention, one-pass normalization proof, geometry source, and global-tilt warning.</small></span>
+              <b>Download · {fileSize(artifactRecord("height_diagnostics")?.bytes ?? 0)}</b>
+            </a>}
             <a href={artifact("glb_mesh")} download>
               <span><strong>{artifactRecord("glb_mesh")?.filename ?? "relative_surface.glb"}</strong><small>Portable 3D mesh with embedded scene colours and relative—not metric—vertical values.</small></span>
               <b>Download · {fileSize(artifactRecord("glb_mesh")?.bytes ?? 0)}</b>

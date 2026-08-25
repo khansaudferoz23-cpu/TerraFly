@@ -7,7 +7,7 @@
   "input_geotiff": "terrafly_calibration_demo_input.tif",
   "input_geotiff_sha256": "f3d2a85c934434ba3f19196a6d3357eee2b6be4d7cc412631edea0ac11e62091",
   "reference_geotiff": "terrafly_calibration_demo_reference.tif",
-  "reference_geotiff_sha256": "a7888e98b488159f9dc168912f53acc8f8a7fcdd98f1f8000cc888d536107aef",
+  "reference_geotiff_sha256": "f0c2192284b33e18c1686539faa256e20d9e07ae9e38c2c791db0773d0ee4d45",
   "model_id": "depth-anything/Depth-Anything-V2-Small-hf",
   "model_revision": "5426e4f0f36572d16453bbda7a8389317b1bef99",
   "device_used_to_generate": "cuda",

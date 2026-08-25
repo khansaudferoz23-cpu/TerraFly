@@ -93,7 +93,7 @@ def main() -> None:
             "weights_included": False,
         },
         "tests": {
-            "backend": "PASS (26)",
+            "backend": "PASS (32)",
             "frontend": "PASS (4)",
             "frontend_build": "PASS",
             "real_cpu": "PASS",
@@ -112,7 +112,7 @@ def main() -> None:
             "metric_geotiff_contract": "PASS",
             "source_nodata_preservation": "PASS",
             "single_server_production_ui": "PASS",
-            "real_final_calibration_workflow": "PASS (13 artifact hashes)",
+            "real_final_calibration_workflow": "PASS (15 artifact hashes)",
             "release_archives_and_checksums": "PASS",
             "clean_extracted_path_with_spaces": "PASS",
         },

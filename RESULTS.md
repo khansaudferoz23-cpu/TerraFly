@@ -59,10 +59,10 @@ Day 3 verified exact-grid calibration, robust outlier handling, held-out metrics
 
 | Test | Result | Evidence |
 |---|---:|---|
-| Backend suite (26) | PASS | safety, serving, inference, artifacts, tiling, geospatial, calibration, rejection |
+| Backend suite (32) | PASS | safety, serving, output convention, raised-roof GLB, artifacts, tiling, geospatial, calibration, rejection |
 | Frontend suite (4) | PASS | scientific contract, real file action, asymmetric orientation and point sampling |
 | Production interface build | PASS | strict TypeScript/Vite; interface served by FastAPI without Vite |
-| Full real-model workflow | PASS | CUDA; `Metric Calibrated`; 13/13 artifact hashes; 4.924 s direct smoke |
+| Full real-model workflow | PASS | CUDA; `Metric Calibrated`; 15/15 artifact hashes; 5.875 s direct smoke |
 | Bundled robust calibration oracle | PASS | scale 39.99999998, offset 100.0, held-out RMSE 0.0000035 m, R² 1.0 |
 | Metric GeoTIFF | PASS | EPSG:32643, matching affine/dimensions, float32, metre units, datum tags |
 | Production browser workflow | PASS | upload, progress, real WebGL, Orbit/First-person modes, A/B, toggles, calibration, exports |
@@ -70,3 +70,18 @@ Day 3 verified exact-grid calibration, robust outlier handling, held-out metrics
 | Final Windows/source packages | PASS | SHA-256 checksums and clean path-with-spaces extraction in `handoff/FINAL_TEST_REPORT.md` |
 
 The synthetic oracle result is deliberately almost perfect because it is derived from the generated relative surface. It validates the implementation and its refusal rules; it must never be quoted as satellite/aerial height accuracy.
+
+## Output-convention repair evidence
+
+The original adapter performed `1 - normalized_depth` even though this checkpoint's relative output behaves like inverse depth/proximity. That extra inversion made closer rooftops appear as holes. TerraFly now preserves raw output, declares the convention, normalizes exactly once, and uses `relative_surface.npy`—not a colour PNG—as the geometry source.
+
+| Check | Result | Evidence |
+|---|---:|---|
+| Backend suite | PASS | 32 tests, including all constant-output conventions, inverse-depth/depth mappings, and raised-roof GLB ordering |
+| Frontend suite/build | PASS | 4 tests; strict 23-module production build |
+| Supplied stadium CUDA rerun | PASS | 9/9 hashes; larger raw values mapped higher; plane fraction 0.9459 |
+| Supplied residential CUDA rerun | PASS | 9/9 hashes; rooftops above nearby roads; plane fraction 0.7674 |
+| Local production browser | PASS | corrected textured 3D stadium, raw/diagnostic links, warnings, and no browser errors |
+| Full calibration workflow | PASS | 15/15 hashes; regenerated software oracle; scale 40.00000007; RMSE 0.00000295 m |
+
+The hole/reversal bug is fixed. The large plane fractions are a separate monocular perspective-bias limitation; they are reported but not automatically removed.

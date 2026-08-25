@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import traceback
 
-from .artifacts import sha256_file, write_surface_artifacts
+from .artifacts import sha256_file, surface_tilt_diagnostics, write_surface_artifacts
 from .config import Settings
 from .imaging import inspect_image
 from .inference.factory import create_adapter
@@ -53,8 +53,23 @@ def run_job(job_id: str, settings: Settings) -> None:
         }
         manifest.configuration.update(prediction.metadata)
         manifest.configuration["estimated_working_bytes"] = working_bytes
+        tilt_diagnostics = surface_tilt_diagnostics(prediction.relative_height)
+        manifest.configuration["global_tilt_indicator"] = tilt_diagnostics
+        if tilt_diagnostics["warning"]:
+            prediction.warnings.append(
+                "This scene has a dominant image-plane trend "
+                f"({float(tilt_diagnostics['plane_variance_fraction']):.1%} of sampled variance); "
+                "it may be perspective bias rather than terrain slope. No automatic correction was applied."
+            )
         manifest.warnings = list(dict.fromkeys(manifest.warnings + prediction.warnings))
-        artifacts = write_surface_artifacts(job_dir, prediction.relative_height, inspected.rgb)
+        artifacts = write_surface_artifacts(
+            job_dir,
+            prediction.relative_height,
+            inspected.rgb,
+            raw_model_output=prediction.raw_model_output,
+            conversion_diagnostics=prediction.conversion_diagnostics,
+            tilt_diagnostics=tilt_diagnostics,
+        )
         manifest.artifacts = artifacts
         manifest.status = JobStatus.COMPLETE
         manifest.stage = "complete"

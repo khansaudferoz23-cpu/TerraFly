@@ -15,11 +15,24 @@ from terrafly.main import create_app
 def main() -> int:
     parser = argparse.ArgumentParser(description="Exercise upload-to-artifacts with the real model.")
     parser.add_argument("--device", choices=("cpu", "cuda"), default="cuda")
+    parser.add_argument(
+        "--input",
+        type=Path,
+        help="Optional PNG/JPG/GeoTIFF scene; defaults to the bundled synthetic aerial sample.",
+    )
+    parser.add_argument(
+        "--jobs-root",
+        type=Path,
+        help="Optional isolated artifact directory for this verification run.",
+    )
     args = parser.parse_args()
     project_root = Path(__file__).resolve().parents[1]
-    sample_path = project_root / "sample_data" / "terrafly_synthetic_aerial.png"
+    sample_path = (args.input or project_root / "sample_data" / "terrafly_synthetic_aerial.png").resolve()
+    if not sample_path.is_file():
+        parser.error(f"Input file does not exist: {sample_path}")
+    jobs_root = (args.jobs_root or project_root / "runtime" / "real-api-smoke").resolve()
     settings = Settings(
-        jobs_root=project_root / "runtime" / "real-api-smoke",
+        jobs_root=jobs_root,
         model_adapter="depth-anything-v2",
         model_id="depth-anything/Depth-Anything-V2-Small-hf",
         device=args.device,
@@ -54,6 +67,8 @@ def main() -> int:
         "units": job["units"],
         "model": job["model"],
         "input_sha256": job["input"]["sha256"],
+        "input_path": str(sample_path),
+        "job_directory": str(jobs_root / job["job_id"]),
         "verified_artifacts": verified_artifacts,
         "metric_output_allowed": job["calibration"]["metric_output_allowed"],
         "warnings": job["warnings"],

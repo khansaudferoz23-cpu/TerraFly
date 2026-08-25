@@ -42,7 +42,15 @@ It is a downsampled responsive inspection mesh. Metric `.npy` and GeoTIFF remain
 
 ## What do the `.npy` files mean?
 
-TerraFly’s `relative_surface.npy` preserves full-resolution float32 0–1 values; `metric_surface.npy` exists only after a calibration pass and contains metres. The related SAC repository’s `.npy` files are TIR super-resolution/colorization arrays, not height data and not required TerraFly runtime files.
+TerraFly preserves `raw_model_output.npy` before any conversion. `relative_surface.npy` is the normalized float32 0–1 geometry source; `metric_surface.npy` exists only after a calibration pass and contains metres. The related SAC repository’s `.npy` files are TIR super-resolution/colorization arrays, not height data and not required TerraFly runtime files.
+
+## Why did buildings initially look like holes?
+
+The first adapter treated the checkpoint field as ordinary depth and inverted it. Depth Anything V2's relative output behaves like inverse depth/proximity, so that extra inversion reversed local height ordering. The repair declares the convention, preserves raw output, normalizes once, and has a synthetic regression that fails unless a raised roof remains above flat ground in both NumPy and GLB geometry.
+
+## Is the strong whole-image slope fixed?
+
+Not yet, and TerraFly does not hide it. `height_diagnostics.json` fits a reporting-only plane and warns when it dominates the surface. Correcting that bias needs independently evaluated overhead-data logic; silently flattening every scene could remove real terrain slope.
 
 ## Why can TIR run if it is not validated?
 

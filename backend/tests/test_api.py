@@ -25,13 +25,32 @@ def test_upload_pipeline_handles_odd_dimensions_and_modes(client, mode):
     assert job["units"] == "relative_0_1"
     assert job["calibration"]["metric_output_allowed"] is False
     names = {artifact["name"] for artifact in job["artifacts"]}
-    assert {"numeric_surface", "preview", "texture", "height_texture", "surface_grid", "glb_mesh", "manifest"} <= names
+    assert {
+        "raw_model_output",
+        "numeric_surface",
+        "preview",
+        "texture",
+        "height_texture",
+        "surface_grid",
+        "glb_mesh",
+        "height_diagnostics",
+        "manifest",
+    } <= names
     surface_response = client.get(f"/api/jobs/{job['job_id']}/artifacts/numeric_surface")
     surface = np.load(io.BytesIO(surface_response.content), allow_pickle=False)
+    raw_response = client.get(f"/api/jobs/{job['job_id']}/artifacts/raw_model_output")
+    raw = np.load(io.BytesIO(raw_response.content), allow_pickle=False)
     assert surface.shape == (23, 37)
+    assert raw.shape == surface.shape
     assert surface.dtype == np.float32
     assert np.isfinite(surface).all()
     assert 0 <= float(surface.min()) <= float(surface.max()) <= 1
+    diagnostics = client.get(
+        f"/api/jobs/{job['job_id']}/artifacts/height_diagnostics"
+    ).json()
+    assert diagnostics["conversion"]["normalization"]["applied_count"] == 1
+    assert diagnostics["geometry"]["source"] == "relative_surface.npy"
+    assert diagnostics["geometry"]["colour_preview_is_geometry_source"] is False
     assert any("TEST-ONLY" in warning for warning in job["warnings"])
     if mode == "L":
         assert any("Single-band input" in warning for warning in job["warnings"])

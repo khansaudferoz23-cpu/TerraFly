@@ -36,11 +36,12 @@ Use this as the answer to “why does this file exist?” Paths are grouped by r
 | `backend/terrafly/imaging.py` | Filename/content validation, safe decoding, RGB normalization, GeoTIFF inspection, hashes, and single-band warnings. |
 | `backend/terrafly/jobs.py` | Creates per-run IDs/directories and atomically persists live job state. |
 | `backend/terrafly/pipeline.py` | Enforces the processing-memory budget, orchestrates validation → inference → artifacts, and converts failures into honest job states. |
-| `backend/terrafly/artifacts.py` | Writes numeric, preview, texture, 16-bit, orientation-aware viewer grid, valid GLB, and SHA-256 records. |
+| `backend/terrafly/artifacts.py` | Preserves raw/numeric output, writes preview, texture, 16-bit, orientation-aware viewer grid, valid GLB, height/tilt diagnostics, and SHA-256 records. |
 | `backend/terrafly/calibration.py` | Validates reference grids/GCPs, robustly fits scale and offset, performs held-out quality gates, preserves NoData, and writes metric/error evidence only on pass. |
 | `backend/terrafly/inference/__init__.py` | Marks the inference adapter directory as a package. |
 | `backend/terrafly/inference/base.py` | Defines the common prediction result and adapter interface used by real and test implementations. |
-| `backend/terrafly/inference/depth_anything_v2.py` | Real pretrained inference, robust normalization/inversion, CUDA/CPU selection, and OOM fallback. |
+| `backend/terrafly/inference/conventions.py` | Defines raw output meanings and performs the single tested conversion to normalized relative height. |
+| `backend/terrafly/inference/depth_anything_v2.py` | Real pretrained inference, explicit inverse-depth/proximity convention, CUDA/CPU selection, and OOM fallback. |
 | `backend/terrafly/inference/deterministic.py` | Fast repeatable test implementation; fenced and labelled so it cannot masquerade as production science. |
 | `backend/terrafly/inference/factory.py` | Chooses an adapter from settings and enforces the test-adapter safety interlock. |
 | `backend/terrafly/inference/tiling.py` | Plans bounded overlapping tiles, aligns crop scale/offset, feather-blends raw predictions, and refuses excessive tile counts. |
@@ -51,10 +52,10 @@ Use this as the answer to “why does this file exist?” Paths are grouped by r
 |---|---|
 | `backend/tests/__init__.py` | Makes relative test imports consistent on Windows and extracted release paths. |
 | `backend/tests/conftest.py` | Creates isolated temporary settings, FastAPI client, and synthetic encoded images for tests. |
-| `backend/tests/test_adapter_contract.py` | Verifies normalized finite output and prevents the deterministic adapter from normal execution. |
+| `backend/tests/test_adapter_contract.py` | Verifies one-pass output conversion, raised-building ordering, finite output, and the test-adapter production interlock. |
 | `backend/tests/test_api.py` | Tests valid modes, numeric artifacts/hashes, single-band/TIR warnings, corrupt/unsafe/oversized rejection, and metric refusal. |
 | `backend/tests/test_geotiff.py` | Proves CRS/transform/NoData survive while vertical metric claims remain locked. |
-| `backend/tests/test_artifacts.py` | Parses the GLB container and proves grid, texture, corner colour, and scientific metadata orientation. |
+| `backend/tests/test_artifacts.py` | Parses GLB and proves grid/texture orientation, diagnostic provenance, and that a synthetic roof exports above flat ground. |
 | `backend/tests/test_tiling.py` | Proves coverage, overlap blending, affine scale/offset alignment, and maximum-tile refusal. |
 | `backend/tests/test_calibration.py` | Proves reference-DSM pass, outlier robustness, alignment refusal, poor-evidence rejection, GCP validation, metric metadata, and hashes. |
 
@@ -90,7 +91,7 @@ Use this as the answer to “why does this file exist?” Paths are grouped by r
 | `scripts/package_release.ps1` | Creates the tracked-source ZIP, Windows source/prebuilt-interface folder and ZIP, and SHA-256 checksum record without overwriting an existing release. |
 | `scripts/smoke_final_workflow.py` | Executes the real GeoTIFF → relative → aligned-reference → metric path and verifies all 13 hashes plus metre/CRS GeoTIFF tags. |
 | `scripts/smoke_real_model.py` | Measures a direct real-model inference and records device/revision/output statistics. |
-| `scripts/smoke_real_api.py` | Exercises the complete real upload-to-artifacts API path, including hashes. |
+| `scripts/smoke_real_api.py` | Exercises the complete real upload-to-artifacts API path for the bundled or a supplied scene, including every hash. |
 | `scripts/smoke_tiled_model.py` | Forces four real CUDA tiles and verifies strategy metadata, shape, range, dtype, finiteness, and output hash. |
 | `scripts/create_offline_sample.py` | Regenerates the deterministic CC0 orientation/workflow fixture from code. |
 | `scripts/create_calibration_demo.py` | Reproducibly creates the bundled georeferenced input/reference software-oracle pair and its metadata; never claims survey truth. |

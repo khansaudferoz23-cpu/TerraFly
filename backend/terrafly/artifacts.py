@@ -158,11 +158,66 @@ def _write_glb(path: Path, grid: np.ndarray, colours: np.ndarray) -> None:
     path.write_bytes(glb)
 
 
-def write_surface_artifacts(job_dir: Path, relative: np.ndarray, rgb: np.ndarray) -> list[Artifact]:
+def surface_tilt_diagnostics(relative: np.ndarray) -> dict[str, object]:
+    """Report a dominant image-plane trend without altering the numeric surface."""
+
+    rows = np.linspace(0, relative.shape[0] - 1, min(relative.shape[0], 256)).astype(int)
+    columns = np.linspace(0, relative.shape[1] - 1, min(relative.shape[1], 256)).astype(int)
+    sampled = relative[np.ix_(rows, columns)].astype(np.float64)
+    row_axis = np.linspace(-1.0, 1.0, sampled.shape[0], dtype=np.float64)
+    column_axis = np.linspace(-1.0, 1.0, sampled.shape[1], dtype=np.float64)
+    row_grid, column_grid = np.meshgrid(row_axis, column_axis, indexing="ij")
+    values = sampled.ravel()
+    design = np.column_stack((np.ones(values.size), row_grid.ravel(), column_grid.ravel()))
+    coefficients, *_ = np.linalg.lstsq(design, values, rcond=None)
+    fitted = design @ coefficients
+    total_variance = float(np.square(values - values.mean()).sum())
+    residual_variance = float(np.square(values - fitted).sum())
+    plane_fraction = 0.0 if total_variance <= 1e-12 else 1.0 - residual_variance / total_variance
+
+    def correlation(axis: np.ndarray) -> float:
+        if float(values.std()) <= 1e-12 or float(axis.std()) <= 1e-12:
+            return 0.0
+        return float(np.corrcoef(values, axis)[0, 1])
+
+    return {
+        "method": "least_squares_plane_on_max_256x256_sample",
+        "plane_coefficients": {
+            "offset": float(coefficients[0]),
+            "normalized_row": float(coefficients[1]),
+            "normalized_column": float(coefficients[2]),
+        },
+        "plane_variance_fraction": float(np.clip(plane_fraction, 0.0, 1.0)),
+        "row_correlation": correlation(row_grid.ravel()),
+        "column_correlation": correlation(column_grid.ravel()),
+        "warning": (
+            "A dominant image-plane trend is present; it may be monocular perspective bias, not terrain slope."
+            if plane_fraction >= 0.5
+            else None
+        ),
+        "correction_applied": False,
+    }
+
+
+def write_surface_artifacts(
+    job_dir: Path,
+    relative: np.ndarray,
+    rgb: np.ndarray,
+    *,
+    raw_model_output: np.ndarray,
+    conversion_diagnostics: dict[str, object],
+    tilt_diagnostics: dict[str, object] | None = None,
+) -> list[Artifact]:
     if relative.ndim != 2 or relative.shape != rgb.shape[:2]:
         raise ValueError("Surface and texture dimensions must match.")
     if not np.isfinite(relative).all():
         raise ValueError("Surface contains non-finite values.")
+    raw_model_output = np.asarray(raw_model_output, dtype=np.float32)
+    if raw_model_output.ndim != 2 or raw_model_output.shape != relative.shape:
+        raise ValueError("Raw model output and relative height dimensions must match.")
+
+    raw_path = job_dir / "raw_model_output.npy"
+    np.save(raw_path, raw_model_output, allow_pickle=False)
     surface_path = job_dir / "relative_surface.npy"
     np.save(surface_path, relative.astype(np.float32), allow_pickle=False)
     preview_path = job_dir / "relative_preview.png"
@@ -196,11 +251,43 @@ def write_surface_artifacts(job_dir: Path, relative: np.ndarray, rgb: np.ndarray
     )
     glb_path = job_dir / "relative_surface.glb"
     _write_glb(glb_path, grid.astype(np.float32), grid_colours)
+    diagnostic_path = job_dir / "height_diagnostics.json"
+    diagnostic_path.write_text(
+        json.dumps(
+            {
+                "schema_version": "1.0",
+                "conversion": conversion_diagnostics,
+                "raw_model_output": {
+                    "filename": raw_path.name,
+                    "shape": list(raw_model_output.shape),
+                    "dtype": str(raw_model_output.dtype),
+                    "preserved_before_height_conversion": True,
+                },
+                "relative_height": {
+                    "filename": surface_path.name,
+                    "shape": list(relative.shape),
+                    "dtype": "float32",
+                    "minimum": float(relative.min()),
+                    "maximum": float(relative.max()),
+                },
+                "geometry": {
+                    "source": surface_path.name,
+                    "colour_preview_is_geometry_source": False,
+                    "mesh_grid_max_side": max_grid_side,
+                },
+                "global_tilt_indicator": tilt_diagnostics or surface_tilt_diagnostics(relative),
+            },
+            indent=2,
+        ),
+        encoding="utf-8",
+    )
     return [
+        _artifact("raw_model_output", raw_path, "application/octet-stream"),
         _artifact("numeric_surface", surface_path, "application/octet-stream"),
         _artifact("preview", preview_path, "image/png"),
         _artifact("texture", texture_path, "image/png"),
         _artifact("height_texture", height_path, "image/png"),
         _artifact("surface_grid", grid_path, "application/json"),
         _artifact("glb_mesh", glb_path, "model/gltf-binary"),
+        _artifact("height_diagnostics", diagnostic_path, "application/json"),
     ]

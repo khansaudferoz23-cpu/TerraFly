@@ -2,7 +2,8 @@
 
 - Monocular output is a relative depth-derived surface, not surveyed elevation.
 - GeoTIFF georeferencing alone does not supply vertical scale or a vertical datum.
-- The inversion from relative depth to relative height is a display convention and can be wrong for scene geometry such as sloped terrain, façades, water, sky, haze, or unusual viewpoints.
+- The raw checkpoint output is inverse-depth/proximity-like. TerraFly's nearer-means-higher mapping assumes a near-nadir overhead scene; façades, oblique views, water, haze, shadows, and occlusions can still violate that assumption.
+- Monocular perspective can create a dominant image-plane tilt unrelated to terrain. TerraFly measures and warns about it in `height_diagnostics.json` but does not silently subtract a plane or claim it has been corrected.
 - Single-band imagery is repeated into RGB for compatibility. Thermal/TIR is outside the current pretrained model's validated optical domain and receives an explicit demonstration-only warning.
 - Calibration is a single global affine scale and offset. It cannot correct spatially varying model distortion, local relief errors, temporal change, occlusion, or domain shift.
 - The reference-DSM path requires the exact same CRS, dimensions, and affine pixel grid; Day 3 does not reproject or resample evidence.

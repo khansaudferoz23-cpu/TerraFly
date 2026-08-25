@@ -13,9 +13,11 @@ Greenfield bootstrap. The authenticated GitHub account `khansaudferoz23-cpu` own
 - PNG/JPEG mode normalization and GeoTIFF CRS/transform/NoData inspection.
 - Strict `Relative`, `Georeferenced Relative`, and `Metric Calibrated` state vocabulary.
 - Real Depth Anything V2 Small adapter with CUDA/CPU selection and CUDA-OOM fallback.
+- Explicit inverse-depth/proximity convention with one normalization pass, preserved raw prediction, and no accidental roof inversion.
 - Test-only deterministic adapter with a normal-run safety interlock.
 - Per-job input hash, scientific state, model/device/revision, warnings, calibration refusal, and artifact hashes.
 - Numeric `.npy`, colour preview, texture, 16-bit display height texture, and 3D grid exports.
+- Per-run height diagnostics name the numeric geometry source and quantify dominant image-plane tilt without silently flattening it.
 - React upload/progress/results UI and interactive Three.js orbit/pan/zoom viewer.
 - Task-first neutral UI with working drag/drop, dominant 3D workspace, responsive result inspector, loading/error states, and explained evidence downloads.
 - Explicit single-band/TIR domain warning in the API manifest and visible result UI.
@@ -74,12 +76,15 @@ The remaining scientific work is intentionally outside this software milestone: 
 - PASS — Day 3 source archive extracted to a fresh path containing spaces; all 77 manifest hashes and all 25 backend tests passed from extracted source.
 - LIMIT — this is a synthetic calibration correctness result, not a real-world remote-sensing accuracy score.
 
-## Verified Day 4 final release
+## Verified Day 4 final release and convention repair
 
-- PASS — 26 backend tests, 4 frontend tests, strict production build, Python dependency consistency, and final launcher/checker parser checks.
-- PASS — complete real CUDA calibration smoke in 4.924 seconds: `Metric Calibrated`, 13 artifact hashes, EPSG:32643, float32 metre GeoTIFF, scale 40, offset 100, held-out RMSE 0.0000035 m, and R² 1.0 on the bundled synthetic oracle.
+- PASS — 32 backend tests, 4 frontend tests, strict production build, Python dependency consistency, and final launcher/checker parser checks.
+- PASS — complete real CUDA calibration smoke in 5.875 seconds: `Metric Calibrated`, 15 artifact hashes, EPSG:32643, float32 metre GeoTIFF, scale 40, offset 100, held-out RMSE 0.00000295 m, and R² 1.0 on the regenerated bundled synthetic oracle.
+- PASS — supplied stadium and residential scenes reran on CUDA with all 9 artifacts hashed; local rooftops/rim are no longer inverted into holes.
+- PASS — synthetic flat ground plus raised square proves the normalized array and exported GLB keep the roof above ground.
 - PASS — backend serves the prebuilt React/Three.js interface and API together at `127.0.0.1:8000`; no Vite process is required for final operation.
 - PASS — visible production browser workflow: real CUDA inference, WebGL 3D result, A/B inspection, orbit/first-person mode, texture/wireframe toggles, calibration pass, and truthful evidence links.
 - PASS — responsive production QA at 390×844 with document width contained and no horizontal page overflow.
 - PASS — final source/release ZIP checksums and clean extracted-folder-with-spaces verification are recorded in `handoff/FINAL_TEST_REPORT.md`.
 - LIMIT — pointer lock cannot be granted by automated browser control; the first-person mode/help/key contract was verified and the normal interactive browser path remains the manual acceptance step.
+- LIMIT — measured global plane trends remain strong on the supplied scenes (94.6% stadium, 76.7% residential); the diagnostic warns, and no unvalidated flattening is applied.

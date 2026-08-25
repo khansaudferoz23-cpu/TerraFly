@@ -4,6 +4,7 @@ import numpy as np
 from PIL import Image
 
 from .base import Prediction
+from .conventions import OutputConvention, to_relative_height
 from .tiling import predict_tiled
 
 
@@ -88,7 +89,9 @@ class DepthAnythingV2Adapter:
             self._load()
         notes = [
             "Depth Anything V2 produces relative monocular depth, not elevation or height in metres.",
-            "The displayed relative surface inverts normalized depth; its scale and offset are arbitrary.",
+            "The checkpoint output is treated as inverse depth/proximity: larger raw values are closer.",
+            "For a near-nadir scene, closer is mapped directly to higher relative surface; no extra inversion is applied.",
+            "Perspective-driven global tilt can remain and must not be interpreted as terrain slope.",
         ]
         try:
             if rgb.shape[0] * rgb.shape[1] > self.tile_trigger_pixels:
@@ -127,21 +130,18 @@ class DepthAnythingV2Adapter:
                 depth = self._predict_on_device(rgb)
                 tile_count = 1
                 inference_mode = "single_pass"
-        finite = np.isfinite(depth)
-        if not finite.any():
-            raise RuntimeError("The model returned no finite depth values.")
-        low = float(np.percentile(depth[finite], 1))
-        high = float(np.percentile(depth[finite], 99))
-        if high <= low:
-            relative_height = np.zeros_like(depth, dtype=np.float32)
-            notes.append("Model depth had no usable range; the relative surface is flat.")
-        else:
-            normalized_depth = np.clip((depth - low) / (high - low), 0, 1)
-            relative_height = (1.0 - normalized_depth).astype(np.float32)
-            relative_height[~finite] = 0.0
+        raw_model_output = np.asarray(depth, dtype=np.float32)
+        relative_height, conversion_diagnostics = to_relative_height(
+            raw_model_output,
+            OutputConvention.INVERSE_DEPTH,
+        )
+        if conversion_diagnostics["flat_output"]:
+            notes.append("Model output had no usable range; the relative surface is flat.")
         revision = getattr(getattr(self._model, "config", None), "_commit_hash", None)
         return Prediction(
+            raw_model_output=raw_model_output,
             relative_height=relative_height,
+            output_convention=OutputConvention.INVERSE_DEPTH.value,
             model_id=self.model_id,
             model_revision=revision,
             device=self._device,
@@ -151,5 +151,8 @@ class DepthAnythingV2Adapter:
                 "tile_count": tile_count,
                 "tile_size": self.tile_size if inference_mode == "tiled" else None,
                 "tile_overlap": self.tile_overlap if inference_mode == "tiled" else None,
+                "output_convention": OutputConvention.INVERSE_DEPTH.value,
+                "normalization": conversion_diagnostics["normalization"],
             },
+            conversion_diagnostics=conversion_diagnostics,
         )

@@ -76,7 +76,9 @@ def main() -> int:
                 raise AssertionError(calibrated["calibration"])
             names = {artifact["name"] for artifact in calibrated["artifacts"]}
             expected = {
+                "raw_model_output",
                 "numeric_surface",
+                "height_diagnostics",
                 "glb_mesh",
                 "calibration_reference",
                 "calibration_report",

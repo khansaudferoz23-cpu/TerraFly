@@ -19,7 +19,7 @@ FastAPI validation ── rejects unsafe name/format/size/pixel count
 Inference adapter ── Depth Anything V2 Small on CUDA, CPU fallback
   │ large input: bounded overlap tiles → affine align → feather blend
   ▼
-Relative surface ── normalize depth, invert for display, preserve 0–1 values
+Raw output ── preserve `.npy` → apply declared convention once → relative 0–1 surface
   ▼
 Artifact writer ── .npy + preview + texture + viewer grid + GLB + manifest
   ▼
@@ -43,7 +43,9 @@ A GeoTIFF can add a coordinate reference system, pixel size, map position, and b
 
 | Runtime file | What it contains | Why it exists | What it is not |
 |---|---|---|---|
+| `raw_model_output.npy` | Full-resolution float32 prediction before height conversion | Audit the model output and prove normalization was not repeated | Directly displayable height or metres |
 | `relative_surface.npy` | Lossless float32 2D array in the 0–1 relative range | Numeric source for analysis, later calibration, and reproducible tests | A DSM or height map in metres |
+| `height_diagnostics.json` | Output convention, one-pass normalization record, geometry source, and plane-trend indicator | Diagnose reversal/tilt without deriving geometry from a preview | A claim that perspective bias was corrected |
 | `relative_preview.png` | Colourized rendering of the relative array | Quick human quality check and presentation | Training ground truth or lossless science data |
 | `texture.png` | Input converted into the model/viewer RGB convention | Texture for the 3D surface | A model prediction |
 | `relative_height_16bit.png` | 16-bit display encoding of the relative surface | Renderer/export interoperability without reducing to 8 bits | Metric elevation |
@@ -57,13 +59,13 @@ A GeoTIFF can add a coordinate reference system, pixel size, map position, and b
 | `metric_surface.tif` | Calibrated float32 elevation with source CRS/transform/NoData and vertical tags | GIS-compatible passing-gate result | Available after a rejection |
 | `calibration_error.tif` | Candidate metric surface minus aligned reference, in metres | Spatial residual diagnosis | Absolute truth about every object |
 
-The web UI always offers preview, relative numeric surface, colour GLB, and manifest. Calibration/report/metric/residual files appear only when they actually exist.
+The web UI always offers preview, relative numeric surface, raw model output, height diagnostics, colour GLB, and manifest. Calibration/report/metric/residual files appear only when they actually exist.
 
 ## The model adapters
 
 ### Real adapter
 
-`DepthAnythingV2Adapter` loads `depth-anything/Depth-Anything-V2-Small-hf`, records its exact revision, prefers CUDA, and falls back to CPU after a CUDA out-of-memory error. It returns a float32 relative surface and an explicit warning against metric interpretation.
+`DepthAnythingV2Adapter` loads `depth-anything/Depth-Anything-V2-Small-hf`, records its exact revision, prefers CUDA, and falls back to CPU after a CUDA out-of-memory error. It preserves the raw output, declares it `inverse_depth_or_proximity`, and maps larger/closer values directly to higher relative surface for near-nadir scenes after one robust global normalization. It also warns that this is not metric and that global perspective tilt may remain.
 
 When an image exceeds the configured trigger, the adapter predicts overlapping tiles. Because tile crops can have different arbitrary depth scale and offset, overlap values fit a positive affine alignment before feather blending. Only the complete blended raw surface is normalized. Tile count, size, overlap, and mode are written to the job configuration.
 
@@ -186,5 +188,5 @@ If an answer is unclear, open the named source file in `FILE_GUIDE.md` and trace
 2. Use Orbit for left-drag rotate, right-drag pan, wheel zoom, and A/B point comparison.
 3. Use First-person for mouse-look, `W/A/S/D`, `Q/E`, Shift boost, and `Esc` release.
 4. Run the bundled GeoTIFF/reference pair and say “synthetic software oracle” before showing the near-zero error.
-5. Double-click `Check-TerraFly.cmd`, and know that `scripts\verify.ps1 -Full` adds the real model, 13 artifact hashes, and metric GeoTIFF inspection.
+5. Double-click `Check-TerraFly.cmd`, and know that `scripts\verify.ps1 -Full` adds the real model, 15 artifact hashes, and metric GeoTIFF inspection.
 6. If asked for the final release proof, open `handoff/FINAL_TEST_REPORT.md`; if asked how anything works, open `docs/cookbook/TERRAFLY_COOKBOOK.md`.

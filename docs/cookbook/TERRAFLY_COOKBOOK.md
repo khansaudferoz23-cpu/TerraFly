@@ -57,7 +57,7 @@ Single-band data is repeated into RGB only so the optical model can execute. The
 
 ## Step 2 — estimate relative structure
 
-`backend/terrafly/inference/depth_anything_v2.py` loads `depth-anything/Depth-Anything-V2-Small-hf`, records its revision, prefers CUDA, and recovers on CPU after CUDA out-of-memory. The raw prediction is robustly normalized and inverted into a visually intuitive 0–1 relative surface.
+`backend/terrafly/inference/depth_anything_v2.py` loads `depth-anything/Depth-Anything-V2-Small-hf`, records its revision, prefers CUDA, and recovers on CPU after CUDA out-of-memory. TerraFly preserves the raw prediction first. The adapter declares it inverse depth/proximity—larger means closer—and, for a near-nadir scene, maps it directly to higher relative surface after one 2nd–98th percentile normalization. There is no extra inversion.
 
 Large images use `inference/tiling.py`. Overlapping crops cannot be normalized independently because monocular depth has arbitrary scale and offset. TerraFly aligns tile overlaps with a positive affine relation, feather-blends them, and normalizes only the complete surface. Tile count and memory are bounded.
 
@@ -67,7 +67,9 @@ The deterministic adapter exists only for fast offline tests. It requires an exp
 
 | Runtime artifact | Why it exists |
 |---|---|
+| `raw_model_output.npy` | Untouched full-resolution prediction before normalization/conversion |
 | `relative_surface.npy` | Lossless full-resolution float32 0–1 source for computation |
+| `height_diagnostics.json` | Convention, one-pass normalization, numeric geometry source, and uncorrected tilt indicator |
 | `relative_preview.png` | Human-readable colorized quality check |
 | `texture.png` | RGB convention actually used by the model/viewer |
 | `relative_height_16bit.png` | Higher-precision display/interchange texture |
@@ -142,6 +144,7 @@ Real evaluation needs independently surveyed, co-registered height truth with a 
 - GeoTIFF CRS/transform/NoData without false vertical claims;
 - tile coverage/alignment/blending/refusal;
 - GLB container, geometry, colour, orientation, and non-metric metadata;
+- inverse-depth/depth convention mapping and raised-roof-above-ground ordering in the exported GLB;
 - viewer top/left orientation and point sampling;
 - completed-job cleanup path safety;
 - exact calibration alignment;

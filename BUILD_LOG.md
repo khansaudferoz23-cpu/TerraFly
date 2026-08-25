@@ -91,3 +91,14 @@ Status vocabulary: PASS, FAIL, BLOCKED, SKIPPED.
 - INFO — Automated Chromium cannot grant pointer lock and logged its own denial when first-person was clicked; the mode, help/key contract, and normal manual-browser controls are documented for rehearsal.
 - PASS — Final archives were extracted to a fresh path containing spaces, source hashes/tests/static serving were verified, and archive SHA-256 values were recorded in the final report.
 - LIMIT — No independent surveyed dataset exists in scope; the final release makes no real-world height-accuracy claim.
+
+## 2026-08-25 — overhead building-hole repair
+
+- FAIL — Supplied overhead scenes exposed an output-convention bug: the adapter inverted a relative checkpoint output that already behaves like inverse depth/proximity, so closer roofs could become downward holes.
+- PASS — Added one typed conversion boundary for inverse depth, ordinary depth, and relative height; normalization is recorded with `applied_count=1`.
+- PASS — Preserved `raw_model_output.npy`; kept `relative_surface.npy` as the sole numeric geometry source; added `height_diagnostics.json` proving the preview is not used for geometry.
+- PASS — Added flat-ground/raised-square tests that verify the roof is above ground in the normalized array and parsed GLB positions.
+- PASS — 32 backend tests, 4 frontend tests, and the strict production build passed.
+- PASS — Real CUDA reruns of the supplied stadium and residential scenes generated and hash-verified 9/9 artifacts each; the corrected browser viewer showed raised local structures.
+- PASS — Regenerated the explicitly synthetic calibration oracle from the corrected convention and verified 15/15 real calibrated artifacts, scale 40.00000007, held-out RMSE 0.00000295 m, and R² approximately 1.0.
+- LIMIT — A reporting-only plane fit found 94.6% and 76.7% global-trend fractions on the two supplied images. No silent detrending or unvalidated training was added.

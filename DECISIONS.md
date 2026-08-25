@@ -12,9 +12,9 @@ The only system Python is 3.14.0, while the Codex runtime provides Python 3.12.1
 
 Production defaults to Depth Anything V2 Small through Transformers. Fast tests use `DeterministicTestAdapter`, which requires an explicit test flag and writes a test-only warning into every result.
 
-## D-004 — Relative height display convention
+## D-004 — Initial relative-height assumption (superseded by D-017)
 
-The pretrained model predicts relative depth. TerraFly robustly normalizes it and uses `1 - normalized_depth` as a visually intuitive relative surface. This does not create a physical height scale.
+The first implementation treated the checkpoint field as ordinary depth and used `1 - normalized_depth`. Real overhead-scene inspection and a synthetic raised-roof regression showed that assumption reversed local structure. D-017 replaces it; this entry remains so the repair is auditable rather than silently rewritten.
 
 ## D-005 — CUDA wheel
 
@@ -63,3 +63,7 @@ Include a small georeferenced input and aligned synthetic reference so any judge
 ## D-016 — Release source plus prebuilt interface, not third-party caches
 
 The final Windows ZIP contains all tracked source and `frontend/dist`, while Python/npm environments and model weights remain reproducible setup downloads governed by their own licenses. This keeps the release auditable and reasonably sized; it must not be described as fully offline or dependency-bundled.
+
+## D-017 — Make model-output direction explicit and preserve the pre-conversion array
+
+Treat Depth Anything V2 Small's raw relative output as inverse depth/proximity: larger means closer. Under the app's near-nadir overhead assumption, closer maps directly to higher relative surface after one global 2nd–98th percentile normalization; no extra inversion is applied. Preserve `raw_model_output.npy`, make `relative_surface.npy` the sole numeric geometry source, and write `height_diagnostics.json` with the convention, normalization count, geometry source, and a non-correcting global-tilt indicator. Synthetic flat-ground/raised-building tests must prove that both the numeric result and GLB keep the roof above the ground.
