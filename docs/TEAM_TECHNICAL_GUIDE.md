@@ -17,12 +17,13 @@ FastAPI validation ── rejects unsafe name/format/size/pixel count
   ├─ records image metadata, hash, CRS/transform when present
   ▼
 Inference adapter ── Depth Anything V2 Small on CUDA, CPU fallback
+  │ large input: bounded overlap tiles → affine align → feather blend
   ▼
 Relative surface ── normalize depth, invert for display, preserve 0–1 values
   ▼
-Artifact writer ── .npy + preview + texture + viewer grid + manifest
+Artifact writer ── .npy + preview + texture + viewer grid + GLB + manifest
   ▼
-React polls progress ── Three.js renders the textured surface
+React polls progress ── Three.js renders orbit/first-person inspection + A/B samples
 ```
 
 ## Why the result is relative
@@ -40,16 +41,19 @@ A GeoTIFF can add a coordinate reference system, pixel size, map position, and b
 | `texture.png` | Input converted into the model/viewer RGB convention | Texture for the 3D surface | A model prediction |
 | `relative_height_16bit.png` | 16-bit display encoding of the relative surface | Renderer/export interoperability without reducing to 8 bits | Metric elevation |
 | `relative_grid.json` | Downsampled surface values, maximum 192×192 | Keeps the browser mesh responsive | The full-resolution numeric result |
+| `relative_surface.glb` | GLB 2.0 triangle mesh with embedded vertex colours and relative Y | Portable 3D inspection in compatible tools | Metric or full-resolution elevation |
 | `job.json` | Live persisted job state | Lets progress survive separate API requests | Final immutable evidence |
 | `job_manifest.json` | Final input/model/warning/artifact record | Reproducibility and audit trail | A secret or credential file |
 
-The web UI offers only the three outputs useful to a normal user: preview, numeric surface, and final manifest. Viewer-only support files remain internal.
+The web UI offers four outputs useful to a normal user: preview, numeric surface, colour GLB, and final manifest. Viewer-only support files remain internal.
 
 ## The model adapters
 
 ### Real adapter
 
 `DepthAnythingV2Adapter` loads `depth-anything/Depth-Anything-V2-Small-hf`, records its exact revision, prefers CUDA, and falls back to CPU after a CUDA out-of-memory error. It returns a float32 relative surface and an explicit warning against metric interpretation.
+
+When an image exceeds the configured trigger, the adapter predicts overlapping tiles. Because tile crops can have different arbitrary depth scale and offset, overlap values fit a positive affine alignment before feather blending. Only the complete blended raw surface is normalized. Tile count, size, overlap, and mode are written to the job configuration.
 
 ### Deterministic test adapter
 
@@ -112,9 +116,17 @@ They prove which exact input and artifacts belong to a run. If a file changes, i
 
 Relative differences can be visually small. The slider changes vertex display only; it never alters the saved numeric array. The UI labels this explicitly.
 
-### “Why not export GeoTIFF or GLB now?”
+### “What does point A versus B measure?”
 
-Day 1 prioritizes a tested relative pipeline. A metric GeoTIFF must wait for vertical calibration; GLB belongs to the robust viewer/export milestone. The UI does not pretend these unfinished features are available.
+It compares two bilinearly sampled values from the relative surface and reports their difference in relative units. It does not claim metres, slope, or geographic distance.
+
+### “Why is GLB available but GeoTIFF is still locked?”
+
+GLB is an inspection format and explicitly stores relative values. A metric GeoTIFF would imply calibrated elevation tied to a vertical reference, which the current evidence cannot support. Portability and metric validity are different questions.
+
+### “Why tile instead of shrinking every large image?”
+
+Shrinking discards local detail. Tiles bound per-pass memory while retaining more spatial structure. TerraFly aligns crop scale/offset in overlaps and records the strategy, but still requires evaluation before claiming greater remote-sensing accuracy.
 
 ## Team learning split
 
@@ -136,5 +148,7 @@ Without looking at this file, explain:
 5. Why the SAC thermal arrays do not train TerraFly height.
 6. What the Three.js exaggeration slider changes—and what it does not.
 7. How hashes and the manifest support reproducibility.
+8. Why tile overlaps need scale/offset alignment before blending.
+9. Why a GLB can be valid while still non-metric.
 
 If an answer is unclear, open the named source file in `FILE_GUIDE.md` and trace the relevant function.

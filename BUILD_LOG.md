@@ -42,3 +42,19 @@ Status vocabulary: PASS, FAIL, BLOCKED, SKIPPED.
 - FAIL — The new file-selection component test initially retained the first rendered page; explicit cleanup was added and the isolated suite passed 2/2.
 - PASS — Final revised checks: 13 backend tests, 2 frontend tests, production build, Python compilation/dependency consistency, and PowerShell launcher parsing.
 - PASS — Revised source archive extracted to a fresh path containing spaces; all 64 manifest hashes and all 13 backend tests passed in 1.12 seconds.
+
+## 2026-08-25 — Day 2 robust 3D and large-image inference
+
+- PASS — Added bounded overlapping-tile planning, overlap affine scale/offset alignment, feather blending, one global normalization, and persisted strategy metadata.
+- FAIL — Initial tiling tests used incorrect manual tile-count expectations; corrected the expectations, then improved the planner to remove redundant near-terminal tiles without leaving edge pixels uncovered.
+- PASS — Added an input-dependent processing-memory estimate and pre-acceptance HTTP 413 refusal.
+- PASS — Added GLB 2.0 export with triangle geometry, embedded normalized vertex colours, and explicit relative/non-metric extras; binary container, corner colours, and hashes are parsed in tests.
+- PASS — Added image/grid orientation metadata plus asymmetric backend and frontend corner assertions.
+- PASS — Added orbit and pointer-lock first-person navigation, raycast A/B point sampling, source pixel mapping, relative difference, markers, and clear/reset controls.
+- PASS — Added completed-job deletion; path validation and post-delete 404 are covered by API tests.
+- PASS — Hardened the Windows launcher to reuse healthy TerraFly services, refuse unknown occupied ports, write readable logs, and leave CMD errors visible.
+- PASS — Final automated gate: 20 backend tests in 1.10 seconds, 4 frontend tests in 2.05 seconds, strict 23-module production build in 0.359 seconds, Python compilation, dependency consistency, and launcher parser.
+- PASS — Forced real four-tile CUDA inference completed in 21.734 seconds; shape/dtype/range/finiteness/strategy and SHA-256 passed.
+- PASS — Real CUDA API completed in 5.101 seconds and verified seven artifact downloads including GLB.
+- PASS — Browser QA used the downloaded SAC RGB preview: real result, WebGL mesh, orbit/first-person toggle, A/B samples, evidence links, and no new error-level logs.
+- FAIL — Phone QA found a 320 px canvas inside a 307 px viewer; removed the fixed minimum and reran at 390×844 with exact 307 px containment and no page overflow.

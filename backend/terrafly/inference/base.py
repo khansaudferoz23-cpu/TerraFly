@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Protocol
+from typing import Any, Protocol
 
 import numpy as np
 
@@ -13,6 +13,7 @@ class Prediction:
     model_revision: str | None
     device: str
     warnings: list[str]
+    metadata: dict[str, Any]
 
 
 class InferenceAdapter(Protocol):

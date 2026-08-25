@@ -81,6 +81,8 @@ def _inspect_geotiff(data: bytes, max_pixels: int) -> InspectedImage:
 
     try:
         with MemoryFile(data) as memory_file, memory_file.open() as dataset:
+            if dataset.width < 2 or dataset.height < 2:
+                raise HTTPException(status_code=400, detail="Image dimensions must be at least 2×2 pixels.")
             pixels = dataset.width * dataset.height
             if pixels > max_pixels:
                 raise HTTPException(status_code=413, detail=f"Image exceeds the {max_pixels}-pixel limit.")
@@ -144,6 +146,8 @@ def inspect_image(data: bytes, filename: str, max_pixels: int) -> InspectedImage
             with Image.open(io.BytesIO(data)) as image:
                 if image.format not in {"PNG", "JPEG"}:
                     raise HTTPException(status_code=415, detail="File contents do not match PNG or JPEG.")
+                if image.width < 2 or image.height < 2:
+                    raise HTTPException(status_code=400, detail="Image dimensions must be at least 2×2 pixels.")
                 pixels = image.width * image.height
                 if pixels > max_pixels:
                     raise HTTPException(status_code=413, detail=f"Image exceeds the {max_pixels}-pixel limit.")

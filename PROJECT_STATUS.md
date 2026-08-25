@@ -20,6 +20,12 @@ Greenfield bootstrap. The authenticated GitHub account `khansaudferoz23-cpu` own
 - Task-first neutral UI with working drag/drop, dominant 3D workspace, responsive result inspector, loading/error states, and explained evidence downloads.
 - Explicit single-band/TIR domain warning in the API manifest and visible result UI.
 - Team technical guide, file-by-file repository ledger, UI rationale, and exact related-SAC sample audit.
+- Overlapping tiled inference with bounded tile count, overlap affine alignment, feather blending, global normalization, and recorded strategy metadata.
+- Input-dependent processing-memory budget enforced before job acceptance.
+- Asymmetric orientation contract shared by viewer grid, image texture, point sampling, and GLB vertex colours.
+- Orbit and pointer-lock first-person navigation plus two-point relative comparison with source pixel coordinates.
+- Standards-based GLB 2.0 mesh export with embedded vertex colours and explicit non-metric metadata.
+- Completed-result deletion and launcher reuse/port/log diagnostics without killing unknown processes.
 
 ## Verified Day 1 baseline
 
@@ -38,4 +44,13 @@ Greenfield bootstrap. The authenticated GitHub account `khansaudferoz23-cpu` own
 
 ## Not yet complete
 
-First-person navigation, point comparison, calibration, evaluation, GeoTIFF result export, GLB export, tiled inference, dependency-bundled portable release, and Day 2–4 judge packaging.
+Calibration, evaluation, calibrated GeoTIFF result export, compatible reference-raster/GCP intake, dependency-bundled portable release, and Day 3–4 judge packaging.
+
+## Verified Day 2 baseline
+
+- PASS — 20 backend tests and 4 frontend tests, including tiling, memory refusal, GLB structure/colour orientation, point sampling, cleanup, and asymmetric corner mapping.
+- PASS — real four-tile CUDA inference in 21.734 seconds with finite 320×480 float32 output.
+- PASS — real CUDA upload-to-seven-artifact API workflow in 5.101 seconds; every artifact hash matched.
+- PASS — browser RGB upload, real inference, WebGL render, orbit/first-person switching, two-point comparison, GLB link, and completed-result presentation.
+- PASS — 390×844 responsive QA with page width and canvas width contained; no new browser errors after the canvas repair.
+- PASS — PowerShell launcher syntax, explicit occupied-port diagnostics, readable service logs, reuse of an already-running TerraFly service, and a persistent CMD error message.

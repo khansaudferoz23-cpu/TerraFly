@@ -1,6 +1,6 @@
 # TerraFly
 
-TerraFly converts one optical RGB satellite or aerial image into a **relative surface/depth proxy**, preserves geospatial metadata when a GeoTIFF provides it, and renders the result as a textured interactive 3D height field.
+TerraFly converts one optical RGB satellite or aerial image into a **relative surface/depth proxy**, preserves geospatial metadata when a GeoTIFF provides it, and renders the result as an inspectable 3D height field.
 
 > A PNG or JPG does not contain enough evidence to recover elevation in metres. A georeferenced GeoTIFF adds horizontal location and scale, not a trustworthy vertical scale. TerraFly unlocks metric DSM output only after a documented vertical calibration succeeds.
 
@@ -8,7 +8,9 @@ TerraFly converts one optical RGB satellite or aerial image into a **relative su
 
 Upload PNG, JPG/JPEG, or GeoTIFF → validate safely → run an interchangeable inference adapter → save a float32 relative array → create 2D/3D display artifacts → inspect provenance and export results.
 
-The normal adapter is the real Apache-2.0 `depth-anything/Depth-Anything-V2-Small-hf` checkpoint. Automated tests use a deterministic adapter that is technically blocked from normal runs and visibly labels every result as test-only.
+The normal adapter is the real Apache-2.0 `depth-anything/Depth-Anything-V2-Small-hf` checkpoint. Large inputs use bounded overlapping tiles with overlap scale/offset alignment and feather blending before one global normalization. Automated tests use a deterministic adapter that is technically blocked from normal runs and visibly labels every result as test-only.
+
+Day 2 adds orbit/first-person navigation, two-point relative comparison, a standards-based colour GLB export, explicit orientation contracts, processing-memory refusal, and safe completed-job cleanup. These remain relative inspection tools, not metric measurement.
 
 ## Beginner launch (Windows)
 

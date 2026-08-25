@@ -26,4 +26,5 @@ class DeterministicTestAdapter:
             warnings=[
                 "TEST-ONLY deterministic adapter output: not pretrained inference and not scientific evidence."
             ],
+            metadata={"inference_mode": "single_pass", "tile_count": 1},
         )

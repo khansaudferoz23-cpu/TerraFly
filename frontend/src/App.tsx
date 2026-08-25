@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
-import { artifactUrl, createJob, getJob } from "./api";
+import { artifactUrl, createJob, deleteJob, getJob } from "./api";
 import { SurfaceViewer } from "./SurfaceViewer";
+import type { InspectedPoint } from "./surfaceGeometry";
 import type { Artifact, Job } from "./types";
 import "./styles.css";
 
@@ -38,6 +39,7 @@ export default function App() {
   const [busy, setBusy] = useState(false);
   const [dragging, setDragging] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [points, setPoints] = useState<InspectedPoint[]>([]);
   const localPreview = useMemo(() => (file ? URL.createObjectURL(file) : null), [file]);
 
   useEffect(() => () => { if (localPreview) URL.revokeObjectURL(localPreview); }, [localPreview]);
@@ -61,6 +63,22 @@ export default function App() {
     setFile(nextFile);
     setJob(null);
     setError(null);
+    setPoints([]);
+  }
+
+  async function clearResult() {
+    if (!job || job.status !== "complete") return;
+    setBusy(true);
+    setError(null);
+    try {
+      await deleteJob(job.job_id);
+      setJob(null);
+      setPoints([]);
+    } catch (reason) {
+      setError(reason instanceof Error ? reason.message : "Could not clear this result.");
+    } finally {
+      setBusy(false);
+    }
   }
 
   async function generate() {
@@ -68,6 +86,7 @@ export default function App() {
     setBusy(true);
     setError(null);
     setJob(null);
+    setPoints([]);
     try {
       setJob(await createJob(file));
     } catch (reason) {
@@ -162,7 +181,10 @@ export default function App() {
         <section className="result-section" aria-labelledby="result-title">
           <div className="section-heading result-heading">
             <div><p className="section-label">Completed run</p><h2 id="result-title">Relative surface analysis</h2></div>
-            <div className="result-state"><strong>{job.scientific_state}</strong><span>Values are relative, not metres</span></div>
+            <div className="result-actions">
+              <div className="result-state"><strong>{job.scientific_state}</strong><span>Values are relative, not metres</span></div>
+              <button className="quiet-action" type="button" disabled={busy} onClick={clearResult}>Clear result</button>
+            </div>
           </div>
 
           {isSingleBand && <div className="domain-note" role="note">
@@ -172,7 +194,7 @@ export default function App() {
 
           <div className="analysis-layout">
             <div className="viewer-column">
-              <SurfaceViewer gridUrl={artifact("surface_grid")} textureUrl={artifact("texture")} />
+              <SurfaceViewer gridUrl={artifact("surface_grid")} textureUrl={artifact("texture")} onPointsChange={setPoints} />
             </div>
             <aside className="result-inspector">
               <div className="comparison-pair">
@@ -183,12 +205,26 @@ export default function App() {
                 <h3>How to read this</h3>
                 <p>The colour map and 3D shape show ordering and local structure. They do not provide absolute terrain height, building height, or elevation.</p>
               </div>
+              <div className="point-inspection" aria-live="polite">
+                <div><h3>Point comparison</h3><span>relative units</span></div>
+                {points.length === 0 ? <p>Click the 3D surface to set point A, then point B.</p> : <>
+                  <ol>
+                    {points.map((point) => <li key={point.label} className={`point-${point.label.toLowerCase()}`}>
+                      <strong>{point.label}</strong>
+                      <span>{point.relativeValue.toFixed(3)}</span>
+                      <small>pixel {point.column}, {point.row} · x {(point.xFraction * 100).toFixed(1)}% · y {(point.yFraction * 100).toFixed(1)}%</small>
+                    </li>)}
+                  </ol>
+                  {points.length === 2 && <p className="point-difference">Absolute difference <strong>{Math.abs(points[1].relativeValue - points[0].relativeValue).toFixed(3)}</strong></p>}
+                </>}
+              </div>
               <details className="run-details">
                 <summary>Inspect run provenance</summary>
                 <dl>
                   <div><dt>Model</dt><dd>{String(job.model.checkpoint ?? "Unavailable")}</dd></div>
                   <div><dt>Revision</dt><dd className="hash">{String(job.model.revision ?? "Unavailable")}</dd></div>
                   <div><dt>Device</dt><dd>{String(job.model.device ?? "Unavailable")}</dd></div>
+                  <div><dt>Inference</dt><dd>{String(job.configuration.inference_mode ?? "single_pass").replace("_", " ")}{Number(job.configuration.tile_count ?? 1) > 1 ? ` · ${String(job.configuration.tile_count)} tiles` : ""}</dd></div>
                   <div><dt>Input hash</dt><dd className="hash">{String(job.input.sha256)}</dd></div>
                   <div><dt>CRS</dt><dd>{String(job.geospatial?.crs ?? "Not supplied")}</dd></div>
                 </dl>
@@ -211,6 +247,10 @@ export default function App() {
               <span><strong>{artifactRecord("numeric_surface")?.filename ?? "relative_surface.npy"}</strong><small>Lossless float32 relative values used for analysis and later calibration.</small></span>
               <b>Download · {fileSize(artifactRecord("numeric_surface")?.bytes ?? 0)}</b>
             </a>
+            <a href={artifact("glb_mesh")} download>
+              <span><strong>{artifactRecord("glb_mesh")?.filename ?? "relative_surface.glb"}</strong><small>Portable 3D mesh with embedded scene colours and relative—not metric—vertical values.</small></span>
+              <b>Download · {fileSize(artifactRecord("glb_mesh")?.bytes ?? 0)}</b>
+            </a>
             <a href={artifact("manifest")} download>
               <span><strong>{artifactRecord("manifest")?.filename ?? "job_manifest.json"}</strong><small>Audit record containing input hash, model revision, device, warnings, and artifact hashes.</small></span>
               <b>Download · {fileSize(artifactRecord("manifest")?.bytes ?? 0)}</b>
@@ -229,13 +269,13 @@ export default function App() {
         <summary>What happens inside TerraFly?</summary>
         <div>
           <p><strong>1. Validate.</strong> Check filename, format, size, pixel count, and geospatial metadata before decoding.</p>
-          <p><strong>2. Infer.</strong> Depth Anything V2 estimates relative monocular depth from visual structure.</p>
-          <p><strong>3. Convert.</strong> TerraFly normalizes and inverts depth into a 0–1 display surface; this is not metric height.</p>
-          <p><strong>4. Preserve evidence.</strong> Numeric data, previews, hashes, model identity, and warnings are stored per run.</p>
+          <p><strong>2. Infer.</strong> Depth Anything V2 estimates relative monocular depth; large images use bounded overlapping tiles.</p>
+          <p><strong>3. Inspect.</strong> TerraFly builds a 0–1 surface for orbit, first-person navigation, and two-point comparison.</p>
+          <p><strong>4. Preserve evidence.</strong> Numeric data, GLB mesh, previews, hashes, model identity, and warnings are stored per run.</p>
         </div>
       </details>
 
-      <footer><span>TerraFly · Day 1 baseline</span><span>Local processing · explicit scientific limits · reproducible outputs</span></footer>
+      <footer><span>TerraFly · Day 2 robust 3D baseline</span><span>Local processing · explicit scientific limits · reproducible outputs</span></footer>
     </main>
   );
 }

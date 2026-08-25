@@ -6,6 +6,8 @@ No scientific accuracy result is claimed. No ground-truth height dataset was sup
 
 The deterministic upload-to-artifact path and the separately implemented real-model path are both verified. The CUDA API smoke downloaded every declared artifact and checked its SHA-256 digest. The revised browser workflow rendered a real result from the downloaded 512×512 TIR preview, showed the required domain warning, and displayed the Three.js surface without presenting it as validated TIR science.
 
+Day 2 verified real four-tile CUDA inference, a seven-artifact workflow including parsed GLB 2.0 output, browser A/B relative sampling, navigation-mode switching, and responsive containment. These are engineering results; scientific accuracy remains unevaluated without compatible height truth.
+
 ## Test table
 
 | Test | Command | Result | Duration | Evidence | Environment |
@@ -22,3 +24,15 @@ The deterministic upload-to-artifact path and the separately implemented real-mo
 | Responsive browser workflow | 390×844 viewport | PASS | interactive | no horizontal document overflow | completed result state |
 | Windows launcher parse | PowerShell parser | PASS | <1 s | no syntax errors | readiness + auto-open path |
 | Extracted revised source ZIP | manifest verifier + extracted pytest | PASS | 1.12 s pytest | `handoff/DAY_1_TEST_REPORT.md` | 64 hashes; fresh path contains spaces |
+
+## Day 2 test table
+
+| Test | Result | Duration | Evidence |
+|---|---:|---:|---|
+| Backend suite (20) | PASS | 1.10 s | `handoff/DAY_2_TEST_REPORT.md` |
+| Frontend suite (4) | PASS | 2.05 s | orientation and scientific-contract components |
+| Production build | PASS | 0.359 s | strict TypeScript + Vite |
+| Real aligned four-tile CUDA inference | PASS | 21.734 s | 320×480 float32; 4 tiles; output hash recorded |
+| Real CUDA upload-to-seven-artifact API | PASS | 5.101 s | GLB and every declared artifact hash matched |
+| Browser RGB workflow | PASS | interactive | orbit/first-person switching, A/B samples, GLB link, WebGL |
+| 390×844 browser layout | PASS | interactive | document and repaired canvas remained contained |

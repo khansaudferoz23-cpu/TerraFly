@@ -44,13 +44,17 @@ class JobManifest(BaseModel):
     configuration: dict[str, Any]
     warnings: list[str]
     error: str | None = None
-    artifacts: list[Artifact] = []
+    artifacts: list[Artifact] = Field(default_factory=list)
 
 
 class Capabilities(BaseModel):
     accepted_extensions: list[str]
     max_upload_bytes: int
     max_pixels: int
+    max_working_bytes: int
     default_model: str
+    tiled_inference: bool = True
+    tile_size: int
+    tile_overlap: int
     scientific_states: list[str]
     metric_requires_calibration: bool = True

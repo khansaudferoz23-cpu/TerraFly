@@ -23,3 +23,15 @@ A grayscale or thermal image can be repeated into three channels, so an RGB mode
 ## Why `.npy` and PNG have different jobs
 
 An `.npy` file preserves numeric array shape, dtype, and values. A PNG is convenient for human viewing but may be stretched, colorized, or quantized. Training, evaluation, and calibration should use the numeric array when it is the authoritative source; previews are for visual quality checks.
+
+## Why large images need aligned overlapping tiles
+
+Running a very large raster at once can exceed memory. Simple independent tiles are also unsafe because monocular depth may choose a different scale and offset for each crop. TerraFly uses shared overlap pixels to align each raw tile to the growing surface, blends the overlap gradually, and performs one final normalization. The manifest records whether the run was single-pass or tiled.
+
+## What point comparison means
+
+A surface click becomes an image x/y fraction, source pixel coordinate, and bilinearly sampled relative value. Comparing A and B is useful for inspecting ordering and contrast. It is not a claim about metres or geographic distance.
+
+## What the GLB contains
+
+The GLB is a portable triangle mesh built from the responsive 192×192-or-smaller viewer grid. Its vertical coordinate is the same 0–1 relative value, and scene appearance is stored as vertex colour. The full-resolution `.npy` remains the numeric source of truth.

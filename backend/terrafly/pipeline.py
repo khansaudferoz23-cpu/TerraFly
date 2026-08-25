@@ -10,6 +10,11 @@ from .jobs import JobStore
 from .schemas import Artifact, JobStatus
 
 
+def estimated_working_bytes(width: int, height: int) -> int:
+    """Conservative input-dependent budget for RGB, predictions, blending, and artifacts."""
+    return width * height * 32
+
+
 def run_job(job_id: str, settings: Settings) -> None:
     store = JobStore(settings.jobs_root)
     manifest = store.get(job_id)
@@ -21,6 +26,12 @@ def run_job(job_id: str, settings: Settings) -> None:
         manifest.progress = 15
         store.save(manifest)
         inspected = inspect_image(input_path.read_bytes(), manifest.input["filename"], settings.max_pixels)
+        working_bytes = estimated_working_bytes(inspected.rgb.shape[1], inspected.rgb.shape[0])
+        if working_bytes > settings.max_working_bytes:
+            raise RuntimeError(
+                "Image exceeds the configured processing-memory safety budget. "
+                "Reduce its dimensions or raise TERRAFLY_MAX_WORKING_BYTES deliberately."
+            )
 
         manifest.stage = "preprocessing"
         manifest.progress = 30
@@ -40,6 +51,8 @@ def run_job(job_id: str, settings: Settings) -> None:
             "revision": prediction.model_revision,
             "device": prediction.device,
         }
+        manifest.configuration.update(prediction.metadata)
+        manifest.configuration["estimated_working_bytes"] = working_bytes
         manifest.warnings = list(dict.fromkeys(manifest.warnings + prediction.warnings))
         artifacts = write_surface_artifacts(job_dir, prediction.relative_height, inspected.rgb)
         manifest.artifacts = artifacts

@@ -29,18 +29,19 @@ Use this as the answer to “why does this file exist?” Paths are grouped by r
 | File | Purpose and reason to keep it |
 |---|---|
 | `backend/terrafly/__init__.py` | Marks `terrafly` as a Python package and exposes the package version boundary. |
-| `backend/terrafly/config.py` | Central settings for job storage, upload limits, model ID, adapter, device, and test safety flag. |
+| `backend/terrafly/config.py` | Central settings for job storage, upload/memory/tile limits, model ID, adapter, device, and test safety flag. |
 | `backend/terrafly/schemas.py` | Pydantic contracts for scientific states, jobs, artifacts, and capabilities; stops undocumented API shapes. |
-| `backend/terrafly/main.py` | FastAPI routes for health, capabilities, upload, status polling, and safe artifact download. |
+| `backend/terrafly/main.py` | FastAPI routes for health, capabilities, upload, status polling, safe artifact download, and completed-job deletion. |
 | `backend/terrafly/imaging.py` | Filename/content validation, safe decoding, RGB normalization, GeoTIFF inspection, hashes, and single-band warnings. |
 | `backend/terrafly/jobs.py` | Creates per-run IDs/directories and atomically persists live job state. |
-| `backend/terrafly/pipeline.py` | Orchestrates validation → preprocessing → inference → artifact creation and converts failures into honest job states. |
-| `backend/terrafly/artifacts.py` | Writes numeric, preview, texture, 16-bit, viewer-grid artifacts and their SHA-256 records. |
+| `backend/terrafly/pipeline.py` | Enforces the processing-memory budget, orchestrates validation → inference → artifacts, and converts failures into honest job states. |
+| `backend/terrafly/artifacts.py` | Writes numeric, preview, texture, 16-bit, orientation-aware viewer grid, valid GLB, and SHA-256 records. |
 | `backend/terrafly/inference/__init__.py` | Marks the inference adapter directory as a package. |
 | `backend/terrafly/inference/base.py` | Defines the common prediction result and adapter interface used by real and test implementations. |
 | `backend/terrafly/inference/depth_anything_v2.py` | Real pretrained inference, robust normalization/inversion, CUDA/CPU selection, and OOM fallback. |
 | `backend/terrafly/inference/deterministic.py` | Fast repeatable test implementation; fenced and labelled so it cannot masquerade as production science. |
 | `backend/terrafly/inference/factory.py` | Chooses an adapter from settings and enforces the test-adapter safety interlock. |
+| `backend/terrafly/inference/tiling.py` | Plans bounded overlapping tiles, aligns crop scale/offset, feather-blends raw predictions, and refuses excessive tile counts. |
 
 ## Backend tests: evidence that failure paths work
 
@@ -51,6 +52,8 @@ Use this as the answer to “why does this file exist?” Paths are grouped by r
 | `backend/tests/test_adapter_contract.py` | Verifies normalized finite output and prevents the deterministic adapter from normal execution. |
 | `backend/tests/test_api.py` | Tests valid modes, numeric artifacts/hashes, single-band/TIR warnings, corrupt/unsafe/oversized rejection, and metric refusal. |
 | `backend/tests/test_geotiff.py` | Proves CRS/transform/NoData survive while vertical metric claims remain locked. |
+| `backend/tests/test_artifacts.py` | Parses the GLB container and proves grid, texture, corner colour, and scientific metadata orientation. |
+| `backend/tests/test_tiling.py` | Proves coverage, overlap blending, affine scale/offset alignment, and maximum-tile refusal. |
 
 ## Frontend: user experience and 3D inspection
 
@@ -65,11 +68,13 @@ Use this as the answer to “why does this file exist?” Paths are grouped by r
 | `frontend/tsconfig.node.json` | TypeScript settings for Vite configuration code running in Node. |
 | `frontend/src/main.tsx` | Creates the React root and mounts `App`. |
 | `frontend/src/App.tsx` | Complete upload/progress/result/evidence workflow and visible scientific contract. |
-| `frontend/src/SurfaceViewer.tsx` | Three.js geometry, texture, lighting, camera controls, loading/error state, and display-only exaggeration. |
+| `frontend/src/SurfaceViewer.tsx` | Three.js render lifecycle, orbit/first-person controls, raycast point markers, loading/error state, and display-only exaggeration. |
+| `frontend/src/surfaceGeometry.ts` | Pure orientation, mesh-building, pixel mapping, and bilinear point-sampling logic separated for direct tests. |
 | `frontend/src/api.ts` | Small typed boundary for creating jobs, polling status, and resolving artifact URLs. |
 | `frontend/src/types.ts` | TypeScript mirror of the backend job/artifact/scientific-state response. |
 | `frontend/src/styles.css` | Deliberate design tokens, layout hierarchy, responsive behavior, and viewer styling. |
 | `frontend/src/App.test.tsx` | Guards the non-metric promise, clean initial state, real file-selection action, and absence of fake future controls. |
+| `frontend/src/SurfaceViewer.test.ts` | Guards asymmetric image-to-geometry/UV orientation and source-pixel point sampling. |
 | `frontend/src/test-setup.ts` | Loads DOM matchers used by Vitest/Testing Library. |
 
 ## Scripts: setup, launch, fixtures, and smoke evidence
@@ -77,11 +82,12 @@ Use this as the answer to “why does this file exist?” Paths are grouped by r
 | File | Purpose and reason to keep it |
 |---|---|
 | `scripts/setup.ps1` | Creates the local Python environment and installs Python/frontend dependencies without changing global Python. |
-| `scripts/start.ps1` | Starts hidden backend/frontend helpers, waits for readiness, opens the browser, and stops children on Ctrl+C. |
+| `scripts/start.ps1` | Reuses healthy services, refuses unknown port owners, records readable logs, waits for both services, opens the browser, and stops only children it started. |
 | `scripts/smoke_real_model.py` | Measures a direct real-model inference and records device/revision/output statistics. |
 | `scripts/smoke_real_api.py` | Exercises the complete real upload-to-artifacts API path, including hashes. |
+| `scripts/smoke_tiled_model.py` | Forces four real CUDA tiles and verifies strategy metadata, shape, range, dtype, finiteness, and output hash. |
 | `scripts/create_offline_sample.py` | Regenerates the deterministic CC0 orientation/workflow fixture from code. |
-| `scripts/create_handoff_manifest.py` | Hashes all committed source files into the Day 1 handoff manifest. |
+| `scripts/create_handoff_manifest.py` | Hashes all committed source files into the current milestone handoff manifest. |
 
 ## Documentation: team ownership and later evidence
 
@@ -108,6 +114,9 @@ The downloaded SAC TIR/RGB preview PNGs are **not committed** here because they 
 | `handoff/DAY_1_HANDOFF.md` | Human-readable milestone scope, launch instructions, verified evidence, and known limits. |
 | `handoff/DAY_1_TEST_REPORT.md` | Compact record of automated, real-model, GPU, browser, and extracted-archive checks. |
 | `handoff/DAY_1_MANIFEST.json` | Machine-readable SHA-256 list of committed source files; regenerated after final changes. |
+| `handoff/DAY_2_HANDOFF.md` | Day 2 launch, working-feature, next-step, and known-limit summary. |
+| `handoff/DAY_2_TEST_REPORT.md` | Day 2 automated, real tiled CUDA, API artifact, browser, responsive, and launcher evidence. |
+| `handoff/DAY_2_MANIFEST.json` | Machine-readable SHA-256 list for the final Day 2 source revision. |
 
 ## Generated but intentionally untracked
 

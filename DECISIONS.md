@@ -27,3 +27,15 @@ Replace the decorative dark-green dashboard style with a neutral analysis workbe
 ## D-007 — Related SAC TIR files are domain checks, not height data
 
 Document the IR-colorization repository at its exact commit without copying its unlicensed samples. Its `.npy` arrays are TIR/RGB super-resolution and colorization pairs, not elevation supervision. Allow single-band inputs for robust software handling but attach an explicit TIR/out-of-domain warning to the manifest and UI.
+
+## D-008 — Align tiles before global normalization
+
+Do not normalize each large-image tile independently because monocular depth scale and offset can vary per crop. Fit a positive affine alignment from each overlap to the already blended surface, feather the overlap, then normalize the complete raw surface once. Bound tile count and input-dependent memory before accepting work.
+
+## D-009 — GLB carries colour but never implies metres
+
+Export a dependency-free GLB 2.0 triangle mesh using the same sampled row/column order as the viewer. Embed scene colour as normalized vertex colour and store `relative_0_1`, `vertical_scale_metric=false`, and orientation in mesh extras. A portable 3D file is useful evidence; it does not unlock metric claims.
+
+## D-010 — Point comparison reports samples, not distance
+
+Raycast clicks into the rendered mesh, map UV coordinates back to source-image pixels, and bilinearly sample relative values. Show A/B and their absolute difference only in relative units. Do not label the result as metres, slope, or real-world distance before calibration.

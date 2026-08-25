@@ -22,7 +22,7 @@ def test_upload_pipeline_handles_odd_dimensions_and_modes(client, mode):
     assert job["units"] == "relative_0_1"
     assert job["calibration"]["metric_output_allowed"] is False
     names = {artifact["name"] for artifact in job["artifacts"]}
-    assert {"numeric_surface", "preview", "texture", "height_texture", "surface_grid", "manifest"} <= names
+    assert {"numeric_surface", "preview", "texture", "height_texture", "surface_grid", "glb_mesh", "manifest"} <= names
     surface_response = client.get(f"/api/jobs/{job['job_id']}/artifacts/numeric_surface")
     surface = np.load(io.BytesIO(surface_response.content), allow_pickle=False)
     assert surface.shape == (23, 37)
@@ -74,3 +74,24 @@ def test_capabilities_state_the_metric_contract(client):
         "Georeferenced Relative",
         "Metric Calibrated",
     ]
+    assert payload["tiled_inference"] is True
+    assert payload["tile_size"] > payload["tile_overlap"]
+
+
+def test_rejects_dimensions_above_processing_memory_budget(client, settings):
+    settings.max_working_bytes = 100
+    response = client.post(
+        "/api/jobs", files={"upload": ("scene.png", encoded_image(), "image/png")}
+    )
+    assert response.status_code == 413
+    assert "memory" in response.json()["detail"]
+
+
+def test_completed_job_can_be_cleared_without_path_escape(client):
+    created = client.post(
+        "/api/jobs", files={"upload": ("scene.png", encoded_image(), "image/png")}
+    ).json()
+    job_id = created["job_id"]
+    assert client.delete(f"/api/jobs/{job_id}").status_code == 204
+    assert client.get(f"/api/jobs/{job_id}").status_code == 404
+    assert client.delete("/api/jobs/not-a-job").status_code == 404

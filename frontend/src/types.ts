@@ -19,6 +19,7 @@ export type Job = {
   geospatial: Record<string, unknown> | null;
   calibration: { metric_output_allowed: boolean; reason: string; status: string };
   model: Record<string, unknown>;
+  configuration: Record<string, unknown>;
   warnings: string[];
   error: string | null;
   artifacts: Artifact[];

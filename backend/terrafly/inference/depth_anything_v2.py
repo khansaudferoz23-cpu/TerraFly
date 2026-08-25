@@ -4,18 +4,32 @@ import numpy as np
 from PIL import Image
 
 from .base import Prediction
+from .tiling import predict_tiled
 
 
 class DepthAnythingV2Adapter:
     """Lazy real-model adapter for the Apache-2.0 Depth Anything V2 Small checkpoint."""
 
-    def __init__(self, model_id: str, requested_device: str = "auto") -> None:
+    def __init__(
+        self,
+        model_id: str,
+        requested_device: str = "auto",
+        *,
+        tile_trigger_pixels: int = 4_194_304,
+        tile_size: int = 1024,
+        tile_overlap: int = 128,
+        max_tiles: int = 256,
+    ) -> None:
         self.model_id = model_id
         self.requested_device = requested_device
         self._model = None
         self._processor = None
         self._torch = None
         self._device = "cpu"
+        self.tile_trigger_pixels = tile_trigger_pixels
+        self.tile_size = tile_size
+        self.tile_overlap = tile_overlap
+        self.max_tiles = max_tiles
 
     def _load(self) -> None:
         try:
@@ -64,7 +78,22 @@ class DepthAnythingV2Adapter:
             "The displayed relative surface inverts normalized depth; its scale and offset are arbitrary.",
         ]
         try:
-            depth = self._predict_on_device(rgb)
+            if rgb.shape[0] * rgb.shape[1] > self.tile_trigger_pixels:
+                depth, tile_count = predict_tiled(
+                    rgb,
+                    self._predict_on_device,
+                    tile_size=self.tile_size,
+                    overlap=self.tile_overlap,
+                    max_tiles=self.max_tiles,
+                )
+                inference_mode = "tiled"
+                notes.append(
+                    f"Large image inference used {tile_count} overlapping tiles; raw depth was feather-blended before global normalization."
+                )
+            else:
+                depth = self._predict_on_device(rgb)
+                tile_count = 1
+                inference_mode = "single_pass"
         except RuntimeError as exc:
             if self._device != "cuda" or "out of memory" not in str(exc).lower():
                 raise
@@ -72,7 +101,19 @@ class DepthAnythingV2Adapter:
             self._device = "cpu"
             self._model = self._model.to("cpu")
             notes.append("CUDA ran out of memory; TerraFly recovered by retrying on CPU.")
-            depth = self._predict_on_device(rgb)
+            if rgb.shape[0] * rgb.shape[1] > self.tile_trigger_pixels:
+                depth, tile_count = predict_tiled(
+                    rgb,
+                    self._predict_on_device,
+                    tile_size=self.tile_size,
+                    overlap=self.tile_overlap,
+                    max_tiles=self.max_tiles,
+                )
+                inference_mode = "tiled"
+            else:
+                depth = self._predict_on_device(rgb)
+                tile_count = 1
+                inference_mode = "single_pass"
         finite = np.isfinite(depth)
         if not finite.any():
             raise RuntimeError("The model returned no finite depth values.")
@@ -92,4 +133,10 @@ class DepthAnythingV2Adapter:
             model_revision=revision,
             device=self._device,
             warnings=notes,
+            metadata={
+                "inference_mode": inference_mode,
+                "tile_count": tile_count,
+                "tile_size": self.tile_size if inference_mode == "tiled" else None,
+                "tile_overlap": self.tile_overlap if inference_mode == "tiled" else None,
+            },
         )
