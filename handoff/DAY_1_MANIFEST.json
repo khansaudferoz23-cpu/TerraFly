@@ -1,8 +1,8 @@
 {
   "schema_version": "1.0",
   "milestone": "Day 1",
-  "generated_at": "2026-08-25T00:02:53.670853+00:00",
-  "git_commit": "0fa39b1d2767670c1dbf693cfff7738f6b01f5da",
+  "generated_at": "2026-08-25T00:06:22.946232+00:00",
+  "git_commit": "c9dfe0b90d02c14865d81871a4181de6bf90d6c8",
   "environment": {
     "os": "Windows-11-10.0.26200-SP0",
     "python": "3.12.13",
@@ -55,8 +55,8 @@
     },
     {
       "path": "BUILD_LOG.md",
-      "bytes": 3057,
-      "sha256": "686f5e7a3969db2a36c90c0a346b40361c1d3b3b16ac1fe60850352b68a4a2ba"
+      "bytes": 3446,
+      "sha256": "1f6c4334b0638d3a3c4632cd76243e943f4824b88e22321fa282bc652fff74c8"
     },
     {
       "path": "DATA_SOURCES.md",
@@ -80,13 +80,13 @@
     },
     {
       "path": "LIMITATIONS.md",
-      "bytes": 1100,
-      "sha256": "e8ea39afba817529d1ea00e09c4c99605bf399720ed88c912074ea281754d96c"
+      "bytes": 1216,
+      "sha256": "61fadfd0277ad4dbc86279adb519120fdbc10a05919e6e60c0781005f577575f"
     },
     {
       "path": "PROJECT_STATUS.md",
-      "bytes": 2001,
-      "sha256": "c8f82edebaa15a8b208940596ca73cfdd8ba2a55dddd78ff661ae06d1d86376f"
+      "bytes": 2158,
+      "sha256": "f5ddd6d4205f9bd9813954835e34c85937c2c2369d9364653ed045e0df0fbcfa"
     },
     {
       "path": "README.md",
@@ -95,8 +95,8 @@
     },
     {
       "path": "RESULTS.md",
-      "bytes": 1652,
-      "sha256": "ddffcb7a91047a2991978f8a016814e581ead812d750529a907e73d9e593a88b"
+      "bytes": 1806,
+      "sha256": "9f321f9dd834b748a5a4206b74ffd64c3cf3193342c266ac5dcf5ded824e8669"
     },
     {
       "path": "Start-TerraFly.cmd",
@@ -280,13 +280,13 @@
     },
     {
       "path": "handoff/DAY_1_HANDOFF.md",
-      "bytes": 2020,
-      "sha256": "08be2d4fd81b80ed1929343731ae09d8489621b6364004f1c64bbb70c7ecb18c"
+      "bytes": 2292,
+      "sha256": "f04965c619032d3c9817a421ab83ee49d66b1b7eda098471b9ac10dba84a24da"
     },
     {
       "path": "handoff/DAY_1_TEST_REPORT.md",
-      "bytes": 2241,
-      "sha256": "fa4893d119bc39d1401e4c4dddf7bc91f3f3049d5d464976411bc5085bfee025"
+      "bytes": 2296,
+      "sha256": "77a61b675896e3483b23ed36d4e01d2b7d0e54a849d72bb4218bb214aaafde09"
     },
     {
       "path": "pyproject.toml",
