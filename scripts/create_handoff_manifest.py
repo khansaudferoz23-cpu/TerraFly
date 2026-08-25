@@ -21,12 +21,12 @@ def run(*command: str) -> str | None:
         return None
 
 
-def sha256(path: Path) -> str:
-    digest = hashlib.sha256()
-    with path.open("rb") as handle:
-        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
-            digest.update(chunk)
-    return digest.hexdigest()
+def committed_bytes(relative: Path) -> bytes:
+    return subprocess.check_output(
+        ["git", "show", f"HEAD:{relative.as_posix()}"],
+        cwd=PROJECT_ROOT,
+        stderr=subprocess.DEVNULL,
+    )
 
 
 def version(distribution: str) -> str | None:
@@ -37,7 +37,7 @@ def version(distribution: str) -> str | None:
 
 
 def main() -> None:
-    listed = run("git", "ls-files", "--cached", "--others", "--exclude-standard")
+    listed = run("git", "ls-files")
     if listed is None:
         raise RuntimeError("Git file discovery failed.")
     files = []
@@ -47,11 +47,12 @@ def main() -> None:
             continue
         path = PROJECT_ROOT / relative
         if path.is_file():
+            content = committed_bytes(relative)
             files.append(
                 {
                     "path": relative.as_posix(),
-                    "bytes": path.stat().st_size,
-                    "sha256": sha256(path),
+                    "bytes": len(content),
+                    "sha256": hashlib.sha256(content).hexdigest(),
                 }
             )
     manifest = {
