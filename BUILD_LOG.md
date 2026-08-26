@@ -102,3 +102,14 @@ Status vocabulary: PASS, FAIL, BLOCKED, SKIPPED.
 - PASS — Real CUDA reruns of the supplied stadium and residential scenes generated and hash-verified 9/9 artifacts each; the corrected browser viewer showed raised local structures.
 - PASS — Regenerated the explicitly synthetic calibration oracle from the corrected convention and verified 15/15 real calibrated artifacts, scale 40.00000007, held-out RMSE 0.00000295 m, and R² approximately 1.0.
 - LIMIT — A reporting-only plane fit found 94.6% and 76.7% global-trend fractions on the two supplied images. No silent detrending or unvalidated training was added.
+
+## 2026-08-26 — problem-statement and Bhuvan-style alignment
+
+- PASS — Mapped the supplied problem statement requirement by requirement and documented implemented, partial, and future boundaries.
+- PASS — Added `metric_analysis_grid.json` only after calibration passes, using the identical viewer row/column samples and metre/vertical-datum metadata.
+- PASS — Updated A/B inspection to report calibrated elevation and vertical difference; projected metre GeoTIFF inputs also report horizontal distance and slope.
+- PASS — Added a separate `reconstructed_structures.json` candidate artifact and optional Three.js Structures layer with upright walls. It is off by default, non-semantic, and cannot alter the DSM.
+- PASS — Added regression coverage for structure separation/upward extrusion/raised ordering, metric-grid exact values, NoData-safe sampling, projected-affine distance, and horizontal units. Final suites passed 32 backend and 7 frontend tests; production build passed.
+- PASS — Final real CUDA stadium output completed in 6.105 seconds, verified 10/10 artifact hashes and eight optional structure candidates; real calibrated output completed in 28.196 seconds, verified 17/17 hashes, and recovered the expected metric relation.
+- PARTIAL — Updated page rendering was confirmed in the in-app browser, but final upload/generate interaction was blocked by browser security auto-review. No alternate automation route was used.
+- LIMIT — No domain-specific height model was trained without licensed aligned height truth, and no disaster predictor is claimed.

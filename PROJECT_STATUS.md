@@ -33,6 +33,9 @@ Greenfield bootstrap. The authenticated GitHub account `khansaudferoz23-cpu` own
 - Strict positive-scale, relative-span, inlier-ratio, axis-coverage, RMSE, and R² gate before metric state/output exists.
 - Source NoData preservation, calibrated float32 `.npy`/GeoTIFF, residual GeoTIFF/preview, retained reference evidence, and calibration report hashes.
 - Professional calibration panel with explicit Locked/Passed/Rejected states and dynamically truthful evidence downloads.
+- Passing calibration writes a metric analysis grid aligned exactly with the responsive 3D grid; A/B inspection reports metre elevation/height difference and projected-metre distance/slope.
+- Every run writes a separate optional Bhuvan-style structure-candidate layer with upright visual extrusions; it is off by default, non-semantic, and cannot modify the DSM.
+- Problem-statement traceability explicitly distinguishes implemented elevation/visualization features from future hazard prediction and domain-specific training.
 
 ## Verified Day 1 baseline
 
@@ -88,3 +91,12 @@ The remaining scientific work is intentionally outside this software milestone: 
 - PASS — final source/release ZIP checksums and clean extracted-folder-with-spaces verification are recorded in `handoff/FINAL_TEST_REPORT.md`.
 - LIMIT — pointer lock cannot be granted by automated browser control; the first-person mode/help/key contract was verified and the normal interactive browser path remains the manual acceptance step.
 - LIMIT — measured global plane trends remain strong on the supplied scenes (94.6% stadium, 76.7% residential); the diagnostic warns, and no unvalidated flattening is applied.
+
+## Post-repair problem-statement alignment — 2026-08-26
+
+- PASS — 32 backend tests and 7 frontend tests cover the separate structure artifact, upward extrusion geometry, raised-object ordering, metric-grid value alignment, NoData-safe metric sampling, projected-affine distance, geospatial horizontal units, calibration refusal, and existing safety contracts.
+- PASS — strict TypeScript/Vite production build; the large Three.js bundle emits a size advisory but compiles successfully.
+- PASS — real CUDA stadium run generated and hash-verified 10 artifacts, preserved the exact model revision, and found eight optional local-height structure candidates while leaving the DSM untouched.
+- PASS — final real CUDA calibration workflow completed in 28.196 seconds, reached `Metric Calibrated`, hash-verified 17 artifacts, recovered scale `40.00000007` and offset `99.99999997`, and wrote the matching metric analysis grid.
+- PARTIAL — the updated production page rendered in the in-app browser; the final upload/generate interaction was blocked by browser security auto-review. Backend end-to-end runs and frontend automation remained successful, and no alternate-browser workaround was attempted.
+- LIMIT — visual structure candidates are not building segmentation, and the synthetic calibration oracle is not a real accuracy score.

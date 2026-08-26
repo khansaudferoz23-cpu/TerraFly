@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import io
 import hashlib
+import json
 
 import numpy as np
 import pytest
@@ -94,6 +95,7 @@ def test_aligned_reference_dsm_passes_held_out_gate_and_writes_metric_evidence(c
         "calibration_reference",
         "calibration_report",
         "metric_surface",
+        "metric_grid",
         "metric_geotiff",
         "error_geotiff",
         "error_preview",
@@ -118,6 +120,23 @@ def test_aligned_reference_dsm_passes_held_out_gate_and_writes_metric_evidence(c
         assert dataset.tags()["units"] == "metre"
         assert dataset.tags()["vertical_datum"] == "EGM96 orthometric height"
     np.testing.assert_allclose(metric, 100.0 + 40.0 * relative, atol=0.02)
+    metric_grid_response = client.get(
+        f"/api/jobs/{job['job_id']}/artifacts/metric_grid"
+    )
+    metric_grid = json.loads(metric_grid_response.content)
+    relative_grid = client.get(
+        f"/api/jobs/{job['job_id']}/artifacts/surface_grid"
+    ).json()
+    assert metric_grid["units"] == "metre"
+    assert metric_grid["vertical_datum"] == "EGM96 orthometric height"
+    assert metric_grid["shape"] == relative_grid["shape"]
+    assert metric_grid["row_indices"] == relative_grid["row_indices"]
+    assert metric_grid["column_indices"] == relative_grid["column_indices"]
+    np.testing.assert_allclose(
+        np.asarray(metric_grid["values"]),
+        100.0 + 40.0 * np.asarray(relative_grid["values"]),
+        atol=0.02,
+    )
 
 
 def test_reference_alignment_mismatch_is_rejected_before_any_metric_claim(client):
@@ -193,7 +212,7 @@ def test_independent_gcp_validation_can_unlock_metric_geotiff(client):
     assert calibrated["calibration"]["evaluation"]["count"] == 4
     assert calibrated["calibration"]["evaluation"]["rmse_m"] < 0.01
     names = {artifact["name"] for artifact in calibrated["artifacts"]}
-    assert {"metric_surface", "metric_geotiff", "calibration_report"} <= names
+    assert {"metric_surface", "metric_grid", "metric_geotiff", "calibration_report"} <= names
     assert "error_geotiff" not in names
 
 

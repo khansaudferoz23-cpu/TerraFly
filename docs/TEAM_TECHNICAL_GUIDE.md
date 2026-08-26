@@ -4,7 +4,7 @@ Read this before presenting the project. The goal is not to memorize code; it is
 
 ## The 30-second explanation
 
-TerraFly accepts one PNG, JPEG, or GeoTIFF. It validates the file and runs Depth Anything V2 Small, which estimates **relative monocular depth**, not physical elevation. TerraFly creates a 0–1 surface and an interactive 3D inspection view. A georeferenced run may then be calibrated only with independent vertical evidence. Robust scale/offset fitting and held-out quality gates decide whether separate metric GeoTIFF/`.npy` files exist; the viewer always stays relative.
+TerraFly accepts one PNG, JPEG, or GeoTIFF. It validates the file and runs Depth Anything V2 Small, which estimates **relative monocular depth**, not physical elevation. TerraFly creates a 0–1 surface and an interactive 3D inspection view. A georeferenced run may then be calibrated only with independent vertical evidence. Robust scale/offset fitting and held-out quality gates decide whether separate metric GeoTIFF/`.npy` files exist; after a pass, A/B inspection reads a separate metric analysis grid while the display geometry remains normalized.
 
 ## Request flow
 
@@ -21,7 +21,7 @@ Inference adapter ── Depth Anything V2 Small on CUDA, CPU fallback
   ▼
 Raw output ── preserve `.npy` → apply declared convention once → relative 0–1 surface
   ▼
-Artifact writer ── .npy + preview + texture + viewer grid + GLB + manifest
+Artifact writer ── .npy + preview + texture + viewer grid + optional structure candidates + GLB + manifest
   ▼
 React polls progress ── Three.js renders orbit/first-person inspection + A/B samples
 
@@ -30,7 +30,7 @@ Georeferenced completed job
   ▼
 Calibration gate ── robust fit → held-out RMSE/MAE/bias/p95/R² + coverage/inliers
   ├─ reject: report only; state stays Georeferenced Relative
-  └─ pass: metric .npy + GeoTIFF + residual evidence; state becomes Metric Calibrated
+  └─ pass: metric .npy + analysis grid + GeoTIFF + residual evidence; state becomes Metric Calibrated
 ```
 
 ## Why the result is relative
@@ -50,12 +50,14 @@ A GeoTIFF can add a coordinate reference system, pixel size, map position, and b
 | `texture.png` | Input converted into the model/viewer RGB convention | Texture for the 3D surface | A model prediction |
 | `relative_height_16bit.png` | 16-bit display encoding of the relative surface | Renderer/export interoperability without reducing to 8 bits | Metric elevation |
 | `relative_grid.json` | Downsampled surface values, maximum 192×192 | Keeps the browser mesh responsive | The full-resolution numeric result |
+| `reconstructed_structures.json` | Convex raised-object candidates derived from local relative contrast | Optional Bhuvan-style upright visual layer | Semantic buildings, surveyed geometry, or a DSM edit |
 | `relative_surface.glb` | GLB 2.0 triangle mesh with embedded vertex colours and relative Y | Portable 3D inspection in compatible tools | Metric or full-resolution elevation |
 | `job.json` | Live persisted job state | Lets progress survive separate API requests | Final immutable evidence |
 | `job_manifest.json` | Final input/model/warning/artifact record | Reproducibility and audit trail | A secret or credential file |
 | `calibration_reference.tif` | Exact submitted aligned DSM evidence | Reproduce the gate decision and its source hash | Automatically trustworthy ground truth |
 | `calibration_report.json` | Source/datum, fit, held-out metrics, thresholds, failures, and decision | Explain exactly why metres were unlocked or refused | A substitute for understanding reference quality |
 | `metric_surface.npy` | Full-resolution float32 calibrated array in metres | Lossless numeric metric result after a pass | The relative viewer grid |
+| `metric_analysis_grid.json` | Calibrated metre samples on the identical viewer-grid indices | Metric A/B elevation, height difference, and projected-metre slope inspection | A replacement for the full-resolution metric raster |
 | `metric_surface.tif` | Calibrated float32 elevation with source CRS/transform/NoData and vertical tags | GIS-compatible passing-gate result | Available after a rejection |
 | `calibration_error.tif` | Candidate metric surface minus aligned reference, in metres | Spatial residual diagnosis | Absolute truth about every object |
 
@@ -132,7 +134,7 @@ Relative differences can be visually small. The slider changes vertex display on
 
 ### “What does point A versus B measure?”
 
-It compares two bilinearly sampled values from the relative surface and reports their difference in relative units. It does not claim metres, slope, or geographic distance.
+Before calibration it compares bilinearly sampled relative values. After a pass it samples the aligned metric grid and reports metre elevation and vertical difference. It reports horizontal distance/slope only when the source CRS uses projected metre units.
 
 ### “Why can GLB be available while metric GeoTIFF is locked?”
 
@@ -150,9 +152,13 @@ Reference-raster pixels are split spatially before fitting; GCP requests contain
 
 Silent resampling can blur edges and hide misregistration. Day 3 fails closed unless CRS, dimensions, and affine transform match exactly. That narrow contract is easier to explain and verify; explicit reprojection can be a later tested feature.
 
-### “Why does the 3D viewer remain relative after a metric pass?”
+### “Why does the 3D display geometry remain relative after a metric pass?”
 
-The viewer is a responsive downsampled inspection surface and the A/B tool was designed around relative ordering. Metric values are preserved separately at full resolution. Keeping those roles separate prevents a display mesh from being mistaken for surveyed measurement.
+The viewer is a responsive downsampled inspection surface, so its geometry stays normalized. Metric values are preserved at full resolution and on a separate matching analysis grid. Keeping those roles separate allows correct point labels without making a display mesh look like full-resolution survey geometry.
+
+### “What is the Structures button?”
+
+It renders optional convex extrusions from local raised-component candidates so structures have upright walls similar to object-based 3D map systems. It is off by default, may include trees or miss roofs, and never changes the DSM or calibration result.
 
 ## Team learning split
 
@@ -188,5 +194,5 @@ If an answer is unclear, open the named source file in `FILE_GUIDE.md` and trace
 2. Use Orbit for left-drag rotate, right-drag pan, wheel zoom, and A/B point comparison.
 3. Use First-person for mouse-look, `W/A/S/D`, `Q/E`, Shift boost, and `Esc` release.
 4. Run the bundled GeoTIFF/reference pair and say “synthetic software oracle” before showing the near-zero error.
-5. Double-click `Check-TerraFly.cmd`, and know that `scripts\verify.ps1 -Full` adds the real model, 15 artifact hashes, and metric GeoTIFF inspection.
+5. Double-click `Check-TerraFly.cmd`, and know that `scripts\verify.ps1 -Full` adds the real model, 17 artifact hashes, metric analysis-grid verification, and metric GeoTIFF inspection.
 6. If asked for the final release proof, open `handoff/FINAL_TEST_REPORT.md`; if asked how anything works, open `docs/cookbook/TERRAFLY_COOKBOOK.md`.

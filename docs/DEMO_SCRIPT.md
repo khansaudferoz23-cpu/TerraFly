@@ -33,9 +33,10 @@ Say:
 
 1. Orbit with left drag, pan with right drag, and zoom.
 2. Toggle **Texture** and **Wireframe**.
-3. Move the vertical display slider and state that it changes display only.
-4. Click two points in Orbit; show relative A/B values and pixel coordinates.
-5. Choose **First-person**, click the viewer, mouse-look, fly with W/A/S/D, ascend with E, descend with Q, hold Shift for boost, and press Escape.
+3. Toggle **Structures** and explain that its clean upright objects are a separate Bhuvan-style visual candidate layer, not a DSM correction or building truth.
+4. Move the vertical display slider and state that it changes display only.
+5. Click two points in Orbit; show relative A/B values and pixel coordinates.
+6. Choose **First-person**, click the viewer, mouse-look, fly with W/A/S/D, ascend with E, descend with Q, hold Shift for boost, and press Escape.
 
 Say:
 
@@ -49,6 +50,7 @@ Say:
 4. Maximum held-out RMSE: `0.5`.
 5. Select **Evaluate and calibrate**.
 6. Show Passed, scale near 40, RMSE near zero, R² near 1, datum, and new metric/error files.
+7. Click a ground-like point then a raised feature. Show calibrated elevation and vertical difference. If the projected-metre input yields horizontal separation, show distance and slope.
 
 Immediately disclose:
 
@@ -65,7 +67,7 @@ Show the evidence list and explain:
 - Error map is estimate minus reference.
 - Bad/misaligned evidence produces a rejection report and no metric file.
 
-Mention 26+ automated tests, real CUDA workflow, mobile browser checks, clean release extraction, and SHA-256 release checksums using the final report’s exact numbers.
+Mention 32 backend tests, 7 frontend tests, real CUDA 17-artifact calibration workflow, mobile browser checks, clean release extraction, and SHA-256 release checksums using the final report’s exact numbers.
 
 ## 6:20–7:00 — AI-assisted development answer
 
@@ -83,5 +85,7 @@ End with the limitation and next scientific step: obtain independent, aligned, s
 - “The SAC thermal `.npy` files are our height labels.”
 - “The display exaggeration changes the data.”
 - “Calibration passed because the screen turned green.”
+- “Structures are verified buildings.”
+- “TerraFly predicts disasters.”
 
 Use the measured report, artifact files, and gate criteria instead.

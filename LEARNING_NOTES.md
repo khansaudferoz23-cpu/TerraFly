@@ -30,11 +30,15 @@ Running a very large raster at once can exceed memory. Simple independent tiles 
 
 ## What point comparison means
 
-A surface click becomes an image x/y fraction, source pixel coordinate, and bilinearly sampled relative value. Comparing A and B is useful for inspecting ordering and contrast. It is not a claim about metres or geographic distance.
+A surface click becomes an image x/y fraction, source pixel coordinate, and bilinearly sampled value. Before calibration, comparing A and B is relative only. After a passing gate, the same sampled grid location reads calibrated metres. A projected metre CRS also permits horizontal distance and slope; longitude/latitude degrees are never treated as metres.
 
 ## What the GLB contains
 
 The GLB is a portable triangle mesh built from the responsive 192×192-or-smaller viewer grid. Its vertical coordinate is the same 0–1 relative value, and scene appearance is stored as vertex colour. The full-resolution `.npy` remains the numeric source of truth.
+
+## DSM versus a Bhuvan-style building
+
+A DSM is a 2.5D heightfield: each image x/y position stores one height. It cannot represent a perfectly vertical wall or two surfaces above the same pixel. Object-based 3D maps add separate building geometry. TerraFly’s optional Structures layer follows that separation by extruding conservative local raised candidates. It is for visual interpretation only and may include vegetation or miss roofs.
 
 ## What calibration actually fits
 

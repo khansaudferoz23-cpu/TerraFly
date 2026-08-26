@@ -53,7 +53,7 @@ Orbit is best for showing the whole model and comparing points.
 | Remove markers | **Clear points** |
 | Return to the starting camera | **Reset** |
 
-The point panel shows source pixel coordinates and relative A/B values. Their difference is relative—not metres, distance, or slope.
+Before calibration, the point panel shows source pixel coordinates and relative A/B values. After a valid metric pass, choose ground as A and a roof or terrain feature as B: the panel shows metric elevation and vertical difference. It also shows horizontal distance and slope when the GeoTIFF uses projected metre units.
 
 ### First-person “drone” mode
 
@@ -77,6 +77,7 @@ This is free-flight inspection. It does not collide with or walk on the surface.
 
 - **Texture:** toggles the original scene colour on the mesh.
 - **Wireframe:** exposes the triangles used by the browser surface.
+- **Structures:** shows/hides optional upright footprint extrusions inferred from local relative-height contrast. This Bhuvan-style visual layer may include trees or miss roofs and never changes the DSM.
 - **Vertical display:** changes only visual exaggeration from 0.2× to 6×. It never edits the saved `.npy` values.
 - **Clear points:** removes A/B markers.
 - **Reset:** restores the camera; it does not rerun the model.
@@ -100,8 +101,8 @@ Expected visible result:
 - **Passed** and **Metric export unlocked**.
 - Scale close to `40.000 m / relative unit`.
 - Held-out RMSE close to zero and R² close to `1.000`.
-- `metric_surface.tif`, `metric_surface.npy`, `calibration_error.tif`, and `calibration_report.json` appear.
-- The 3D viewer still says its values are relative. This separation is intentional.
+- `metric_surface.tif`, `metric_surface.npy`, `metric_analysis_grid.json`, `calibration_error.tif`, and `calibration_report.json` appear.
+- The display shape remains normalized, but A/B point labels now read the validated metric grid. Pick ground then roof/terrain to see metre difference; projected-metre inputs also show horizontal distance and slope.
 
 For real data, replace the demo reference with an independently sourced single-band DSM whose CRS, width, height, and affine pixel grid exactly match the input. Use its true vertical datum and a defensible RMSE threshold.
 
@@ -129,8 +130,8 @@ The full check additionally runs the real model and the entire calibration demo,
 - Progress reaches **Complete · 100%**.
 - The textured 3D model appears without a red error.
 - Orbit, zoom, pan, First-person, Q/E, and Shift boost respond.
-- Texture and Wireframe visibly toggle.
-- Two orbit clicks show A/B and a relative difference.
+- Texture, Wireframe, and Structures visibly toggle. Structures starts off and does not alter the DSM.
+- Two orbit clicks show relative A/B before calibration and metric elevation/difference after a pass.
 - Provenance shows model revision, device, input hash, and CRS.
 - Every evidence link downloads a real file; unavailable files are not shown.
 - PNG/JPEG remains **Relative**.

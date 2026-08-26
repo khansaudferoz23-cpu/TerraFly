@@ -19,6 +19,7 @@ CALIBRATION_ARTIFACTS = {
     "calibration_reference",
     "calibration_report",
     "metric_surface",
+    "metric_grid",
     "metric_geotiff",
     "error_geotiff",
     "error_preview",
@@ -217,6 +218,44 @@ def _write_metric_geotiff(
             )
 
 
+def _write_metric_grid(
+    path: Path,
+    relative_grid_path: Path,
+    metric: np.ndarray,
+    *,
+    vertical_datum: str,
+) -> None:
+    """Write metric samples on the exact same grid used by the 3D viewer."""
+
+    relative_grid = json.loads(relative_grid_path.read_text(encoding="utf-8"))
+    row_indices = np.asarray(relative_grid["row_indices"], dtype=np.int64)
+    column_indices = np.asarray(relative_grid["column_indices"], dtype=np.int64)
+    sampled = metric[np.ix_(row_indices, column_indices)].astype(np.float64)
+    values: list[float | None] = [
+        float(value) if np.isfinite(value) else None for value in sampled.ravel()
+    ]
+    path.write_text(
+        json.dumps(
+            {
+                "schema_version": "1.0",
+                "shape": list(sampled.shape),
+                "source_shape": list(metric.shape),
+                "row_indices": row_indices.tolist(),
+                "column_indices": column_indices.tolist(),
+                "orientation": relative_grid["orientation"],
+                "units": "metre",
+                "vertical_datum": vertical_datum,
+                "measurement_role": "calibrated elevation samples for 3D point analysis",
+                "geometry_source": "relative_grid.json",
+                "values": values,
+            },
+            separators=(",", ":"),
+            allow_nan=False,
+        ),
+        encoding="utf-8",
+    )
+
+
 def _error_preview(error: np.ndarray) -> np.ndarray:
     valid = error[np.isfinite(error)]
     limit = max(float(np.percentile(np.abs(valid), 95)), 1e-6)
@@ -254,6 +293,14 @@ def _finish(
         metric_path = job_dir / "metric_surface.npy"
         np.save(metric_path, metric.astype(np.float32), allow_pickle=False)
         manifest.artifacts.append(_artifact("metric_surface", metric_path, "application/octet-stream"))
+        metric_grid_path = job_dir / "metric_analysis_grid.json"
+        _write_metric_grid(
+            metric_grid_path,
+            job_dir / "relative_grid.json",
+            metric,
+            vertical_datum=str(report["evidence"]["vertical_datum"]),
+        )
+        manifest.artifacts.append(_artifact("metric_grid", metric_grid_path, "application/json"))
         geotiff_path = job_dir / "metric_surface.tif"
         _write_metric_geotiff(
             geotiff_path,

@@ -1,6 +1,6 @@
 # TerraFly cookbook
 
-Version 1.0 · final four-day build · 2026-08-25
+Version 1.0 · final four-day build · 2026-08-26
 
 This cookbook explains what was built, why every major part exists, how the scientific safeguards work, and how the team can defend an AI-assisted implementation honestly.
 
@@ -39,14 +39,14 @@ flowchart LR
     A[PNG / JPEG / GeoTIFF] --> B[Safe validation]
     B --> C[Depth Anything V2]
     C --> D[Relative float32 surface 0-1]
-    D --> E[Preview + texture + grid + GLB]
+    D --> E[Preview + texture + grid + GLB + optional structures]
     E --> F[Orbit / first-person / A-B inspection]
     D --> G{Georeferenced + vertical evidence?}
     G -- No --> H[Keep metric output locked]
     G -- Yes --> I[Robust scale and offset fit]
     I --> J[Independent held-out evaluation]
     J -- Reject --> K[Report reasons; no metric file]
-    J -- Pass --> L[Metric NPY + GeoTIFF + residual evidence]
+    J -- Pass --> L[Metric NPY + analysis grid + GeoTIFF + residual evidence]
 ```
 
 ## Step 1 — inspect before decoding
@@ -74,11 +74,13 @@ The deterministic adapter exists only for fast offline tests. It requires an exp
 | `texture.png` | RGB convention actually used by the model/viewer |
 | `relative_height_16bit.png` | Higher-precision display/interchange texture |
 | `relative_grid.json` | Downsampled orientation-aware browser mesh data |
+| `reconstructed_structures.json` | Optional non-semantic convex footprints/base/roof values for upright visual extrusions; never edits the DSM |
 | `relative_surface.glb` | Portable colored GLB 2.0 inspection mesh; explicitly non-metric |
 | `job_manifest.json` | Input/model/device/warnings/configuration/artifact hashes |
 | `calibration_reference.tif` | Exact reference evidence retained for audit |
 | `calibration_report.json` | Fit, held-out metrics, gates, source, datum, and decision |
 | `metric_surface.npy` | Full-resolution calibrated float32 metres after a pass |
+| `metric_analysis_grid.json` | Calibrated metre values on the matching viewer grid for A/B height and slope inspection |
 | `metric_surface.tif` | GIS-ready metric raster with source CRS/grid/NoData and vertical tags |
 | `calibration_error.tif` | Candidate elevation minus aligned reference in metres |
 
@@ -88,9 +90,10 @@ The `.npy` files from the related SAC IR-colorization repository are not missing
 
 `frontend/src/surfaceGeometry.ts` maps row 0 to image top and column 0 to image left, builds triangles, UV coordinates, and bilinear point samples. `SurfaceViewer.tsx` owns WebGL rendering and navigation.
 
-- Orbit is for whole-scene inspection and A/B raycast samples.
+- Orbit is for whole-scene inspection and A/B raycast samples. Before calibration they are relative; after a pass they read the metric analysis grid.
 - First-person is free flight: mouse look, W/A/S/D, Q/E vertical movement, Shift boost, and Escape release.
 - Texture and Wireframe reveal two interpretations of the same geometry.
+- Structures adds a Bhuvan-style visual extrusion layer. It is off by default, can include trees or miss roofs, and never changes scientific values.
 - Vertical exaggeration changes display vertices only; it never changes the saved numeric array.
 - The GLB uses the responsive grid and embedded vertex colour. It is portable but not full-resolution or metric.
 
@@ -164,7 +167,9 @@ Do not pretend every line was typed manually. Judges are more likely to trust a 
 ## What not to claim
 
 - Do not call an uncalibrated PNG result elevation, DSM, terrain height, or metres.
-- Do not call A/B relative difference a distance, slope, or building height.
+- Do not call A/B relative difference a distance, slope, or building height. Metre height/slope is allowed only after a passing calibration, and slope additionally requires projected metre horizontal units.
+- Do not describe Structures candidates as verified buildings or surveyed geometry.
+- Do not claim TerraFly predicts disasters; describe a validated DSM as an input to separately validated hazard analysis.
 - Do not call the SAC thermal/colorization `.npy` files elevation labels.
 - Do not present the bundled synthetic reference’s near-zero RMSE as model accuracy.
 - Do not imply the GLB is full-resolution surveyed geometry.

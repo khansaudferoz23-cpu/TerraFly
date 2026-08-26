@@ -38,6 +38,7 @@ def test_geotiff_metadata_is_preserved_but_not_called_metric(client):
     assert job["scientific_state"] == "Georeferenced Relative"
     assert job["geospatial"]["crs"] == "EPSG:32643"
     assert job["geospatial"]["transform"] == [2.0, 0.0, 500000.0, 0.0, -2.0, 2000000.0]
+    assert job["geospatial"]["horizontal_units"] == "metre"
     assert job["geospatial"]["nodata"] == 0.0
     assert job["calibration"]["metric_output_allowed"] is False
     assert any("does not establish vertical scale" in warning for warning in job["warnings"])

@@ -36,9 +36,9 @@ Silent reprojection/resampling can hide misregistration and blur edges. Exact CR
 - P95 absolute error shows a high-error tail.
 - R² shows how much held-out variation the affine result explains.
 
-## Why does the viewer remain relative after calibration?
+## Why is the display mesh still normalized after calibration?
 
-It is a downsampled responsive inspection mesh. Metric `.npy` and GeoTIFF remain full-resolution separate artifacts. This avoids presenting a display mesh or A/B click as surveyed measurement.
+It is a downsampled responsive inspection mesh. The shape stays normalized for stable rendering, but A/B clicks read a separately generated metric grid after the held-out gate passes. Full-resolution metric `.npy` and GeoTIFF remain the scientific outputs.
 
 ## What do the `.npy` files mean?
 
@@ -51,6 +51,18 @@ The first adapter treated the checkpoint field as ordinary depth and inverted it
 ## Is the strong whole-image slope fixed?
 
 Not yet, and TerraFly does not hide it. `height_diagnostics.json` fits a reporting-only plane and warns when it dominates the surface. Correcting that bias needs independently evaluated overhead-data logic; silently flattening every scene could remove real terrain slope.
+
+## How is this different from the Bhuvan 3D screenshot?
+
+Bhuvan is showing a textured terrain layer plus a separate clean building object. A DSM heightfield can raise a roof but cannot represent perfect vertical façades or multiple heights at one horizontal location. TerraFly now keeps its actual DSM as one layer and offers a separate optional Structures layer for Bhuvan-style convex extrusions. That layer is visual, not semantic ground truth, and never changes measured values.
+
+## Why not train your own model immediately?
+
+A defensible model needs licensed, co-registered optical–DSM/nDSM pairs with masks, units, datum, and geographic train/validation/test separation. Those labels were not supplied. Training on the SAC TIR/colorization arrays or on our own predictions would manufacture accuracy. TerraFly instead contributes a tested pipeline around a real pretrained backbone and clearly names domain-specific training as the next scientific milestone.
+
+## How does this prevent disasters?
+
+It does not predict a disaster by itself. A validated metric DSM is an input to flood routing, slope-instability, line-of-sight, damage, and access analysis. TerraFly currently provides the elevation extraction, calibration, export, and interactive inspection foundation; each hazard module needs its own data and validation.
 
 ## Why can TIR run if it is not validated?
 

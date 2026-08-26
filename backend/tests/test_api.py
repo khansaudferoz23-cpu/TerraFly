@@ -32,6 +32,7 @@ def test_upload_pipeline_handles_odd_dimensions_and_modes(client, mode):
         "texture",
         "height_texture",
         "surface_grid",
+        "structure_layer",
         "glb_mesh",
         "height_diagnostics",
         "manifest",

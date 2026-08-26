@@ -10,12 +10,15 @@
 - A pass is only as trustworthy as the reference source, vertical datum, declared RMSE threshold, spatial coverage, and independence of held-out data.
 - The bundled calibration evidence is synthetic and proves software behavior, not real-world satellite/aerial height accuracy.
 - SRTM is not integrated and would be coarse terrain context, not reliable individual building/tree height.
+- The optional Structures layer is a visual reconstruction from local relative-height components, not semantic building segmentation or measured architecture. It may include vegetation, merge nearby objects, simplify footprints, or miss low-contrast roofs. It never changes the numeric DSM.
 - The real checkpoint is verified locally on CPU and CUDA, but third-party environments and model weights are not redistributed. A new machine needs internet access for first setup/weight download; prepare the cache before going offline.
 - First-person navigation is a free-flight inspection mode; it does not yet collide with or walk on the inferred surface.
-- Point A/B values and their difference are relative samples, not physical distance, slope, or height change.
+- Point A/B values remain relative until calibration passes. A passing calibration enables metric elevation and vertical difference from the metric analysis grid. Horizontal distance and slope are reported only for projected CRS inputs whose horizontal units are metres.
 - Tiling reduces memory pressure and aligns overlap scale/offset, but no remote-sensing ground truth is available to quantify whether it improves scientific accuracy.
-- Numeric `.npy` is canonical for the relative result. The GLB and viewer stay relative even after calibration; metric `.npy`/GeoTIFF are separate passing-gate artifacts.
+- Numeric `.npy` is canonical for the relative result. The GLB and display geometry stay relative; after calibration, measurement readouts use a separate metric grid and full-resolution metric `.npy`/GeoTIFF remain the scientific artifacts.
 - There is no real-world accuracy figure because no compatible independent surveyed ground truth was supplied.
 - GCP calibration is available through the typed API; the minimal UI exposes the aligned-reference workflow rather than an error-prone free-form point editor.
 - The final Windows ZIP includes the prebuilt interface and complete source, but it is not dependency-bundled or fully offline; setup still downloads third-party Python packages, npm packages, and model weights.
 - Browser security requires the user to click the 3D canvas before first-person pointer lock. Automation cannot grant that permission, so manual `W/A/S/D`, `Q/E`, `Shift`, mouse-look, and `Esc` acceptance remains part of presentation rehearsal.
+- TerraFly supplies an elevation-analysis base layer; it does not itself predict floods, landslides, structural damage, visibility threats, or evacuation routes. Operational disaster claims require validated local DSM accuracy and a separate hazard model.
+- No remote-sensing-specific model was trained because no licensed, co-registered RGB–DSM/nDSM ground-truth corpus with trustworthy units, datum, masks, and geographic splits was supplied.

@@ -199,6 +199,178 @@ def surface_tilt_diagnostics(relative: np.ndarray) -> dict[str, object]:
     }
 
 
+def _convex_hull(points: list[tuple[float, float]]) -> list[tuple[float, float]]:
+    unique = sorted(set(points))
+    if len(unique) <= 2:
+        return unique
+
+    def cross(
+        origin: tuple[float, float],
+        first: tuple[float, float],
+        second: tuple[float, float],
+    ) -> float:
+        return (first[0] - origin[0]) * (second[1] - origin[1]) - (
+            first[1] - origin[1]
+        ) * (second[0] - origin[0])
+
+    lower: list[tuple[float, float]] = []
+    for point in unique:
+        while len(lower) >= 2 and cross(lower[-2], lower[-1], point) <= 0:
+            lower.pop()
+        lower.append(point)
+    upper: list[tuple[float, float]] = []
+    for point in reversed(unique):
+        while len(upper) >= 2 and cross(upper[-2], upper[-1], point) <= 0:
+            upper.pop()
+        upper.append(point)
+    return lower[:-1] + upper[:-1]
+
+
+def reconstruct_structure_candidates(grid: np.ndarray) -> dict[str, object]:
+    """Find conservative raised components for an optional visual extrusion layer.
+
+    This is not semantic building segmentation. A fitted plane is removed only
+    for candidate detection; the source DSM and rendered terrain are untouched.
+    """
+
+    rows, columns = grid.shape
+    row_axis = np.linspace(-1.0, 1.0, rows, dtype=np.float64)
+    column_axis = np.linspace(-1.0, 1.0, columns, dtype=np.float64)
+    row_grid, column_grid = np.meshgrid(row_axis, column_axis, indexing="ij")
+    values = grid.astype(np.float64).ravel()
+    design = np.column_stack((np.ones(values.size), row_grid.ravel(), column_grid.ravel()))
+    coefficients, *_ = np.linalg.lstsq(design, values, rcond=None)
+    residual = grid.astype(np.float64) - (design @ coefficients).reshape(grid.shape)
+    threshold = max(float(np.percentile(residual, 82)), 0.035)
+    candidate = residual >= threshold
+    padded = np.pad(candidate.astype(np.uint8), 1)
+    neighbour_count = np.zeros_like(candidate, dtype=np.uint8)
+    for row_offset in range(3):
+        for column_offset in range(3):
+            neighbour_count += padded[
+                row_offset : row_offset + rows,
+                column_offset : column_offset + columns,
+            ]
+    candidate &= neighbour_count >= 4
+
+    visited = np.zeros_like(candidate, dtype=bool)
+    minimum_area = max(4, int(round(candidate.size * 0.0002)))
+    maximum_area = max(minimum_area, int(round(candidate.size * 0.35)))
+    structures: list[dict[str, object]] = []
+    for start_row, start_column in zip(*np.nonzero(candidate), strict=True):
+        if visited[start_row, start_column]:
+            continue
+        stack = [(int(start_row), int(start_column))]
+        visited[start_row, start_column] = True
+        component: list[tuple[int, int]] = []
+        while stack:
+            row, column = stack.pop()
+            component.append((row, column))
+            for row_delta in (-1, 0, 1):
+                for column_delta in (-1, 0, 1):
+                    if row_delta == 0 and column_delta == 0:
+                        continue
+                    next_row = row + row_delta
+                    next_column = column + column_delta
+                    if (
+                        0 <= next_row < rows
+                        and 0 <= next_column < columns
+                        and candidate[next_row, next_column]
+                        and not visited[next_row, next_column]
+                    ):
+                        visited[next_row, next_column] = True
+                        stack.append((next_row, next_column))
+        if not minimum_area <= len(component) <= maximum_area:
+            continue
+
+        component_set = set(component)
+        ring: set[tuple[int, int]] = set()
+        for row, column in component:
+            for row_delta in (-1, 0, 1):
+                for column_delta in (-1, 0, 1):
+                    neighbour = (row + row_delta, column + column_delta)
+                    if (
+                        0 <= neighbour[0] < rows
+                        and 0 <= neighbour[1] < columns
+                        and neighbour not in component_set
+                    ):
+                        ring.add(neighbour)
+        roof_relative = float(np.median([grid[row, column] for row, column in component]))
+        base_relative = (
+            float(np.median([grid[row, column] for row, column in ring]))
+            if ring
+            else float(np.percentile(grid, 25))
+        )
+        relative_height = roof_relative - base_relative
+        if relative_height < 0.025:
+            continue
+
+        footprint_points: list[tuple[float, float]] = []
+        for row, column in component:
+            for row_corner, column_corner in (
+                (row - 0.5, column - 0.5),
+                (row - 0.5, column + 0.5),
+                (row + 0.5, column - 0.5),
+                (row + 0.5, column + 0.5),
+            ):
+                footprint_points.append(
+                    (
+                        float(np.clip(column_corner / max(columns - 1, 1), 0, 1)),
+                        float(np.clip(row_corner / max(rows - 1, 1), 0, 1)),
+                    )
+                )
+        hull = _convex_hull(footprint_points)
+        if len(hull) < 3:
+            continue
+        if len(hull) > 16:
+            hull = [hull[index] for index in np.linspace(0, len(hull) - 1, 16).astype(int)]
+        visual_score = float(
+            np.clip(
+                0.35
+                + 0.35 * relative_height / 0.2
+                + 0.3 * len(component) / max(minimum_area * 8, 1),
+                0,
+                0.95,
+            )
+        )
+        structures.append(
+            {
+                "footprint": [
+                    {"x_fraction": point[0], "y_fraction": point[1]} for point in hull
+                ],
+                "base_relative": float(np.clip(base_relative, 0, 1)),
+                "roof_relative": float(np.clip(roof_relative, 0, 1)),
+                "relative_height": float(np.clip(relative_height, 0, 1)),
+                "pixel_area_on_viewer_grid": len(component),
+                "visual_score": visual_score,
+            }
+        )
+
+    structures.sort(
+        key=lambda item: float(item["relative_height"])
+        * int(item["pixel_area_on_viewer_grid"]),
+        reverse=True,
+    )
+    structures = structures[:36]
+    for index, structure in enumerate(structures, start=1):
+        structure["id"] = f"candidate-{index:02d}"
+    return {
+        "schema_version": "1.0",
+        "method": "detrended_relative_height_components_v1",
+        "scientific_role": "optional visual reconstruction candidates",
+        "source": "relative_grid.json",
+        "affects_numeric_dsm": False,
+        "candidate_threshold_residual": threshold,
+        "minimum_component_area": minimum_area,
+        "score_role": "visual ranking heuristic only; not a calibrated probability",
+        "warning": (
+            "Candidates come from local relative-height contrast, not semantic building labels. "
+            "They may include trees or miss low-contrast roofs."
+        ),
+        "structures": structures,
+    }
+
+
 def write_surface_artifacts(
     job_dir: Path,
     relative: np.ndarray,
@@ -249,6 +421,11 @@ def write_surface_artifacts(
         ),
         encoding="utf-8",
     )
+    structure_path = job_dir / "reconstructed_structures.json"
+    structure_path.write_text(
+        json.dumps(reconstruct_structure_candidates(grid.astype(np.float32)), indent=2),
+        encoding="utf-8",
+    )
     glb_path = job_dir / "relative_surface.glb"
     _write_glb(glb_path, grid.astype(np.float32), grid_colours)
     diagnostic_path = job_dir / "height_diagnostics.json"
@@ -288,6 +465,7 @@ def write_surface_artifacts(
         _artifact("texture", texture_path, "image/png"),
         _artifact("height_texture", height_path, "image/png"),
         _artifact("surface_grid", grid_path, "application/json"),
+        _artifact("structure_layer", structure_path, "application/json"),
         _artifact("glb_mesh", glb_path, "model/gltf-binary"),
         _artifact("height_diagnostics", diagnostic_path, "application/json"),
     ]

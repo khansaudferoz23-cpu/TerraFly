@@ -33,11 +33,11 @@ Use this as the answer to “why does this file exist?” Paths are grouped by r
 | `backend/terrafly/config.py` | Central settings for job storage, upload/memory/tile limits, model ID, adapter, device, and test safety flag. |
 | `backend/terrafly/schemas.py` | Pydantic contracts for scientific states, jobs, artifacts, capabilities, and bounded GCP calibration requests; stops undocumented API shapes. |
 | `backend/terrafly/main.py` | FastAPI routes for health, capabilities, upload, status, calibration, safe artifact download, completed-job deletion, and final prebuilt-interface serving. |
-| `backend/terrafly/imaging.py` | Filename/content validation, safe decoding, RGB normalization, GeoTIFF inspection, hashes, and single-band warnings. |
+| `backend/terrafly/imaging.py` | Filename/content validation, safe decoding, RGB normalization, GeoTIFF inspection including horizontal units, hashes, and single-band warnings. |
 | `backend/terrafly/jobs.py` | Creates per-run IDs/directories and atomically persists live job state. |
 | `backend/terrafly/pipeline.py` | Enforces the processing-memory budget, orchestrates validation → inference → artifacts, and converts failures into honest job states. |
-| `backend/terrafly/artifacts.py` | Preserves raw/numeric output, writes preview, texture, 16-bit, orientation-aware viewer grid, valid GLB, height/tilt diagnostics, and SHA-256 records. |
-| `backend/terrafly/calibration.py` | Validates reference grids/GCPs, robustly fits scale and offset, performs held-out quality gates, preserves NoData, and writes metric/error evidence only on pass. |
+| `backend/terrafly/artifacts.py` | Preserves raw/numeric output, writes preview, texture, 16-bit, orientation-aware viewer grid, separate visual structure candidates, valid GLB, height/tilt diagnostics, and SHA-256 records. |
+| `backend/terrafly/calibration.py` | Validates reference grids/GCPs, robustly fits scale and offset, performs held-out quality gates, preserves NoData, and writes metric/error plus matching viewer-analysis evidence only on pass. |
 | `backend/terrafly/inference/__init__.py` | Marks the inference adapter directory as a package. |
 | `backend/terrafly/inference/base.py` | Defines the common prediction result and adapter interface used by real and test implementations. |
 | `backend/terrafly/inference/conventions.py` | Defines raw output meanings and performs the single tested conversion to normalized relative height. |
@@ -55,9 +55,9 @@ Use this as the answer to “why does this file exist?” Paths are grouped by r
 | `backend/tests/test_adapter_contract.py` | Verifies one-pass output conversion, raised-building ordering, finite output, and the test-adapter production interlock. |
 | `backend/tests/test_api.py` | Tests valid modes, numeric artifacts/hashes, single-band/TIR warnings, corrupt/unsafe/oversized rejection, and metric refusal. |
 | `backend/tests/test_geotiff.py` | Proves CRS/transform/NoData survive while vertical metric claims remain locked. |
-| `backend/tests/test_artifacts.py` | Parses GLB and proves grid/texture orientation, diagnostic provenance, and that a synthetic roof exports above flat ground. |
+| `backend/tests/test_artifacts.py` | Parses GLB and proves grid/texture orientation, diagnostic provenance, raised-roof ordering, and separate non-mutating structure candidates. |
 | `backend/tests/test_tiling.py` | Proves coverage, overlap blending, affine scale/offset alignment, and maximum-tile refusal. |
-| `backend/tests/test_calibration.py` | Proves reference-DSM pass, outlier robustness, alignment refusal, poor-evidence rejection, GCP validation, metric metadata, and hashes. |
+| `backend/tests/test_calibration.py` | Proves reference-DSM pass, outlier robustness, alignment refusal, poor-evidence rejection, GCP validation, metric grid alignment/values, metadata, and hashes. |
 
 ## Frontend: user experience and 3D inspection
 
@@ -71,14 +71,14 @@ Use this as the answer to “why does this file exist?” Paths are grouped by r
 | `frontend/tsconfig.app.json` | Strict TypeScript settings for browser application source. |
 | `frontend/tsconfig.node.json` | TypeScript settings for Vite configuration code running in Node. |
 | `frontend/src/main.tsx` | Creates the React root and mounts `App`. |
-| `frontend/src/App.tsx` | Complete upload/progress/result/calibration/evidence workflow with visible Locked/Passed/Rejected decisions. |
-| `frontend/src/SurfaceViewer.tsx` | Three.js render lifecycle, orbit/first-person controls, raycast point markers, loading/error state, and display-only exaggeration. |
-| `frontend/src/surfaceGeometry.ts` | Pure orientation, mesh-building, pixel mapping, and bilinear point-sampling logic separated for direct tests. |
+| `frontend/src/App.tsx` | Complete upload/progress/result/calibration/evidence workflow with visible Locked/Passed/Rejected decisions plus gated height/distance/slope analysis. |
+| `frontend/src/SurfaceViewer.tsx` | Three.js render lifecycle, orbit/first-person controls, metric-aware raycast markers, optional upright Structures layer, loading/error state, and display-only exaggeration. |
+| `frontend/src/surfaceGeometry.ts` | Pure orientation, mesh-building, pixel mapping, relative/metric bilinear sampling, and structure contracts separated for direct tests. |
 | `frontend/src/api.ts` | Typed boundary for jobs, reference calibration, cleanup, and artifact URLs. |
 | `frontend/src/types.ts` | TypeScript mirror of job, artifact, scientific-state, fit, evaluation, and gate responses. |
 | `frontend/src/styles.css` | Deliberate design tokens, layout hierarchy, responsive behavior, and viewer styling. |
 | `frontend/src/App.test.tsx` | Guards the non-metric promise, clean initial state, real file-selection action, and absence of fake future controls. |
-| `frontend/src/SurfaceViewer.test.ts` | Guards asymmetric image-to-geometry/UV orientation and source-pixel point sampling. |
+| `frontend/src/SurfaceViewer.test.ts` | Guards asymmetric image-to-geometry/UV orientation, source-pixel point sampling, and aligned metric-grid interpolation/NoData handling. |
 | `frontend/src/test-setup.ts` | Loads DOM matchers used by Vitest/Testing Library. |
 
 ## Scripts: setup, launch, fixtures, and smoke evidence
@@ -89,7 +89,7 @@ Use this as the answer to “why does this file exist?” Paths are grouped by r
 | `scripts/start.ps1` | Reuses a healthy TerraFly 1.0 service, refuses unknown port owners, serves the prebuilt interface/API at one address, records readable logs, opens the browser, and stops only children it started. |
 | `scripts/verify.ps1` | Runs dependency, backend, frontend, production-build, health, and optional full real-model calibration checks behind one command. |
 | `scripts/package_release.ps1` | Creates the tracked-source ZIP, Windows source/prebuilt-interface folder and ZIP, and SHA-256 checksum record without overwriting an existing release. |
-| `scripts/smoke_final_workflow.py` | Executes the real GeoTIFF → relative → aligned-reference → metric path and verifies all 13 hashes plus metre/CRS GeoTIFF tags. |
+| `scripts/smoke_final_workflow.py` | Executes the real GeoTIFF → relative → aligned-reference → metric path and verifies all 17 hashes plus metre/CRS GeoTIFF tags. |
 | `scripts/smoke_real_model.py` | Measures a direct real-model inference and records device/revision/output statistics. |
 | `scripts/smoke_real_api.py` | Exercises the complete real upload-to-artifacts API path for the bundled or a supplied scene, including every hash. |
 | `scripts/smoke_tiled_model.py` | Forces four real CUDA tiles and verifies strategy metadata, shape, range, dtype, finiteness, and output hash. |
@@ -102,6 +102,7 @@ Use this as the answer to “why does this file exist?” Paths are grouped by r
 | File | Purpose and reason to keep it |
 |---|---|
 | `docs/TEAM_TECHNICAL_GUIDE.md` | Architecture, output meanings, technology roles, SAC distinction, judge answers, and team learning split. |
+| `docs/PS_REQUIREMENTS_TRACEABILITY.md` | Maps every supplied problem-statement requirement to implementation, verification, and the exact claim boundary. |
 | `docs/UX_RATIONALE.md` | What was right/wrong with the first UI and the human design rationale for the revision. |
 | `docs/cookbook/COOKBOOK_SOURCE_INDEX.md` | Curated evidence/source index reserved for the later requested cookbook deliverable. |
 | `docs/cookbook/TERRAFLY_COOKBOOK.md` | Final team cookbook explaining the promise, architecture, inference, files, calibration math, tests, limitations, and judge defence. |

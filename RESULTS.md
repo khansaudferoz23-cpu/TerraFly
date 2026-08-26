@@ -85,3 +85,16 @@ The original adapter performed `1 - normalized_depth` even though this checkpoin
 | Full calibration workflow | PASS | 15/15 hashes; regenerated software oracle; scale 40.00000007; RMSE 0.00000295 m |
 
 The hole/reversal bug is fixed. The large plane fractions are a separate monocular perspective-bias limitation; they are reported but not automatically removed.
+
+## Problem-statement alignment evidence — 2026-08-26
+
+| Check | Result | Evidence |
+|---|---:|---|
+| Backend suite | PASS | 32 tests; structure separation, metric grid, horizontal units, calibration, direction, GLB, safety |
+| Frontend suite | PASS | 7 tests; upward structure extrusion, projected-affine distance, relative/metric sampling including NoData, and existing interaction/orientation contracts |
+| Production build | PASS | strict TypeScript/Vite; 803.57 kB JavaScript (215.82 kB gzip), with a non-failing chunk-size advisory |
+| Supplied stadium real CUDA run | PASS | 10/10 hashes in 6.105 s, exact model revision, 8 optional structure candidates, DSM unchanged |
+| Real calibration workflow | PASS | 17/17 hashes in 28.196 s; metric state; scale 40.00000007; offset 99.99999997; RMSE 0.00000295 m |
+| Updated in-app browser | PARTIAL | initial page rendered; upload/generate interaction was denied by browser security auto-review, so no workaround was attempted |
+
+The new Structures layer is visualization evidence, not accuracy evidence. The metric numbers above come from the synthetic software oracle and prove the software relation/export path only.

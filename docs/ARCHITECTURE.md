@@ -10,9 +10,9 @@ flowchart TB
     MODEL[Depth Anything V2 adapter]
     TILE[Bounded overlap tiling]
     JOB[Per-job state + SHA-256 manifest]
-    ART[Relative NPY / preview / texture / grid / GLB]
+    ART[Relative NPY / preview / texture / grid / structures / GLB]
     CAL[Calibration and held-out evaluation]
-    METRIC[Metric NPY / GeoTIFF / residual / report]
+    METRIC[Metric NPY / analysis grid / GeoTIFF / residual / report]
 
     UI -->|POST image; poll job| API
     API --> SAFE --> MODEL
@@ -37,7 +37,7 @@ stateDiagram-v2
     MetricCalibrated --> GeoreferencedRelative: later recalibration is rejected
 ```
 
-Metric artifacts are a consequence of the state, not a UI toggle. The viewer/GLB remain relative in every state.
+Metric artifacts are a consequence of the state, not a UI toggle. The viewer/GLB display geometry remains normalized in every state; after a pass, point inspection samples the separate metric analysis grid. The optional Structures layer is visual only and never changes scientific state or DSM values.
 
 ## Calibration decision
 
@@ -64,7 +64,7 @@ flowchart TD
 | Image/geospatial | `imaging.py`, `calibration.py` | CRS versus vertical datum, masks, exact alignment, gates |
 | Inference | `depth_anything_v2.py`, `tiling.py`, `factory.py` | relative model, real/test split, CUDA fallback, overlap alignment |
 | Artifacts | `artifacts.py`, `pipeline.py` | why each file exists, GLB limits, hashes, orientation |
-| 3D/UI | `App.tsx`, `SurfaceViewer.tsx`, `surfaceGeometry.ts` | progress, scientific labels, navigation, A/B samples, responsive design |
+| 3D/UI | `App.tsx`, `SurfaceViewer.tsx`, `surfaceGeometry.ts` | progress, scientific labels, navigation, relative/metric A/B samples, optional structures, responsive design |
 | Release/evidence | `verify.ps1`, `package_release.ps1`, `handoff/` | tests, clean extraction, checksums, limitations, reproducibility |
 
 The complete tracked-file explanation is in `FILE_GUIDE.md`.

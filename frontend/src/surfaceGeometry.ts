@@ -10,9 +10,58 @@ export type SurfaceGrid = {
   values: number[];
 };
 
+export type MeasurementGrid = Omit<SurfaceGrid, "values"> & {
+  values: Array<number | null>;
+  units: "metre";
+  vertical_datum?: string;
+};
+
+export type ReconstructedStructure = {
+  id: string;
+  footprint: Array<{ x_fraction: number; y_fraction: number }>;
+  base_relative: number;
+  roof_relative: number;
+  relative_height: number;
+  visual_score: number;
+};
+
+export function createStructureGeometry(
+  structure: ReconstructedStructure,
+  aspect: number,
+): THREE.ExtrudeGeometry {
+  if (structure.footprint.length < 3 || structure.relative_height <= 0 || !Number.isFinite(aspect) || aspect <= 0) {
+    throw new Error("Structure candidate geometry is invalid.");
+  }
+  const shape = new THREE.Shape();
+  structure.footprint.forEach((point, index) => {
+    const worldX = (point.x_fraction - 0.5) * 10;
+    const worldZ = (point.y_fraction - 0.5) * 10 * aspect;
+    if (index === 0) shape.moveTo(worldX, -worldZ);
+    else shape.lineTo(worldX, -worldZ);
+  });
+  shape.closePath();
+  const geometry = new THREE.ExtrudeGeometry(shape, {
+    depth: Math.max(structure.relative_height, 0.02),
+    bevelEnabled: false,
+    steps: 1,
+  });
+  geometry.rotateX(-Math.PI / 2);
+  return geometry;
+}
+
+export type StructureLayer = {
+  schema_version: string;
+  method: string;
+  scientific_role: string;
+  affects_numeric_dsm: false;
+  warning: string;
+  structures: ReconstructedStructure[];
+};
+
 export type InspectedPoint = {
   label: "A" | "B";
   relativeValue: number;
+  metricElevationM?: number | null;
   row: number;
   column: number;
   xFraction: number;
@@ -21,6 +70,56 @@ export type InspectedPoint = {
 
 function clamp01(value: number) {
   return Math.max(0, Math.min(1, value));
+}
+
+export function projectedDistanceMetres(
+  transform: number[],
+  horizontalUnits: string,
+  sourceShape: [number, number],
+  first: Pick<InspectedPoint, "xFraction" | "yFraction">,
+  second: Pick<InspectedPoint, "xFraction" | "yFraction">,
+): number | null {
+  if (
+    !horizontalUnits.toLowerCase().startsWith("met")
+    || transform.length < 6
+    || !transform.slice(0, 6).every(Number.isFinite)
+  ) return null;
+  const [rows, columns] = sourceShape;
+  if (rows < 1 || columns < 1) return null;
+  const deltaColumn = (second.xFraction - first.xFraction) * Math.max(columns - 1, 0);
+  const deltaRow = (second.yFraction - first.yFraction) * Math.max(rows - 1, 0);
+  const deltaX = transform[0] * deltaColumn + transform[1] * deltaRow;
+  const deltaY = transform[3] * deltaColumn + transform[4] * deltaRow;
+  const distance = Math.hypot(deltaX, deltaY);
+  return Number.isFinite(distance) ? distance : null;
+}
+
+export function sampleMeasurementValue(
+  grid: MeasurementGrid,
+  xFraction: number,
+  yFraction: number,
+): number | null {
+  const [rows, columns] = grid.shape;
+  if (rows < 1 || columns < 1 || grid.values.length !== rows * columns) return null;
+  const x = clamp01(xFraction) * Math.max(0, columns - 1);
+  const y = clamp01(yFraction) * Math.max(0, rows - 1);
+  const x0 = Math.floor(x);
+  const y0 = Math.floor(y);
+  const x1 = Math.min(x0 + 1, columns - 1);
+  const y1 = Math.min(y0 + 1, rows - 1);
+  const values = [
+    grid.values[y0 * columns + x0],
+    grid.values[y0 * columns + x1],
+    grid.values[y1 * columns + x0],
+    grid.values[y1 * columns + x1],
+  ];
+  if (values.some((value) => typeof value !== "number" || !Number.isFinite(value))) return null;
+  const [topLeft, topRight, bottomLeft, bottomRight] = values as number[];
+  const xWeight = x - x0;
+  const yWeight = y - y0;
+  const top = topLeft * (1 - xWeight) + topRight * xWeight;
+  const bottom = bottomLeft * (1 - xWeight) + bottomRight * xWeight;
+  return top * (1 - yWeight) + bottom * yWeight;
 }
 
 export function sampleSurfacePoint(

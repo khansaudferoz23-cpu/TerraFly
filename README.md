@@ -10,7 +10,9 @@ Upload PNG, JPG/JPEG, or GeoTIFF → validate safely → run an interchangeable 
 
 The normal adapter is the real Apache-2.0 `depth-anything/Depth-Anything-V2-Small-hf` checkpoint. Its raw output convention is explicit: larger inverse-depth/proximity values map to higher relative surface for near-nadir scenes, with one global robust normalization and no second inversion. Every run preserves the pre-conversion array and writes a global-tilt diagnostic. Large inputs use bounded overlapping tiles with overlap scale/offset alignment and feather blending before normalization. Automated tests use a deterministic adapter that is technically blocked from normal runs and visibly labels every result as test-only.
 
-TerraFly 1.0 adds two evidence-driven calibration paths. An exactly aligned reference DSM can be evaluated in the app; surveyed control points plus separate validation points are available through the API. Robust scale/offset fitting, spatially held-out validation, coverage/inlier/RMSE/R² gates, source NoData preservation, and an explicit pass/reject decision prevent a cosmetic “metres” toggle. Only a passing run receives metric `.npy` and GeoTIFF artifacts. The 3D viewer deliberately remains relative.
+TerraFly 1.0 adds two evidence-driven calibration paths. An exactly aligned reference DSM can be evaluated in the app; surveyed control points plus separate validation points are available through the API. Robust scale/offset fitting, spatially held-out validation, coverage/inlier/RMSE/R² gates, source NoData preservation, and an explicit pass/reject decision prevent a cosmetic “metres” toggle. Only a passing run receives metric `.npy`, analysis-grid, and GeoTIFF artifacts. The display mesh remains a responsive normalized surface, while its A/B inspection reads calibrated elevations, height difference, and—when the source has projected metre units—horizontal distance and slope.
+
+An optional **Structures** control adds a separate Bhuvan-style visual reconstruction layer with upright walls. It is inferred from local relative-height components, remains off by default, never changes the numeric DSM, and is explicitly warned as non-semantic: trees may be included and low-contrast roofs may be missed.
 
 ### Metric calibration workflow
 
@@ -35,14 +37,15 @@ Run `Check-TerraFly.cmd` for the ordinary automated check. For the complete real
 
 - **Orbit:** left-drag rotates, right-drag pans, and the wheel zooms.
 - **Drone-style flight:** select **First-person**, click the 3D scene, use `W/A/S/D`, `Q/E` for down/up, hold `Shift` for faster movement, move the mouse to look, and press `Esc` to release the pointer.
-- **Inspect values:** click two surface locations for A/B relative values and their difference. These are never labelled as metres.
-- **Visual controls:** Texture, Wireframe, vertical display exaggeration, Clear points, and Reset affect inspection only; they never alter the saved numeric array.
+- **Inspect values:** click ground A and roof/terrain B. Relative jobs show relative values; a passing calibration shows elevation and vertical difference in metres. Projected metre CRS inputs also show horizontal distance and slope.
+- **Visual controls:** Texture, Wireframe, optional Structures, vertical display exaggeration, Clear points, and Reset affect inspection only; they never alter the saved numeric array.
 
 The exact bundled metric demo and troubleshooting steps are in `docs/OPERATOR_GUIDE.md`.
 
 ## Understand before presenting
 
 - `docs/TEAM_TECHNICAL_GUIDE.md`: architecture, outputs, model limits, SAC sample distinction, judge answers, and team learning split.
+- `docs/PS_REQUIREMENTS_TRACEABILITY.md`: official problem-statement requirement-by-requirement implementation and limitation map.
 - `docs/OPERATOR_GUIDE.md`: launch, orbit/drone controls, bundled calibration demo, checks, and troubleshooting.
 - `docs/cookbook/TERRAFLY_COOKBOOK.md`: final explain-everything cookbook for the team.
 - `docs/DEMO_SCRIPT.md` and `docs/JUDGE_QA.md`: the presentation sequence and defence answers.

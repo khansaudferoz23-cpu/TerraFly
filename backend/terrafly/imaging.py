@@ -108,6 +108,9 @@ def _inspect_geotiff(data: bytes, max_pixels: int) -> InspectedImage:
                     "transform": [transform.a, transform.b, transform.c, transform.d, transform.e, transform.f],
                     "bounds": [dataset.bounds.left, dataset.bounds.bottom, dataset.bounds.right, dataset.bounds.top],
                     "pixel_size": [abs(transform.a), abs(transform.e)],
+                    "horizontal_units": (
+                        dataset.crs.linear_units if dataset.crs.is_projected else "degree"
+                    ),
                     "nodata": dataset.nodata,
                     "ground_units": None,
                     "vertical_datum": None,

@@ -2,31 +2,36 @@ import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { PointerLockControls } from "three/examples/jsm/controls/PointerLockControls.js";
-import { createSurface, sampleSurfacePoint } from "./surfaceGeometry";
-import type { InspectedPoint, SurfaceGrid } from "./surfaceGeometry";
+import { createStructureGeometry, createSurface, sampleMeasurementValue, sampleSurfacePoint } from "./surfaceGeometry";
+import type { InspectedPoint, MeasurementGrid, StructureLayer, SurfaceGrid } from "./surfaceGeometry";
 
 type Props = {
   gridUrl: string;
   textureUrl: string;
+  measurementGridUrl?: string;
+  structureLayerUrl?: string;
   onPointsChange?: (points: InspectedPoint[]) => void;
 };
 
-export function SurfaceViewer({ gridUrl, textureUrl, onPointsChange }: Props) {
+export function SurfaceViewer({ gridUrl, textureUrl, measurementGridUrl, structureLayerUrl, onPointsChange }: Props) {
   const hostRef = useRef<HTMLDivElement>(null);
   const materialRef = useRef<THREE.MeshStandardMaterial | null>(null);
   const textureRef = useRef<THREE.Texture | null>(null);
   const meshRef = useRef<THREE.Mesh | null>(null);
   const gridRef = useRef<SurfaceGrid | null>(null);
+  const measurementGridRef = useRef<MeasurementGrid | null>(null);
   const orbitRef = useRef<OrbitControls | null>(null);
   const walkRef = useRef<PointerLockControls | null>(null);
   const resetViewRef = useRef<(() => void) | null>(null);
   const markerGroupRef = useRef<THREE.Group | null>(null);
+  const structureGroupRef = useRef<THREE.Group | null>(null);
   const pointsRef = useRef<InspectedPoint[]>([]);
   const navigationModeRef = useRef<"orbit" | "first-person">("orbit");
   const [wireframe, setWireframe] = useState(false);
   const [textureEnabled, setTextureEnabled] = useState(true);
   const [exaggeration, setExaggeration] = useState(2.2);
   const [navigationMode, setNavigationMode] = useState<"orbit" | "first-person">("orbit");
+  const [structuresEnabled, setStructuresEnabled] = useState(false);
   const [viewerStatus, setViewerStatus] = useState<"loading" | "ready" | "error">("loading");
 
   function chooseNavigation(mode: "orbit" | "first-person") {
@@ -77,12 +82,18 @@ export function SurfaceViewer({ gridUrl, textureUrl, onPointsChange }: Props) {
     }
     position.needsUpdate = true;
     mesh.geometry.computeVertexNormals();
+    if (structureGroupRef.current) structureGroupRef.current.scale.y = exaggeration;
   }, [exaggeration]);
+
+  useEffect(() => {
+    if (structureGroupRef.current) structureGroupRef.current.visible = structuresEnabled;
+  }, [structuresEnabled]);
 
   useEffect(() => {
     const host = hostRef.current;
     if (!host) return undefined;
     setViewerStatus("loading");
+    setStructuresEnabled(false);
     pointsRef.current = [];
     onPointsChange?.([]);
     let disposed = false;
@@ -136,13 +147,26 @@ export function SurfaceViewer({ gridUrl, textureUrl, onPointsChange }: Props) {
         return response.json() as Promise<SurfaceGrid>;
       }),
       new THREE.TextureLoader().loadAsync(textureUrl),
+      measurementGridUrl
+        ? fetch(measurementGridUrl).then((response) => {
+            if (!response.ok) throw new Error("Metric analysis grid is unavailable.");
+            return response.json() as Promise<MeasurementGrid>;
+          })
+        : Promise.resolve(null),
+      structureLayerUrl
+        ? fetch(structureLayerUrl).then((response) => {
+            if (!response.ok) throw new Error("Reconstructed structure layer is unavailable.");
+            return response.json() as Promise<StructureLayer>;
+          })
+        : Promise.resolve(null),
     ])
-      .then(([grid, loadedTexture]) => {
+      .then(([grid, loadedTexture, measurementGrid, structureLayer]) => {
         if (disposed) {
           loadedTexture.dispose();
           return;
         }
         gridRef.current = grid;
+        measurementGridRef.current = measurementGrid;
         textureRef.current = loadedTexture;
         loadedTexture.colorSpace = THREE.SRGBColorSpace;
         material.map = textureEnabled ? loadedTexture : null;
@@ -150,6 +174,35 @@ export function SurfaceViewer({ gridUrl, textureUrl, onPointsChange }: Props) {
         const mesh = new THREE.Mesh(createSurface(grid, exaggeration), material);
         meshRef.current = mesh;
         scene.add(mesh);
+        if (structureLayer) {
+          const structureGroup = new THREE.Group();
+          const aspect = grid.shape[0] / grid.shape[1];
+          for (const structure of structureLayer.structures) {
+            if (structure.footprint.length < 3 || structure.relative_height <= 0) continue;
+            const geometry = createStructureGeometry(structure, aspect);
+            const structureMaterial = new THREE.MeshStandardMaterial({
+              color: 0x4f9f8a,
+              emissive: 0x102c25,
+              roughness: 0.8,
+              metalness: 0,
+              transparent: true,
+              opacity: 0.72,
+              side: THREE.DoubleSide,
+            });
+            const structureMesh = new THREE.Mesh(geometry, structureMaterial);
+            structureMesh.position.y = structure.base_relative;
+            structureMesh.userData = {
+              id: structure.id,
+              visualScore: structure.visual_score,
+              reconstructed: true,
+            };
+            structureGroup.add(structureMesh);
+          }
+          structureGroup.scale.y = exaggeration;
+          structureGroup.visible = false;
+          structureGroupRef.current = structureGroup;
+          scene.add(structureGroup);
+        }
         setViewerStatus("ready");
       })
       .catch(() => {
@@ -189,6 +242,13 @@ export function SurfaceViewer({ gridUrl, textureUrl, onPointsChange }: Props) {
       const current = pointsRef.current;
       const label: "A" | "B" = current.length === 0 ? "A" : "B";
       const point = sampleSurfacePoint(gridRef.current, hit.uv.x, 1 - hit.uv.y, label);
+      if (measurementGridRef.current) {
+        point.metricElevationM = sampleMeasurementValue(
+          measurementGridRef.current,
+          hit.uv.x,
+          1 - hit.uv.y,
+        );
+      }
       const next = current.length === 0 ? [point] : current.length === 1 ? [current[0], point] : [current[0], point];
       pointsRef.current = next;
       if (markerGroup.children.length === 2) {
@@ -250,6 +310,11 @@ export function SurfaceViewer({ gridUrl, textureUrl, onPointsChange }: Props) {
         marker.geometry.dispose();
         if (marker.material instanceof THREE.Material) marker.material.dispose();
       }
+      for (const child of [...(structureGroupRef.current?.children ?? [])]) {
+        const structure = child as THREE.Mesh;
+        structure.geometry.dispose();
+        if (structure.material instanceof THREE.Material) structure.material.dispose();
+      }
       material.dispose();
       textureRef.current?.dispose();
       renderer.dispose();
@@ -258,12 +323,14 @@ export function SurfaceViewer({ gridUrl, textureUrl, onPointsChange }: Props) {
       textureRef.current = null;
       meshRef.current = null;
       gridRef.current = null;
+      measurementGridRef.current = null;
       orbitRef.current = null;
       walkRef.current = null;
       markerGroupRef.current = null;
+      structureGroupRef.current = null;
       resetViewRef.current = null;
     };
-  }, [gridUrl, textureUrl]);
+  }, [gridUrl, textureUrl, measurementGridUrl, structureLayerUrl]);
 
   return (
     <div className="viewer-shell">
@@ -274,6 +341,7 @@ export function SurfaceViewer({ gridUrl, textureUrl, onPointsChange }: Props) {
         </div>
         <button type="button" aria-pressed={textureEnabled} className={textureEnabled ? "active" : ""} onClick={() => setTextureEnabled(!textureEnabled)}>Texture</button>
         <button type="button" aria-pressed={wireframe} className={wireframe ? "active" : ""} onClick={() => setWireframe(!wireframe)}>Wireframe</button>
+        {structureLayerUrl && <button type="button" aria-pressed={structuresEnabled} className={structuresEnabled ? "active" : ""} onClick={() => setStructuresEnabled(!structuresEnabled)}>Structures</button>}
         <label>
           Vertical display <strong>{exaggeration.toFixed(1)}×</strong>
           <input aria-label="Display vertical exaggeration" type="range" min="0.2" max="6" step="0.1" value={exaggeration} onChange={(event) => setExaggeration(Number(event.target.value))} />
@@ -281,7 +349,7 @@ export function SurfaceViewer({ gridUrl, textureUrl, onPointsChange }: Props) {
         <button type="button" onClick={clearPoints}>Clear points</button>
         <button type="button" onClick={() => resetViewRef.current?.()}>Reset</button>
       </div>
-      <div ref={hostRef} className="viewer" aria-label="Interactive textured relative surface">
+      <div ref={hostRef} className="viewer" aria-label="Interactive textured elevation surface">
         {viewerStatus === "loading" && <div className="viewer-status">Preparing 3D surface…</div>}
         {viewerStatus === "error" && <div className="viewer-status error" role="alert">The 3D surface could not be loaded.</div>}
       </div>

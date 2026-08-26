@@ -1,6 +1,6 @@
 # TerraFly 1.0 final handoff
 
-Date: 2026-08-25 IST  
+Date: 2026-08-26 IST
 Repository: `khansaudferoz23-cpu/TerraFly` (private)  
 Scientific promise: one optical image produces a traceable relative surface; metric exports exist only after documented vertical evidence passes held-out quality gates.
 
@@ -9,8 +9,8 @@ Scientific promise: one optical image produces a traceable relative surface; met
 - Real Depth Anything V2 Small CUDA/CPU inference with exact revision recording.
 - Explicit inverse-depth/proximity direction, preserved raw prediction, single conversion, raised-roof GLB regression, and per-run tilt diagnostics.
 - Safe PNG/JPEG/GeoTIFF intake, metadata/NoData preservation, tiling, hashes, and evidence artifacts.
-- Professional responsive React/Three.js workbench with Orbit, drone-style First-person flight, A/B relative inspection, texture/wireframe, and display-only exaggeration.
-- Aligned-reference and API GCP calibration with separate fit/evaluation evidence, robust outlier handling, strict pass/reject gates, and metric/error GeoTIFF artifacts.
+- Professional responsive React/Three.js workbench with Orbit, drone-style First-person flight, relative/metric A/B inspection, texture/wireframe, optional Bhuvan-style Structures, and display-only exaggeration.
+- Aligned-reference and API GCP calibration with separate fit/evaluation evidence, robust outlier handling, strict pass/reject gates, metric/error GeoTIFF artifacts, and a matching metric analysis grid for height/slope inspection.
 - One-address final operation: the backend serves the prebuilt interface and API at `http://127.0.0.1:8000`.
 - Beginner launcher/checker, full real-model checker, non-overwriting packager, final cookbook, operator guide, architecture diagrams, judge demo/Q&A, file ledger, test report, and manifest.
 
@@ -20,7 +20,7 @@ Scientific promise: one optical image produces a traceable relative surface; met
 2. Double-click `Start-TerraFly.cmd` and keep its window open.
 3. Read `docs\OPERATOR_GUIDE.md` for every viewer control and the bundled calibration demonstration.
 4. Double-click `Check-TerraFly.cmd` before presenting.
-5. Run `powershell -ExecutionPolicy Bypass -File scripts\verify.ps1 -Full` for the real-model, 15-artifact, metric-GeoTIFF proof.
+5. Run `powershell -ExecutionPolicy Bypass -File scripts\verify.ps1 -Full` for the real-model, 17-artifact, metric-GeoTIFF proof.
 
 ## Judge demonstration files
 
@@ -42,4 +42,4 @@ Expected sequence: `Georeferenced Relative` before evidence, then `Metric Calibr
 
 ## Remaining boundary
 
-The four-day software/release objective and the roof-inversion repair are complete. Real-world remote-sensing height accuracy is not established. Strong global perspective tilt is measured but not automatically removed. The next scientific milestone is a licensed, compatible, independently surveyed optical/DSM or nDSM dataset with geographic train/validation/test separation, masks, units, alignment, resolution, datum, and provenance.
+The four-day software objective, roof-inversion repair, metric analysis grid, and separated structure visualization are complete. Real-world remote-sensing height accuracy is not established. Strong global perspective tilt is measured but not automatically removed. Structures are visual candidates, not verified buildings. TerraFly supplies a DSM foundation rather than a hazard predictor. The next scientific milestone is a licensed, compatible, independently surveyed optical/DSM or nDSM dataset with geographic train/validation/test separation, masks, units, alignment, resolution, datum, and provenance.

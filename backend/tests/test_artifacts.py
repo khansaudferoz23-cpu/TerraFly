@@ -53,6 +53,7 @@ def test_artifact_orientation_and_glb_contract(tmp_path):
         "texture",
         "height_texture",
         "surface_grid",
+        "structure_layer",
         "glb_mesh",
         "height_diagnostics",
     }
@@ -80,6 +81,9 @@ def test_artifact_orientation_and_glb_contract(tmp_path):
     assert diagnostics["geometry"]["source"] == "relative_surface.npy"
     assert diagnostics["geometry"]["colour_preview_is_geometry_source"] is False
     assert diagnostics["global_tilt_indicator"]["correction_applied"] is False
+    structures = json.loads((tmp_path / "reconstructed_structures.json").read_text(encoding="utf-8"))
+    assert structures["affects_numeric_dsm"] is False
+    assert "not a calibrated probability" in structures["score_role"]
 
 
 def test_glb_exports_a_synthetic_building_above_flat_ground(tmp_path):
@@ -106,3 +110,10 @@ def test_glb_exports_a_synthetic_building_above_flat_ground(tmp_path):
     assert roof_height > ground_height
     assert roof_height == pytest.approx(1.0)
     assert ground_height == pytest.approx(0.0)
+    structures = json.loads((tmp_path / "reconstructed_structures.json").read_text(encoding="utf-8"))
+    assert structures["structures"]
+    assert all(
+        structure["roof_relative"] > structure["base_relative"]
+        for structure in structures["structures"]
+    )
+    assert all(0 <= structure["visual_score"] <= 0.95 for structure in structures["structures"])

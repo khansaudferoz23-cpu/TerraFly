@@ -48,7 +48,7 @@ For an aligned reference DSM, reserve a spatial checkerboard subset before fitti
 
 Day 3 performs no silent reprojection or resampling. A reference DSM must match CRS, dimensions, and affine transform exactly so interpolation cannot hide alignment errors. Metric outputs inherit the input GeoTIFF grid and mask source NoData pixels. A future resampling workflow must be explicit, configurable, and separately tested.
 
-## D-013 — Keep metric files separate from the relative viewer
+## D-013 — Keep metric files separate from the relative viewer (extended by D-018)
 
 Calibration changes the exported numeric interpretation, not the evidence used to build the existing 3D viewer. Keep the viewer and A/B comparison in relative units, write metric `.npy`/GeoTIFF as distinct artifacts, and show the vertical datum and held-out diagnostics beside the gate decision.
 
@@ -67,3 +67,11 @@ The final Windows ZIP contains all tracked source and `frontend/dist`, while Pyt
 ## D-017 — Make model-output direction explicit and preserve the pre-conversion array
 
 Treat Depth Anything V2 Small's raw relative output as inverse depth/proximity: larger means closer. Under the app's near-nadir overhead assumption, closer maps directly to higher relative surface after one global 2nd–98th percentile normalization; no extra inversion is applied. Preserve `raw_model_output.npy`, make `relative_surface.npy` the sole numeric geometry source, and write `height_diagnostics.json` with the convention, normalization count, geometry source, and a non-correcting global-tilt indicator. Synthetic flat-ground/raised-building tests must prove that both the numeric result and GLB keep the roof above the ground.
+
+## D-018 — Add metric inspection without replacing display geometry
+
+Keep the responsive Three.js mesh normalized for stable rendering, but after a calibration pass write `metric_analysis_grid.json` on the identical sampled row/column grid. A/B clicks may then report calibrated elevation and vertical difference in metres. Derive horizontal distance and slope only when GeoTIFF horizontal units are projected metres; never treat geographic degrees as metres.
+
+## D-019 — Separate Bhuvan-style structures from the scientific DSM
+
+A single DSM heightfield cannot create the clean vertical façades shown by object-based 3D map systems. Detect conservative local raised components on the viewer grid, export convex footprints and relative base/roof values, and render them only in an optional Structures layer. Keep it off by default, mark it non-semantic, and never feed it back into the numeric DSM or calibration metrics.
