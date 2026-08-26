@@ -143,7 +143,9 @@ The full check additionally runs the real model and the entire calibration demo,
 | Symptom | Meaning and fix |
 |---|---|
 | “TerraFly is not set up” | Run `scripts\setup.ps1` once. |
+| CMD reports `Key in dictionary: Path / PATH` | Use the current repaired launcher. It normalizes duplicate Windows process-path entries before starting Python. |
 | Port 8000 is occupied | Close the older TerraFly launcher or the named conflicting program; do not kill random processes. |
+| Service starts but no browser appears | Manually open `http://127.0.0.1:8000`. The repaired launcher keeps the service alive and prints this address even if Windows cannot open the default browser. |
 | Model download error | Connect to the internet for the first real run; retry. The cache is under `runtime\model-cache`. |
 | CUDA unavailable or out of memory | TerraFly falls back to CPU; processing will be slower. |
 | 3D viewer is black/red | Wait for completion, then reload once. Check browser WebGL support and `runtime\logs`. |

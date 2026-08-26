@@ -13,7 +13,7 @@ Model: `depth-anything/Depth-Anything-V2-Small-hf` revision `5426e4f0f36572d1645
 | Frontend interaction suite | PASS | 8 tests, including neutral steep-face material groups, upward structure extrusion, projected-affine distance, metric interpolation, and NoData behavior |
 | Strict production build | PASS | TypeScript/Vite passed; JS 805.27 kB, gzip 216.33 kB; non-failing chunk advisory |
 | npm production audit | PASS | 0 vulnerabilities |
-| PowerShell/CMD entry points | PASS | setup/start/verify/package parse; checker completed with PASS |
+| PowerShell/CMD entry points | PASS | Reproduced and repaired duplicate `PATH`/`Path` `Start-Process` crash; exact CMD launch, production readiness, browser-open path, parser, and checker passed |
 | Python compilation/diff whitespace | PASS | all backend/scripts compile; `git diff --check` clean |
 
 ## Full real-model and calibration proof

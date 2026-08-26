@@ -113,3 +113,12 @@ Status vocabulary: PASS, FAIL, BLOCKED, SKIPPED.
 - PASS — Final real CUDA stadium output completed in 6.105 seconds, verified 10/10 artifact hashes and eight optional structure candidates; real calibrated output completed in 28.196 seconds, verified 17/17 hashes, and recovered the expected metric relation.
 - PARTIAL — Updated page rendering was confirmed in the in-app browser, but final upload/generate interaction was blocked by browser security auto-review. No alternate automation route was used.
 - LIMIT — No domain-specific height model was trained without licensed aligned height truth, and no disaster predictor is claimed.
+
+## 2026-08-26 — display geometry and Windows launcher repair
+
+- PASS — separated the canonical analysis grid from `display_grid.json`; the latter alone receives isolated-spike replacement, RGB-guided bilateral smoothing, conservative raised-region flattening, and an extreme adjacent-delta safety cap.
+- PASS — steep Three.js and GLB faces now use a neutral material instead of sampling stretched top-down colour; default display exaggeration is 1.4× and measurements remain canonical.
+- PASS — 33 backend tests, 8 frontend tests, production build, real CUDA 18-artifact calibration workflow, and a real stadium browser run passed.
+- FAIL → PASS — exact `Start-TerraFly.cmd` reproduction failed with PowerShell `Start-Process: Key in dictionary: Path / PATH`. The launcher now normalizes duplicate process path entries before spawning services.
+- PASS — exact CMD rerun stayed open, served TerraFly 1.0.0 and the production page at `http://127.0.0.1:8000`, opened the browser path, and the complete ordinary checker passed while the app was live.
+- PASS — if Windows cannot open the default browser, the launcher now keeps the working server alive and prints the manual local address instead of stopping TerraFly.

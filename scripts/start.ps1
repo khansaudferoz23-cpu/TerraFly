@@ -28,11 +28,35 @@ function Assert-PortAvailable {
     }
 }
 
+function Repair-DuplicateProcessPath {
+    # Some Windows hosts inherit both PATH and Path. PowerShell's Start-Process
+    # copies them into a case-insensitive dictionary and otherwise fails before
+    # TerraFly can start with "Key in dictionary: Path / PATH".
+    $variables = [Environment]::GetEnvironmentVariables()
+    $pathKeys = @($variables.Keys | Where-Object { [string]$_ -ieq "PATH" })
+    if ($pathKeys.Count -le 1) { return }
+
+    $pathValue = [string]$env:PATH
+    foreach ($key in $pathKeys) {
+        [Environment]::SetEnvironmentVariable(
+            [string]$key,
+            $null,
+            [EnvironmentVariableTarget]::Process
+        )
+    }
+    [Environment]::SetEnvironmentVariable(
+        "Path",
+        $pathValue,
+        [EnvironmentVariableTarget]::Process
+    )
+}
+
 if (-not (Test-Path -LiteralPath $python)) {
     throw "TerraFly is not set up. Run scripts\setup.ps1 once first."
 }
 
 New-Item -ItemType Directory -Path $logRoot -Force | Out-Null
+Repair-DuplicateProcessPath
 $env:HF_HOME = Join-Path $projectRoot "runtime\model-cache"
 $backend = $null
 $frontend = $null
@@ -55,14 +79,16 @@ try {
         Write-Host "Using the TerraFly backend that is already running." -ForegroundColor DarkGray
     }
 
-    if (-not $productionMode -and -not $frontendReady) {
-        Assert-PortAvailable 5173
-        $frontend = Start-Process -FilePath "npm.cmd" -ArgumentList @("run", "dev") `
-            -WorkingDirectory (Join-Path $projectRoot "frontend") -WindowStyle Hidden -PassThru `
-            -RedirectStandardOutput (Join-Path $logRoot "frontend-output.log") `
-            -RedirectStandardError (Join-Path $logRoot "frontend-error.log")
-    } else {
-        Write-Host "Using the TerraFly interface that is already running." -ForegroundColor DarkGray
+    if (-not $productionMode) {
+        if (-not $frontendReady) {
+            Assert-PortAvailable 5173
+            $frontend = Start-Process -FilePath "npm.cmd" -ArgumentList @("run", "dev") `
+                -WorkingDirectory (Join-Path $projectRoot "frontend") -WindowStyle Hidden -PassThru `
+                -RedirectStandardOutput (Join-Path $logRoot "frontend-output.log") `
+                -RedirectStandardError (Join-Path $logRoot "frontend-error.log")
+        } else {
+            Write-Host "Using the TerraFly interface that is already running." -ForegroundColor DarkGray
+        }
     }
 
     if ($productionMode) {
@@ -81,8 +107,13 @@ try {
         throw "TerraFly did not become ready. Review the readable logs in runtime\logs, then run this launcher again."
     }
 
-    Start-Process $interfaceUrl
-    Write-Host "TerraFly is ready. Your browser should open automatically." -ForegroundColor Green
+    try {
+        Start-Process -FilePath $interfaceUrl -ErrorAction Stop
+        Write-Host "TerraFly is ready. Your browser should open automatically." -ForegroundColor Green
+    } catch {
+        Write-Warning "TerraFly is running, but Windows could not open the browser automatically."
+        Write-Host "Open this address manually: $interfaceUrl" -ForegroundColor Yellow
+    }
     Write-Host "Keep this window open. Press Ctrl+C here to stop services started by this launcher."
     while (($null -eq $backend -or -not $backend.HasExited) -and ($null -eq $frontend -or -not $frontend.HasExited)) {
         Start-Sleep -Seconds 1
