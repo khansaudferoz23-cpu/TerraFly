@@ -1,8 +1,8 @@
 {
   "schema_version": "1.0",
   "milestone": "TerraFly 1.0 final release",
-  "generated_at": "2026-08-26T05:06:26.717127+00:00",
-  "git_commit": "1abc4d8b465ba753184a8a0ed0beefa28bfa3933",
+  "generated_at": "2026-08-26T13:35:09.032024+00:00",
+  "git_commit": "e74cc4e8268efbaf9140db98243eae4a7f978a4d",
   "environment": {
     "os": "Windows-11-10.0.26200-SP0",
     "python": "3.12.13",
@@ -28,14 +28,14 @@
     "weights_included": false
   },
   "tests": {
-    "backend": "PASS (32)",
-    "frontend": "PASS (7)",
+    "backend": "PASS (33)",
+    "frontend": "PASS (8)",
     "frontend_build": "PASS",
     "real_cpu": "PASS",
     "real_cuda": "PASS",
     "real_cuda_api": "PASS",
     "real_tiled_cuda": "PASS (4 tiles)",
-    "browser_workflow": "PARTIAL (updated page rendered; final interaction denied by browser auto-review)",
+    "browser_workflow": "PASS (real CUDA stadium upload, WebGL inspection, A/B values, zero browser errors)",
     "single_band_domain_gate": "PASS",
     "responsive_layout": "PASS",
     "glb_contract": "PASS",
@@ -47,11 +47,14 @@
     "metric_geotiff_contract": "PASS",
     "metric_viewer_grid": "PASS",
     "structure_layer_separation": "PASS",
+    "display_geometry_separation": "PASS (canonical relative and metric grids unchanged)",
+    "edge_aware_cleanup": "PASS (outlier, RGB-guided smoothing, rooftop flattening, slope safety)",
+    "neutral_wall_material": "PASS (Three.js and GLB steep faces do not sample aerial colour)",
     "source_nodata_preservation": "PASS",
     "single_server_production_ui": "PASS",
-    "real_final_calibration_workflow": "PASS (17 artifact hashes)",
-    "release_archives_and_checksums": "STALE after current source change; regenerate before delivery",
-    "clean_extracted_path_with_spaces": "PASS on prior release; current source not repackaged"
+    "real_final_calibration_workflow": "PASS (18 artifact hashes)",
+    "release_archives_and_checksums": "PASS (generated from the manifest-bearing commit; external checksum file)",
+    "clean_extracted_path_with_spaces": "PASS"
   },
   "files": [
     {
@@ -91,8 +94,8 @@
     },
     {
       "path": "FILE_GUIDE.md",
-      "bytes": 15578,
-      "sha256": "6d1a19d0874f70fa1727a96eef56a94cea8479354468b79d28368a1ef90c8289"
+      "bytes": 15686,
+      "sha256": "569ec7bf6e4d3eadb12a8789accda2505916ea4c8fb20a396b72e1fa005efa40"
     },
     {
       "path": "FOUR_DAY_PLAN.md",
@@ -106,18 +109,18 @@
     },
     {
       "path": "LIMITATIONS.md",
-      "bytes": 4032,
-      "sha256": "d29fe2d570d4acc8f94454c8b0051b5c321ff562672f7c8c270a838834327089"
+      "bytes": 4458,
+      "sha256": "ba0da05bc1e4c8411e6c00149d2149a720e8c74b2fb1a5e3dcbbda6ea7c39aea"
     },
     {
       "path": "PROJECT_STATUS.md",
-      "bytes": 10799,
-      "sha256": "ed9f6d0a82b4709d56700405fa2b68cea3c9924ba9a72e64c2962b087b4ab6a3"
+      "bytes": 11465,
+      "sha256": "8cddc039a2512b0e0793326146a6af10948125f8fe18e0b15693c93641a16f5b"
     },
     {
       "path": "README.md",
-      "bytes": 6571,
-      "sha256": "26e1aaccc13388394ddfb146de390fd6d486cdcaefc870f364ade167f25b1e73"
+      "bytes": 7066,
+      "sha256": "1c5d997c7f98cb8e60451252d9db00c04d937c5865898e4a88b641b49a97cffa"
     },
     {
       "path": "RESULTS.md",
@@ -141,8 +144,8 @@
     },
     {
       "path": "backend/terrafly/artifacts.py",
-      "bytes": 19235,
-      "sha256": "b0578e00f9f11cbb79edcf09a374a6876f2334e9d96da489d69663f72063fcc3"
+      "bytes": 32384,
+      "sha256": "afebd747a567c9007770910a8f8b49221570a41e0e331e2d827e4a31c24f0100"
     },
     {
       "path": "backend/terrafly/calibration.py",
@@ -197,7 +200,7 @@
     {
       "path": "backend/terrafly/jobs.py",
       "bytes": 2457,
-      "sha256": "68e78a08f2448dee9f2a7c6c1373aba1d63e35fde4a082d210e076cbb0a0e702"
+      "sha256": "f1b2def0a84e8654362d172e1b285c228a13bf770d1e4f4a0f3759d81f4fda7b"
     },
     {
       "path": "backend/terrafly/main.py",
@@ -231,13 +234,13 @@
     },
     {
       "path": "backend/tests/test_api.py",
-      "bytes": 5319,
-      "sha256": "e6830b0199e5e7441a5bd0eb2a782868cd368fd5614470e7a2f218651452d9a4"
+      "bytes": 5618,
+      "sha256": "098df6be6243331e9ff5b511ad05508e43a151bf98816276fbf12dc5351fdc68"
     },
     {
       "path": "backend/tests/test_artifacts.py",
-      "bytes": 4922,
-      "sha256": "f0e7361b2a8f12ae790d9a3d916303a72b60570e7247d2560a4c76175c7d97f8"
+      "bytes": 7216,
+      "sha256": "0961d444ce5aa5d26f50aeedee3d8a8d940124342dae9f997148622a4c6484ff"
     },
     {
       "path": "backend/tests/test_calibration.py",
@@ -256,18 +259,18 @@
     },
     {
       "path": "docs/ARCHITECTURE.md",
-      "bytes": 3011,
-      "sha256": "f6299f59e86b0f5dbdd0450445722f947c1160cb08f3ae6491a99a7ecee3399c"
+      "bytes": 3314,
+      "sha256": "0ec5b305826ea3449921b917318f6bd7de3a9aee2de1fce81c47519c5a70cf23"
     },
     {
       "path": "docs/DEMO_SCRIPT.md",
-      "bytes": 4537,
-      "sha256": "c4dbb74bc8a5afe7f907afcdb5da86fa4b982d9a9dce7a1d5a6c8512ee81e8d6"
+      "bytes": 4713,
+      "sha256": "153425c29ec47bd4fe1d76a0acfed32024b7bbe9266eae97767ddb2153031df0"
     },
     {
       "path": "docs/JUDGE_QA.md",
-      "bytes": 7434,
-      "sha256": "82e42e4282aba3fb48dc8f6602ffd0be6e188a7bf64727bb6eb85d2586a84558"
+      "bytes": 8217,
+      "sha256": "174fd7e63a6ece820daf609ab27b47f70dd11de7882c4794e3f060a6c800dcb0"
     },
     {
       "path": "docs/OPERATOR_GUIDE.md",
@@ -276,13 +279,13 @@
     },
     {
       "path": "docs/PS_REQUIREMENTS_TRACEABILITY.md",
-      "bytes": 5433,
-      "sha256": "080a08568ea4fb7b55fdeea1d77582c80a1bdb6620a00a0fa51cce0b4b637988"
+      "bytes": 5703,
+      "sha256": "79ac24aa1696f6e6dca10304a35d42050378f260a09ef644c1192035636cdf68"
     },
     {
       "path": "docs/TEAM_TECHNICAL_GUIDE.md",
-      "bytes": 15065,
-      "sha256": "4b11302fdca0a835dce1af9ae5f96b819bdc206f06f47d5f4c5516af8c01eec5"
+      "bytes": 15432,
+      "sha256": "7564ed185ed6d631c9ae09966e661a8d375e84dd715f72e2b570ab667ef60d30"
     },
     {
       "path": "docs/UX_RATIONALE.md",
@@ -296,8 +299,8 @@
     },
     {
       "path": "docs/cookbook/TERRAFLY_COOKBOOK.md",
-      "bytes": 11815,
-      "sha256": "a8e5b22f3d38395d87d2b6ff97a2f3c6b135bf4a0bacaa46f26ee2f9b69de57b"
+      "bytes": 12326,
+      "sha256": "6486ea328899d174b04ba7af0824d4e25ab9631cb4e72eb3f3e39328006f6c56"
     },
     {
       "path": "frontend/index.html",
@@ -321,18 +324,18 @@
     },
     {
       "path": "frontend/src/App.tsx",
-      "bytes": 26547,
-      "sha256": "dd5de87615d316ea4f35afb4c2220aa7b14327d3f372f62faeedad05946f2431"
+      "bytes": 27427,
+      "sha256": "37b94efb7abc02b1e2c385919753350698c45e39c1d1c5ef740c363d2d2d822b"
     },
     {
       "path": "frontend/src/SurfaceViewer.test.ts",
-      "bytes": 3605,
-      "sha256": "74a975bd601e4db76ee9f063124adf1f1deb410084a5cb43bf78586736b177fb"
+      "bytes": 4343,
+      "sha256": "26a72b17ecaf4f239dea59edb9763ae4725b8f9ad9675c926dd8117020e02198"
     },
     {
       "path": "frontend/src/SurfaceViewer.tsx",
-      "bytes": 16236,
-      "sha256": "ba6b382c13d31cc830a06389a3f4946d62ca8e14ea39b63a04a49c91a5bda6bd"
+      "bytes": 17454,
+      "sha256": "23b22b57e1493f85b1327eb263034291e50b305f2ef75c62da2e2e01ee6697bd"
     },
     {
       "path": "frontend/src/api.ts",
@@ -351,8 +354,8 @@
     },
     {
       "path": "frontend/src/surfaceGeometry.ts",
-      "bytes": 6459,
-      "sha256": "6ea4bbd1425ab24c5a8c3f33bc1da8cd80a64530efe9e315cf7d898e78e645db"
+      "bytes": 7454,
+      "sha256": "417f538d89f987ee419a184ee20743e604755d3e41b59df8e9a69ea322aca20c"
     },
     {
       "path": "frontend/src/test-setup.ts",
@@ -436,8 +439,8 @@
     },
     {
       "path": "handoff/FINAL_TEST_REPORT.md",
-      "bytes": 4914,
-      "sha256": "f90f7fa5429a79a5a57ae750245eaf0dc8f2e96f141a33c31e7747230b5ba45f"
+      "bytes": 5411,
+      "sha256": "6b8a9477a6e461a319f83897368a337ee4deedb05d634fe789ac12d717449575"
     },
     {
       "path": "pyproject.toml",
@@ -486,8 +489,8 @@
     },
     {
       "path": "scripts/create_handoff_manifest.py",
-      "bytes": 4494,
-      "sha256": "f47b3f3826badcebde458a9f55f268c6db11a1904b86a8a0716e08ab26accf6b"
+      "bytes": 4771,
+      "sha256": "bdda429e755a311c59123a3a3548c24d42d264ec35876df4e7a37d45d9d09b41"
     },
     {
       "path": "scripts/create_offline_sample.py",
@@ -531,8 +534,8 @@
     },
     {
       "path": "scripts/verify.ps1",
-      "bytes": 2397,
-      "sha256": "a8ec7d8ef7d53a98bfacf32b3c504bfea538c14ebc5ddaa0a07175b82bb28a2f"
+      "bytes": 2426,
+      "sha256": "433642f32ff6a6191ac83755c41d6b9957b33ff8f5ee69ecdf82321573303f28"
     }
   ]
 }
