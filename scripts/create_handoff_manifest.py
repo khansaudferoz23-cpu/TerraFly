@@ -115,8 +115,8 @@ def main() -> None:
             "source_nodata_preservation": "PASS",
             "single_server_production_ui": "PASS",
             "real_final_calibration_workflow": "PASS (17 artifact hashes)",
-            "release_archives_and_checksums": "PASS",
-            "clean_extracted_path_with_spaces": "PASS",
+            "release_archives_and_checksums": "STALE after current source change; regenerate before delivery",
+            "clean_extracted_path_with_spaces": "PASS on prior release; current source not repackaged",
         },
         "files": files,
     }

@@ -34,6 +34,8 @@ Expected sequence: `Georeferenced Relative` before evidence, then `Metric Calibr
 
 ## Final deliverables
 
+The repository source is current. The previously generated ZIP/checksum files predate the final metric/Structures patch and must be regenerated with `scripts\package_release.ps1` before external delivery.
+
 - `TerraFly_FINAL_WINDOWS\`: inspectable Windows source plus prebuilt interface.
 - `TerraFly_FINAL_WINDOWS.zip`: shareable Windows release.
 - `TerraFly_FINAL_SOURCE.zip`: exact committed source archive.

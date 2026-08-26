@@ -18,6 +18,7 @@ frontend/test-results/
 
 runtime/
 jobs/
+outputs/
 data/
 models/
 checkpoints/
