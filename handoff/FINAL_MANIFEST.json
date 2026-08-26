@@ -1,8 +1,8 @@
 {
   "schema_version": "1.0",
   "milestone": "TerraFly 1.0 final release",
-  "generated_at": "2026-08-26T13:35:09.032024+00:00",
-  "git_commit": "e74cc4e8268efbaf9140db98243eae4a7f978a4d",
+  "generated_at": "2026-08-26T13:59:34.038988+00:00",
+  "git_commit": "d860d865f996990f72a646dde280e1f50a4c476c",
   "environment": {
     "os": "Windows-11-10.0.26200-SP0",
     "python": "3.12.13",
@@ -74,8 +74,8 @@
     },
     {
       "path": "BUILD_LOG.md",
-      "bytes": 14977,
-      "sha256": "102e8b2b82e4486e2a8f04865a0e2de1425d39af960037227f92819530c0fc7d"
+      "bytes": 16209,
+      "sha256": "bae5db348704937c361cfdbe11dfd20858dc6a327dcc35e32edf7ca1c845a019"
     },
     {
       "path": "Check-TerraFly.cmd",
@@ -114,8 +114,8 @@
     },
     {
       "path": "PROJECT_STATUS.md",
-      "bytes": 11465,
-      "sha256": "8cddc039a2512b0e0793326146a6af10948125f8fe18e0b15693c93641a16f5b"
+      "bytes": 11832,
+      "sha256": "1958cb1a18fa0706a3281fafea46abb868f656f14bbdb900d2bfa00befdd4e39"
     },
     {
       "path": "README.md",
@@ -274,8 +274,8 @@
     },
     {
       "path": "docs/OPERATOR_GUIDE.md",
-      "bytes": 7456,
-      "sha256": "27aac26360f9e97ed12757b69bf6bb04d35c6338a5bac2fd95712ac8579546b2"
+      "bytes": 7821,
+      "sha256": "e16966e3200c92c83936398c3ccd307e47790289f7094fd073480e3847153d42"
     },
     {
       "path": "docs/PS_REQUIREMENTS_TRACEABILITY.md",
@@ -439,8 +439,8 @@
     },
     {
       "path": "handoff/FINAL_TEST_REPORT.md",
-      "bytes": 5411,
-      "sha256": "6b8a9477a6e461a319f83897368a337ee4deedb05d634fe789ac12d717449575"
+      "bytes": 5506,
+      "sha256": "dbb8e10ab172cb53c17a95a709616d420520bc9f54468d5a20cb181fafe8c6b0"
     },
     {
       "path": "pyproject.toml",
@@ -529,8 +529,8 @@
     },
     {
       "path": "scripts/start.ps1",
-      "bytes": 4400,
-      "sha256": "3f62483ae2808a9497eca0809b7e628e124cdc97457c0032ec8ecf4029bdd9cf"
+      "bytes": 5528,
+      "sha256": "357f03a7e6a224dcf5ff5463e55218f5914bde8358edc5b80cdb28bce511845d"
     },
     {
       "path": "scripts/verify.ps1",
