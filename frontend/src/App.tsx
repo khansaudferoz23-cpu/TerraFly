@@ -260,7 +260,8 @@ export default function App() {
           <div className="analysis-layout">
             <div className="viewer-column">
               <SurfaceViewer
-                gridUrl={artifact("surface_grid")}
+                gridUrl={artifactRecord("display_grid") ? artifact("display_grid") : artifact("surface_grid")}
+                analysisGridUrl={artifact("surface_grid")}
                 textureUrl={artifact("texture")}
                 measurementGridUrl={metricAllowed && artifactRecord("metric_grid") ? artifact("metric_grid") : undefined}
                 structureLayerUrl={artifactRecord("structure_layer") ? artifact("structure_layer") : undefined}
@@ -275,6 +276,7 @@ export default function App() {
               <div className="interpretation">
                 <h3>How to read this</h3>
                 <p>{metricAllowed ? "The shape uses normalized display geometry, while clicked points read the validated metric DSM. Select ground as A and a roof or terrain feature as B to estimate their vertical difference." : "The colour map and 3D shape show relative ordering and local structure. They do not provide absolute terrain height, building height, or elevation."}</p>
+                <p>The display mesh uses edge-aware cleanup and neutral shading on steep faces, so roofs stay calmer and the aerial image is not stretched into wall-like drips. Point values still come from the untouched analysis grid.</p>
                 <p><strong>Structures</strong> adds optional Bhuvan-style extrusions from conservative local-height candidates. It is a visual reconstruction layer, may include trees or miss roofs, and never changes the DSM.</p>
               </div>
               <div className="point-inspection" aria-live="polite">
@@ -368,15 +370,19 @@ export default function App() {
               <b>Download · {fileSize(artifactRecord("preview")?.bytes ?? 0)}</b>
             </a>
             <a href={artifact("numeric_surface")} download>
-              <span><strong>{artifactRecord("numeric_surface")?.filename ?? "relative_surface.npy"}</strong><small>Normalized float32 relative heights used directly by the 3D mesh and later calibration.</small></span>
+              <span><strong>{artifactRecord("numeric_surface")?.filename ?? "relative_surface.npy"}</strong><small>Canonical normalized float32 relative heights used for analysis and later calibration; never overwritten by display cleanup.</small></span>
               <b>Download · {fileSize(artifactRecord("numeric_surface")?.bytes ?? 0)}</b>
             </a>
+            {artifactRecord("display_grid") && <a href={artifact("display_grid")} download>
+              <span><strong>{artifactRecord("display_grid")?.filename}</strong><small>Display-only mesh grid after RGB-guided smoothing, rooftop flattening, outlier cleanup, and an extreme-slope safety cap.</small></span>
+              <b>Download · {fileSize(artifactRecord("display_grid")?.bytes ?? 0)}</b>
+            </a>}
             {artifactRecord("raw_model_output") && <a href={artifact("raw_model_output")} download>
               <span><strong>{artifactRecord("raw_model_output")?.filename}</strong><small>Untouched model prediction saved before normalization or height-convention conversion.</small></span>
               <b>Download · {fileSize(artifactRecord("raw_model_output")?.bytes ?? 0)}</b>
             </a>}
             {artifactRecord("height_diagnostics") && <a href={artifact("height_diagnostics")} download>
-              <span><strong>{artifactRecord("height_diagnostics")?.filename}</strong><small>Machine-readable convention, one-pass normalization proof, geometry source, and global-tilt warning.</small></span>
+              <span><strong>{artifactRecord("height_diagnostics")?.filename}</strong><small>Machine-readable convention, canonical/display source separation, cleanup counts and thresholds, and global-tilt warning.</small></span>
               <b>Download · {fileSize(artifactRecord("height_diagnostics")?.bytes ?? 0)}</b>
             </a>}
             {artifactRecord("structure_layer") && <a href={artifact("structure_layer")} download>
@@ -384,7 +390,7 @@ export default function App() {
               <b>Download · {fileSize(artifactRecord("structure_layer")?.bytes ?? 0)}</b>
             </a>}
             <a href={artifact("glb_mesh")} download>
-              <span><strong>{artifactRecord("glb_mesh")?.filename ?? "relative_surface.glb"}</strong><small>Portable 3D mesh with embedded scene colours and relative—not metric—vertical values.</small></span>
+              <span><strong>{artifactRecord("glb_mesh")?.filename ?? "relative_surface.glb"}</strong><small>Portable relative display mesh: scene colour on mild faces and neutral synthetic material on steep faces to prevent vertical streaks.</small></span>
               <b>Download · {fileSize(artifactRecord("glb_mesh")?.bytes ?? 0)}</b>
             </a>
             <a href={artifact("manifest")} download>

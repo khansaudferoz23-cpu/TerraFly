@@ -28,6 +28,24 @@ describe("surface orientation contract", () => {
     geometry.dispose();
   });
 
+  it("separates steep faces into a neutral-wall material group", () => {
+    const displayGrid: SurfaceGrid = {
+      shape: [3, 3],
+      values: [
+        0.1, 0.1, 0.1,
+        0.1, 0.8, 0.8,
+        0.1, 0.8, 0.8,
+      ],
+    };
+    const geometry = createSurface(displayGrid, 1.4);
+    expect(geometry.groups.some((group) => group.materialIndex === 0)).toBe(true);
+    expect(geometry.groups.some((group) => group.materialIndex === 1)).toBe(true);
+    expect(geometry.userData.neutralWallTriangleCount).toBeGreaterThan(0);
+    expect(geometry.userData.texturedTriangleCount).toBeGreaterThan(0);
+    expect(geometry.userData.neutralWallTriangleCount + geometry.userData.texturedTriangleCount).toBe(8);
+    geometry.dispose();
+  });
+
   it("bilinearly samples relative values and reports source-image pixels", () => {
     const topLeft = sampleSurfacePoint(asymmetricGrid, 0, 0, "A");
     const bottomRight = sampleSurfacePoint(asymmetricGrid, 1, 1, "B");

@@ -30,9 +30,10 @@ def test_upload_pipeline_handles_odd_dimensions_and_modes(client, mode):
         "numeric_surface",
         "preview",
         "texture",
-        "height_texture",
-        "surface_grid",
-        "structure_layer",
+            "height_texture",
+            "surface_grid",
+            "display_grid",
+            "structure_layer",
         "glb_mesh",
         "height_diagnostics",
         "manifest",
@@ -50,7 +51,10 @@ def test_upload_pipeline_handles_odd_dimensions_and_modes(client, mode):
         f"/api/jobs/{job['job_id']}/artifacts/height_diagnostics"
     ).json()
     assert diagnostics["conversion"]["normalization"]["applied_count"] == 1
-    assert diagnostics["geometry"]["source"] == "relative_surface.npy"
+    assert diagnostics["geometry"]["source"] == "display_grid.json"
+    assert diagnostics["geometry"]["canonical_numeric_source"] == "relative_surface.npy"
+    assert diagnostics["geometry"]["canonical_analysis_grid"] == "relative_grid.json"
+    assert diagnostics["geometry"]["display_processing_changes_measurements"] is False
     assert diagnostics["geometry"]["colour_preview_is_geometry_source"] is False
     assert any("TEST-ONLY" in warning for warning in job["warnings"])
     if mode == "L":

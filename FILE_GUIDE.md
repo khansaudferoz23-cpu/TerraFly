@@ -36,7 +36,7 @@ Use this as the answer to “why does this file exist?” Paths are grouped by r
 | `backend/terrafly/imaging.py` | Filename/content validation, safe decoding, RGB normalization, GeoTIFF inspection including horizontal units, hashes, and single-band warnings. |
 | `backend/terrafly/jobs.py` | Creates per-run IDs/directories and atomically persists live job state. |
 | `backend/terrafly/pipeline.py` | Enforces the processing-memory budget, orchestrates validation → inference → artifacts, and converts failures into honest job states. |
-| `backend/terrafly/artifacts.py` | Preserves raw/numeric output, writes preview, texture, 16-bit, orientation-aware viewer grid, separate visual structure candidates, valid GLB, height/tilt diagnostics, and SHA-256 records. |
+| `backend/terrafly/artifacts.py` | Preserves raw/numeric output; writes preview, texture, 16-bit, canonical analysis grid, RGB-guided display grid, separate visual structure candidates, steep-face-safe GLB, height/tilt/display diagnostics, and SHA-256 records. |
 | `backend/terrafly/calibration.py` | Validates reference grids/GCPs, robustly fits scale and offset, performs held-out quality gates, preserves NoData, and writes metric/error plus matching viewer-analysis evidence only on pass. |
 | `backend/terrafly/inference/__init__.py` | Marks the inference adapter directory as a package. |
 | `backend/terrafly/inference/base.py` | Defines the common prediction result and adapter interface used by real and test implementations. |
@@ -55,7 +55,7 @@ Use this as the answer to “why does this file exist?” Paths are grouped by r
 | `backend/tests/test_adapter_contract.py` | Verifies one-pass output conversion, raised-building ordering, finite output, and the test-adapter production interlock. |
 | `backend/tests/test_api.py` | Tests valid modes, numeric artifacts/hashes, single-band/TIR warnings, corrupt/unsafe/oversized rejection, and metric refusal. |
 | `backend/tests/test_geotiff.py` | Proves CRS/transform/NoData survive while vertical metric claims remain locked. |
-| `backend/tests/test_artifacts.py` | Parses GLB and proves grid/texture orientation, diagnostic provenance, raised-roof ordering, and separate non-mutating structure candidates. |
+| `backend/tests/test_artifacts.py` | Parses GLB and proves grid/texture orientation, diagnostic provenance, spike cleanup, rooftop flattening, display-only separation, neutral wall faces, raised-roof ordering, and non-mutating structure candidates. |
 | `backend/tests/test_tiling.py` | Proves coverage, overlap blending, affine scale/offset alignment, and maximum-tile refusal. |
 | `backend/tests/test_calibration.py` | Proves reference-DSM pass, outlier robustness, alignment refusal, poor-evidence rejection, GCP validation, metric grid alignment/values, metadata, and hashes. |
 

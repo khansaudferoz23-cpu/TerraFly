@@ -69,13 +69,14 @@ The deterministic adapter exists only for fast offline tests. It requires an exp
 |---|---|
 | `raw_model_output.npy` | Untouched full-resolution prediction before normalization/conversion |
 | `relative_surface.npy` | Lossless full-resolution float32 0–1 source for computation |
-| `height_diagnostics.json` | Convention, one-pass normalization, numeric geometry source, and uncorrected tilt indicator |
+| `height_diagnostics.json` | Convention, one-pass normalization, canonical/display sources, cleanup diagnostics, and uncorrected tilt indicator |
 | `relative_preview.png` | Human-readable colorized quality check |
 | `texture.png` | RGB convention actually used by the model/viewer |
 | `relative_height_16bit.png` | Higher-precision display/interchange texture |
-| `relative_grid.json` | Downsampled orientation-aware browser mesh data |
+| `relative_grid.json` | Canonical downsampled orientation-aware values used for relative A/B sampling and metric-grid alignment |
+| `display_grid.json` | Separate RGB-guided display geometry after spike cleanup, conservative roof flattening, and a safety slope cap |
 | `reconstructed_structures.json` | Optional non-semantic convex footprints/base/roof values for upright visual extrusions; never edits the DSM |
-| `relative_surface.glb` | Portable colored GLB 2.0 inspection mesh; explicitly non-metric |
+| `relative_surface.glb` | Portable display GLB with scene colour on mild faces and neutral synthetic steep faces; explicitly non-metric |
 | `job_manifest.json` | Input/model/device/warnings/configuration/artifact hashes |
 | `calibration_reference.tif` | Exact reference evidence retained for audit |
 | `calibration_report.json` | Fit, held-out metrics, gates, source, datum, and decision |
@@ -92,10 +93,10 @@ The `.npy` files from the related SAC IR-colorization repository are not missing
 
 - Orbit is for whole-scene inspection and A/B raycast samples. Before calibration they are relative; after a pass they read the metric analysis grid.
 - First-person is free flight: mouse look, W/A/S/D, Q/E vertical movement, Shift boost, and Escape release.
-- Texture and Wireframe reveal two interpretations of the same geometry.
+- Texture and Wireframe reveal two interpretations of the same display geometry. Steep triangles always use a neutral wall material, because a top-down photograph has no genuine façade pixels to project there.
 - Structures adds a Bhuvan-style visual extrusion layer. It is off by default, can include trees or miss roofs, and never changes scientific values.
-- Vertical exaggeration changes display vertices only; it never changes the saved numeric array.
-- The GLB uses the responsive grid and embedded vertex colour. It is portable but not full-resolution or metric.
+- Vertical exaggeration defaults to 1.4× and changes display vertices only; it never changes the saved numeric array.
+- The GLB uses the processed display grid. Mild faces keep embedded scene colour; steep faces use neutral material to prevent vertical texture streaks. It is portable but not full-resolution or metric.
 
 ## Step 5 — calibrate without cheating
 

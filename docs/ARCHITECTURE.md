@@ -10,7 +10,7 @@ flowchart TB
     MODEL[Depth Anything V2 adapter]
     TILE[Bounded overlap tiling]
     JOB[Per-job state + SHA-256 manifest]
-    ART[Relative NPY / preview / texture / grid / structures / GLB]
+    ART[Canonical relative NPY/grid + display grid/structures/GLB]
     CAL[Calibration and held-out evaluation]
     METRIC[Metric NPY / analysis grid / GeoTIFF / residual / report]
 
@@ -37,7 +37,7 @@ stateDiagram-v2
     MetricCalibrated --> GeoreferencedRelative: later recalibration is rejected
 ```
 
-Metric artifacts are a consequence of the state, not a UI toggle. The viewer/GLB display geometry remains normalized in every state; after a pass, point inspection samples the separate metric analysis grid. The optional Structures layer is visual only and never changes scientific state or DSM values.
+Metric artifacts are a consequence of the state, not a UI toggle. `relative_surface.npy` and `relative_grid.json` remain canonical. A separate normalized `display_grid.json` receives RGB-guided smoothing, conservative roof flattening, outlier cleanup, and a safety slope cap; steep viewer/GLB faces use neutral material. Relative point inspection samples the canonical grid, and after a pass it additionally samples the separate metric analysis grid. The optional Structures layer is visual only and never changes scientific state or DSM values.
 
 ## Calibration decision
 
@@ -63,8 +63,8 @@ flowchart TD
 | API and state | `main.py`, `schemas.py`, `jobs.py` | routes, typed states, persistence, safe artifact lookup |
 | Image/geospatial | `imaging.py`, `calibration.py` | CRS versus vertical datum, masks, exact alignment, gates |
 | Inference | `depth_anything_v2.py`, `tiling.py`, `factory.py` | relative model, real/test split, CUDA fallback, overlap alignment |
-| Artifacts | `artifacts.py`, `pipeline.py` | why each file exists, GLB limits, hashes, orientation |
-| 3D/UI | `App.tsx`, `SurfaceViewer.tsx`, `surfaceGeometry.ts` | progress, scientific labels, navigation, relative/metric A/B samples, optional structures, responsive design |
+| Artifacts | `artifacts.py`, `pipeline.py` | canonical/display separation, guided cleanup, GLB wall policy, hashes, orientation |
+| 3D/UI | `App.tsx`, `SurfaceViewer.tsx`, `surfaceGeometry.ts` | progress, scientific labels, navigation, canonical relative/metric A/B samples, neutral wall groups, optional structures, responsive design |
 | Release/evidence | `verify.ps1`, `package_release.ps1`, `handoff/` | tests, clean extraction, checksums, limitations, reproducibility |
 
 The complete tracked-file explanation is in `FILE_GUIDE.md`.

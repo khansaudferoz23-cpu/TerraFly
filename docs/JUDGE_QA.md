@@ -42,11 +42,15 @@ It is a downsampled responsive inspection mesh. The shape stays normalized for s
 
 ## What do the `.npy` files mean?
 
-TerraFly preserves `raw_model_output.npy` before any conversion. `relative_surface.npy` is the normalized float32 0–1 geometry source; `metric_surface.npy` exists only after a calibration pass and contains metres. The related SAC repository’s `.npy` files are TIR super-resolution/colorization arrays, not height data and not required TerraFly runtime files.
+TerraFly preserves `raw_model_output.npy` before any conversion. `relative_surface.npy` is the canonical normalized float32 0–1 numeric source; `relative_grid.json` is its sampled analysis grid; `display_grid.json` is a separate visual copy. `metric_surface.npy` exists only after a calibration pass and contains metres. The related SAC repository’s `.npy` files are TIR super-resolution/colorization arrays, not height data and not required TerraFly runtime files.
 
 ## Why did buildings initially look like holes?
 
 The first adapter treated the checkpoint field as ordinary depth and inverted it. Depth Anything V2's relative output behaves like inverse depth/proximity, so that extra inversion reversed local height ordering. The repair declares the convention, preserves raw output, normalizes once, and has a synthetic regression that fails unless a raised roof remains above flat ground in both NumPy and GLB geometry.
+
+## Why did the first 3D surface look melted or have vertical colour drips?
+
+A raw monocular heightfield is noisy and does not inherently know that roofs should be planar. Also, a top-down image has roof/ground pixels but no façade pixels, so projecting it across steep triangles stretches a thin colour strip down the face. TerraFly now creates a separate display grid with isolated-spike removal, RGB-guided bilateral smoothing, conservative connected-region roof flattening, and an extreme-delta safety cap. Mild faces keep the photograph; steep faces use neutral wall shading. The canonical relative/metric arrays and clicked measurements never use this display cleanup.
 
 ## Is the strong whole-image slope fixed?
 

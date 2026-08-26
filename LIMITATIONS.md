@@ -15,7 +15,8 @@
 - First-person navigation is a free-flight inspection mode; it does not yet collide with or walk on the inferred surface.
 - Point A/B values remain relative until calibration passes. A passing calibration enables metric elevation and vertical difference from the metric analysis grid. Horizontal distance and slope are reported only for projected CRS inputs whose horizontal units are metres.
 - Tiling reduces memory pressure and aligns overlap scale/offset, but no remote-sensing ground truth is available to quantify whether it improves scientific accuracy.
-- Numeric `.npy` is canonical for the relative result. The GLB and display geometry stay relative; after calibration, measurement readouts use a separate metric grid and full-resolution metric `.npy`/GeoTIFF remain the scientific artifacts.
+- Numeric `.npy` is canonical for the relative result. `relative_grid.json` remains the canonical sampled analysis grid; the visibly cleaned `display_grid.json` and GLB are explicitly display-only. After calibration, measurement readouts use a separate metric grid and full-resolution metric `.npy`/GeoTIFF remain the scientific artifacts.
+- Edge-aware smoothing and conservative rooftop flattening can improve readability but cannot turn a monocular prediction into architectural truth. Neutral steep-face shading prevents stretched aerial pixels; it does not recover real façade imagery. The optional Structures layer is still the only block-style extrusion path.
 - There is no real-world accuracy figure because no compatible independent surveyed ground truth was supplied.
 - GCP calibration is available through the typed API; the minimal UI exposes the aligned-reference workflow rather than an error-prone free-form point editor.
 - The final Windows ZIP includes the prebuilt interface and complete source, but it is not dependency-bundled or fully offline; setup still downloads third-party Python packages, npm packages, and model weights.

@@ -7,18 +7,21 @@ import type { InspectedPoint, MeasurementGrid, StructureLayer, SurfaceGrid } fro
 
 type Props = {
   gridUrl: string;
+  analysisGridUrl: string;
   textureUrl: string;
   measurementGridUrl?: string;
   structureLayerUrl?: string;
   onPointsChange?: (points: InspectedPoint[]) => void;
 };
 
-export function SurfaceViewer({ gridUrl, textureUrl, measurementGridUrl, structureLayerUrl, onPointsChange }: Props) {
+export function SurfaceViewer({ gridUrl, analysisGridUrl, textureUrl, measurementGridUrl, structureLayerUrl, onPointsChange }: Props) {
   const hostRef = useRef<HTMLDivElement>(null);
-  const materialRef = useRef<THREE.MeshStandardMaterial | null>(null);
+  const surfaceMaterialRef = useRef<THREE.MeshStandardMaterial | null>(null);
+  const wallMaterialRef = useRef<THREE.MeshStandardMaterial | null>(null);
   const textureRef = useRef<THREE.Texture | null>(null);
   const meshRef = useRef<THREE.Mesh | null>(null);
   const gridRef = useRef<SurfaceGrid | null>(null);
+  const analysisGridRef = useRef<SurfaceGrid | null>(null);
   const measurementGridRef = useRef<MeasurementGrid | null>(null);
   const orbitRef = useRef<OrbitControls | null>(null);
   const walkRef = useRef<PointerLockControls | null>(null);
@@ -29,7 +32,7 @@ export function SurfaceViewer({ gridUrl, textureUrl, measurementGridUrl, structu
   const navigationModeRef = useRef<"orbit" | "first-person">("orbit");
   const [wireframe, setWireframe] = useState(false);
   const [textureEnabled, setTextureEnabled] = useState(true);
-  const [exaggeration, setExaggeration] = useState(2.2);
+  const [exaggeration, setExaggeration] = useState(1.4);
   const [navigationMode, setNavigationMode] = useState<"orbit" | "first-person">("orbit");
   const [structuresEnabled, setStructuresEnabled] = useState(false);
   const [viewerStatus, setViewerStatus] = useState<"loading" | "ready" | "error">("loading");
@@ -60,16 +63,18 @@ export function SurfaceViewer({ gridUrl, textureUrl, measurementGridUrl, structu
   }, [navigationMode]);
 
   useEffect(() => {
-    if (!materialRef.current) return;
-    materialRef.current.wireframe = wireframe;
-    materialRef.current.needsUpdate = true;
+    for (const material of [surfaceMaterialRef.current, wallMaterialRef.current]) {
+      if (!material) continue;
+      material.wireframe = wireframe;
+      material.needsUpdate = true;
+    }
   }, [wireframe]);
 
   useEffect(() => {
-    if (!materialRef.current) return;
-    materialRef.current.map = textureEnabled ? textureRef.current : null;
-    materialRef.current.color.set(textureEnabled ? 0xffffff : 0x7d9c92);
-    materialRef.current.needsUpdate = true;
+    if (!surfaceMaterialRef.current) return;
+    surfaceMaterialRef.current.map = textureEnabled ? textureRef.current : null;
+    surfaceMaterialRef.current.color.set(textureEnabled ? 0xffffff : 0x7d9c92);
+    surfaceMaterialRef.current.needsUpdate = true;
   }, [textureEnabled]);
 
   useEffect(() => {
@@ -133,17 +138,30 @@ export function SurfaceViewer({ gridUrl, textureUrl, measurementGridUrl, structu
     markerGroupRef.current = markerGroup;
     scene.add(markerGroup);
 
-    const material = new THREE.MeshStandardMaterial({
+    const surfaceMaterial = new THREE.MeshStandardMaterial({
       color: textureEnabled ? 0xffffff : 0x7d9c92,
       roughness: 0.92,
       metalness: 0,
       side: THREE.DoubleSide,
       wireframe,
     });
-    materialRef.current = material;
+    const wallMaterial = new THREE.MeshStandardMaterial({
+      color: 0x586460,
+      roughness: 0.98,
+      metalness: 0,
+      side: THREE.DoubleSide,
+      flatShading: true,
+      wireframe,
+    });
+    surfaceMaterialRef.current = surfaceMaterial;
+    wallMaterialRef.current = wallMaterial;
     Promise.all([
       fetch(gridUrl).then((response) => {
         if (!response.ok) throw new Error("Surface grid is unavailable.");
+        return response.json() as Promise<SurfaceGrid>;
+      }),
+      fetch(analysisGridUrl).then((response) => {
+        if (!response.ok) throw new Error("Canonical analysis grid is unavailable.");
         return response.json() as Promise<SurfaceGrid>;
       }),
       new THREE.TextureLoader().loadAsync(textureUrl),
@@ -160,18 +178,22 @@ export function SurfaceViewer({ gridUrl, textureUrl, measurementGridUrl, structu
           })
         : Promise.resolve(null),
     ])
-      .then(([grid, loadedTexture, measurementGrid, structureLayer]) => {
+      .then(([grid, analysisGrid, loadedTexture, measurementGrid, structureLayer]) => {
         if (disposed) {
           loadedTexture.dispose();
           return;
         }
         gridRef.current = grid;
+        analysisGridRef.current = analysisGrid;
         measurementGridRef.current = measurementGrid;
         textureRef.current = loadedTexture;
         loadedTexture.colorSpace = THREE.SRGBColorSpace;
-        material.map = textureEnabled ? loadedTexture : null;
-        material.needsUpdate = true;
-        const mesh = new THREE.Mesh(createSurface(grid, exaggeration), material);
+        surfaceMaterial.map = textureEnabled ? loadedTexture : null;
+        surfaceMaterial.needsUpdate = true;
+        const mesh = new THREE.Mesh(
+          createSurface(grid, exaggeration),
+          [surfaceMaterial, wallMaterial],
+        );
         meshRef.current = mesh;
         scene.add(mesh);
         if (structureLayer) {
@@ -228,7 +250,7 @@ export function SurfaceViewer({ gridUrl, textureUrl, measurementGridUrl, structu
     const pointerStart = new THREE.Vector2();
     const onPointerDown = (event: PointerEvent) => pointerStart.set(event.clientX, event.clientY);
     const onPointerUp = (event: PointerEvent) => {
-      if (navigationModeRef.current !== "orbit" || !meshRef.current || !gridRef.current) return;
+      if (navigationModeRef.current !== "orbit" || !meshRef.current || !analysisGridRef.current) return;
       if (pointerStart.distanceTo(new THREE.Vector2(event.clientX, event.clientY)) > 6) return;
       const rectangle = renderer.domElement.getBoundingClientRect();
       const mouse = new THREE.Vector2(
@@ -241,7 +263,7 @@ export function SurfaceViewer({ gridUrl, textureUrl, measurementGridUrl, structu
       if (!hit?.uv) return;
       const current = pointsRef.current;
       const label: "A" | "B" = current.length === 0 ? "A" : "B";
-      const point = sampleSurfacePoint(gridRef.current, hit.uv.x, 1 - hit.uv.y, label);
+      const point = sampleSurfacePoint(analysisGridRef.current, hit.uv.x, 1 - hit.uv.y, label);
       if (measurementGridRef.current) {
         point.metricElevationM = sampleMeasurementValue(
           measurementGridRef.current,
@@ -315,14 +337,17 @@ export function SurfaceViewer({ gridUrl, textureUrl, measurementGridUrl, structu
         structure.geometry.dispose();
         if (structure.material instanceof THREE.Material) structure.material.dispose();
       }
-      material.dispose();
+      surfaceMaterial.dispose();
+      wallMaterial.dispose();
       textureRef.current?.dispose();
       renderer.dispose();
       renderer.domElement.remove();
-      materialRef.current = null;
+      surfaceMaterialRef.current = null;
+      wallMaterialRef.current = null;
       textureRef.current = null;
       meshRef.current = null;
       gridRef.current = null;
+      analysisGridRef.current = null;
       measurementGridRef.current = null;
       orbitRef.current = null;
       walkRef.current = null;
@@ -330,7 +355,7 @@ export function SurfaceViewer({ gridUrl, textureUrl, measurementGridUrl, structu
       structureGroupRef.current = null;
       resetViewRef.current = null;
     };
-  }, [gridUrl, textureUrl, measurementGridUrl, structureLayerUrl]);
+  }, [gridUrl, analysisGridUrl, textureUrl, measurementGridUrl, structureLayerUrl]);
 
   return (
     <div className="viewer-shell">
@@ -344,7 +369,7 @@ export function SurfaceViewer({ gridUrl, textureUrl, measurementGridUrl, structu
         {structureLayerUrl && <button type="button" aria-pressed={structuresEnabled} className={structuresEnabled ? "active" : ""} onClick={() => setStructuresEnabled(!structuresEnabled)}>Structures</button>}
         <label>
           Vertical display <strong>{exaggeration.toFixed(1)}×</strong>
-          <input aria-label="Display vertical exaggeration" type="range" min="0.2" max="6" step="0.1" value={exaggeration} onChange={(event) => setExaggeration(Number(event.target.value))} />
+          <input aria-label="Display vertical exaggeration" type="range" min="0.2" max="4" step="0.1" value={exaggeration} onChange={(event) => setExaggeration(Number(event.target.value))} />
         </label>
         <button type="button" onClick={clearPoints}>Clear points</button>
         <button type="button" onClick={() => resetViewRef.current?.()}>Reset</button>
@@ -358,6 +383,7 @@ export function SurfaceViewer({ gridUrl, textureUrl, measurementGridUrl, structu
           ? "Drag to orbit · right-drag to pan · scroll to zoom · click the surface to compare points"
           : "Click to enter · mouse to look · W/A/S/D move · Q/E down/up · hold Shift for boost · Esc exits"}
       </p>
+      <p className="viewer-help">Steep faces use neutral wall shading so the top-down image is never stretched into vertical drips. Display cleanup does not change measured values.</p>
     </div>
   );
 }

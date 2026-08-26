@@ -1,6 +1,6 @@
 # Project status
 
-Last updated: 2026-08-25 IST
+Last updated: 2026-08-26 IST
 
 ## Intake result
 
@@ -36,6 +36,8 @@ Greenfield bootstrap. The authenticated GitHub account `khansaudferoz23-cpu` own
 - Passing calibration writes a metric analysis grid aligned exactly with the responsive 3D grid; A/B inspection reports metre elevation/height difference and projected-metre distance/slope.
 - Every run writes a separate optional Bhuvan-style structure-candidate layer with upright visual extrusions; it is off by default, non-semantic, and cannot modify the DSM.
 - Problem-statement traceability explicitly distinguishes implemented elevation/visualization features from future hazard prediction and domain-specific training.
+- Canonical relative/metric arrays are now separated from a recorded display grid with isolated-spike replacement, RGB-guided bilateral smoothing, conservative rooftop flattening, and an extreme adjacent-delta safety cap.
+- Steep heightfield triangles use a neutral synthetic wall material in both Three.js and GLB instead of stretching top-down image pixels; default vertical exaggeration was retuned to 1.4×.
 
 ## Verified Day 1 baseline
 
@@ -94,9 +96,9 @@ The remaining scientific work is intentionally outside this software milestone: 
 
 ## Post-repair problem-statement alignment — 2026-08-26
 
-- PASS — 32 backend tests and 7 frontend tests cover the separate structure artifact, upward extrusion geometry, raised-object ordering, metric-grid value alignment, NoData-safe metric sampling, projected-affine distance, geospatial horizontal units, calibration refusal, and existing safety contracts.
+- PASS — 33 backend tests and 8 frontend tests cover separate canonical/display grids, spike cleanup, conservative rooftop flattening, adjacent-delta safety, neutral steep-face material groups, upward structure extrusion, raised-object ordering, metric-grid value alignment, NoData-safe metric sampling, projected-affine distance, geospatial horizontal units, calibration refusal, and existing safety contracts.
 - PASS — strict TypeScript/Vite production build; the large Three.js bundle emits a size advisory but compiles successfully.
-- PASS — real CUDA stadium run generated and hash-verified 10 artifacts, preserved the exact model revision, and found eight optional local-height structure candidates while leaving the DSM untouched.
-- PASS — final real CUDA calibration workflow completed in 28.196 seconds, reached `Metric Calibrated`, hash-verified 17 artifacts, recovered scale `40.00000007` and offset `99.99999997`, and wrote the matching metric analysis grid.
-- PARTIAL — the updated production page rendered in the in-app browser; the final upload/generate interaction was blocked by browser security auto-review. Backend end-to-end runs and frontend automation remained successful, and no alternate-browser workaround was attempted.
+- PASS — real CUDA stadium run generated 11 declared job artifacts (10 embedded in the self-excluding manifest), preserved the exact model revision, kept `relative_surface.npy` and `relative_grid.json` canonical, and recorded 11 flattened raised regions covering 3,222 viewer-grid pixels in `height_diagnostics.json`.
+- PASS — final real CUDA calibration workflow completed in 25.335 seconds, reached `Metric Calibrated`, hash-verified 18 artifacts, recovered scale `40.00000007` and offset `99.99999997`, and wrote the matching metric analysis grid.
+- PASS — updated production app completed an in-app-browser CUDA stadium upload. At the retuned 1.4× default, mild faces retained aerial colour and steep faces rendered neutral without long texture drips; A/B inspection returned canonical relative values, and the browser logged no warnings or errors.
 - LIMIT — visual structure candidates are not building segmentation, and the synthetic calibration oracle is not a real accuracy score.

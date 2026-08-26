@@ -45,13 +45,14 @@ A GeoTIFF can add a coordinate reference system, pixel size, map position, and b
 |---|---|---|---|
 | `raw_model_output.npy` | Full-resolution float32 prediction before height conversion | Audit the model output and prove normalization was not repeated | Directly displayable height or metres |
 | `relative_surface.npy` | Lossless float32 2D array in the 0–1 relative range | Numeric source for analysis, later calibration, and reproducible tests | A DSM or height map in metres |
-| `height_diagnostics.json` | Output convention, one-pass normalization record, geometry source, and plane-trend indicator | Diagnose reversal/tilt without deriving geometry from a preview | A claim that perspective bias was corrected |
+| `height_diagnostics.json` | Output convention, one-pass normalization, canonical sources, display-cleanup counts/thresholds, and plane-trend indicator | Diagnose reversal/tilt/display behavior without hiding processing | A claim that perspective bias was corrected |
 | `relative_preview.png` | Colourized rendering of the relative array | Quick human quality check and presentation | Training ground truth or lossless science data |
 | `texture.png` | Input converted into the model/viewer RGB convention | Texture for the 3D surface | A model prediction |
 | `relative_height_16bit.png` | 16-bit display encoding of the relative surface | Renderer/export interoperability without reducing to 8 bits | Metric elevation |
-| `relative_grid.json` | Downsampled surface values, maximum 192×192 | Keeps the browser mesh responsive | The full-resolution numeric result |
+| `relative_grid.json` | Canonical downsampled surface values, maximum 192×192 | Relative A/B sampling and metric-grid alignment | The visibly cleaned mesh or full-resolution result |
+| `display_grid.json` | Separate RGB-guided, outlier-cleaned, conservatively roof-flattened, slope-bounded relative values | Keeps the heightfield readable without changing analysis | A scientific DSM, calibration input, or measurement source |
 | `reconstructed_structures.json` | Convex raised-object candidates derived from local relative contrast | Optional Bhuvan-style upright visual layer | Semantic buildings, surveyed geometry, or a DSM edit |
-| `relative_surface.glb` | GLB 2.0 triangle mesh with embedded vertex colours and relative Y | Portable 3D inspection in compatible tools | Metric or full-resolution elevation |
+| `relative_surface.glb` | Display-grid GLB 2.0 mesh: scene colours on mild faces and neutral material on steep faces | Portable anti-streak 3D inspection in compatible tools | Metric or full-resolution elevation |
 | `job.json` | Live persisted job state | Lets progress survive separate API requests | Final immutable evidence |
 | `job_manifest.json` | Final input/model/warning/artifact record | Reproducibility and audit trail | A secret or credential file |
 | `calibration_reference.tif` | Exact submitted aligned DSM evidence | Reproduce the gate decision and its source hash | Automatically trustworthy ground truth |
@@ -61,7 +62,7 @@ A GeoTIFF can add a coordinate reference system, pixel size, map position, and b
 | `metric_surface.tif` | Calibrated float32 elevation with source CRS/transform/NoData and vertical tags | GIS-compatible passing-gate result | Available after a rejection |
 | `calibration_error.tif` | Candidate metric surface minus aligned reference, in metres | Spatial residual diagnosis | Absolute truth about every object |
 
-The web UI always offers preview, relative numeric surface, raw model output, height diagnostics, colour GLB, and manifest. Calibration/report/metric/residual files appear only when they actually exist.
+The web UI always offers preview, relative numeric surface, raw model output, height/display diagnostics, anti-streak GLB, and manifest. Calibration/report/metric/residual files appear only when they actually exist.
 
 ## The model adapters
 

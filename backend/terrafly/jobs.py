@@ -47,7 +47,7 @@ class JobStore:
                 "reason": "No valid vertical calibration evidence was supplied.",
             },
             model={},
-            configuration={"display_vertical_exaggeration": 1.0},
+            configuration={"display_vertical_exaggeration": 1.4},
             warnings=warnings,
         )
         directory = self.job_dir(job_id)

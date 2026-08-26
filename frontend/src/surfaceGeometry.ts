@@ -7,8 +7,13 @@ export type SurfaceGrid = {
   row_indices?: number[];
   column_indices?: number[];
   orientation?: { row_zero: string; column_zero: string };
+  scientific_role?: string;
+  numeric_source?: string;
+  analysis_grid?: string;
   values: number[];
 };
+
+export const DISPLAY_WALL_DELTA_THRESHOLD = 0.055;
 
 export type MeasurementGrid = Omit<SurfaceGrid, "values"> & {
   values: Array<number | null>;
@@ -152,7 +157,11 @@ export function sampleSurfacePoint(
   };
 }
 
-export function createSurface(grid: SurfaceGrid, exaggeration: number): THREE.BufferGeometry {
+export function createSurface(
+  grid: SurfaceGrid,
+  exaggeration: number,
+  wallDeltaThreshold = DISPLAY_WALL_DELTA_THRESHOLD,
+): THREE.BufferGeometry {
   const [rows, columns] = grid.shape;
   if (rows < 2 || columns < 2 || grid.values.length !== rows * columns) {
     throw new Error("Surface grid dimensions are invalid.");
@@ -160,7 +169,8 @@ export function createSurface(grid: SurfaceGrid, exaggeration: number): THREE.Bu
   const geometry = new THREE.BufferGeometry();
   const positions = new Float32Array(rows * columns * 3);
   const uvs = new Float32Array(rows * columns * 2);
-  const indices: number[] = [];
+  const texturedIndices: number[] = [];
+  const wallIndices: number[] = [];
   const aspect = rows / columns;
   for (let row = 0; row < rows; row += 1) {
     for (let column = 0; column < columns; column += 1) {
@@ -173,13 +183,31 @@ export function createSurface(grid: SurfaceGrid, exaggeration: number): THREE.Bu
       if (row < rows - 1 && column < columns - 1) {
         const right = index + 1;
         const below = index + columns;
-        indices.push(index, below, right, right, below, below + 1);
+        const triangles = [
+          [index, below, right],
+          [right, below, below + 1],
+        ];
+        for (const triangle of triangles) {
+          const heights = triangle.map((vertex) => grid.values[vertex]);
+          const destination = Math.max(...heights) - Math.min(...heights) >= wallDeltaThreshold
+            ? wallIndices
+            : texturedIndices;
+          destination.push(...triangle);
+        }
       }
     }
   }
   geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
   geometry.setAttribute("uv", new THREE.BufferAttribute(uvs, 2));
-  geometry.setIndex(indices);
+  geometry.setIndex([...texturedIndices, ...wallIndices]);
+  if (texturedIndices.length > 0) geometry.addGroup(0, texturedIndices.length, 0);
+  if (wallIndices.length > 0) geometry.addGroup(texturedIndices.length, wallIndices.length, 1);
+  geometry.userData = {
+    ...geometry.userData,
+    texturedTriangleCount: texturedIndices.length / 3,
+    neutralWallTriangleCount: wallIndices.length / 3,
+    wallDeltaThreshold,
+  };
   geometry.computeVertexNormals();
   return geometry;
 }

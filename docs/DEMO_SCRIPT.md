@@ -40,7 +40,7 @@ Say:
 
 Say:
 
-> “This is a responsive inspection mesh. The full-resolution numeric source remains the `.npy`; the GLB and viewer never pretend to be surveyed geometry.”
+> “This is a responsive inspection mesh. RGB-guided cleanup calms noisy roofs, and neutral steep faces prevent the top-down photograph from dripping down walls. The untouched `.npy` and analysis grid remain the measurement sources; the GLB and viewer never pretend to be surveyed geometry.”
 
 ## 3:20–5:00 — prove the metric gate
 
@@ -61,13 +61,13 @@ Immediately disclose:
 Show the evidence list and explain:
 
 - `.npy` is lossless numeric data; PNG is a visual preview.
-- GLB is portable color 3D but relative.
+- GLB is portable relative 3D; mild faces carry scene colour and steep faces use synthetic neutral material.
 - Manifest records input, model/device/revision, warnings, and hashes.
 - Metric GeoTIFF preserves CRS, grid, NoData, metre units, datum, and source.
 - Error map is estimate minus reference.
 - Bad/misaligned evidence produces a rejection report and no metric file.
 
-Mention 32 backend tests, 7 frontend tests, real CUDA 17-artifact calibration workflow, mobile browser checks, clean release extraction, and SHA-256 release checksums using the final report’s exact numbers.
+Mention the current backend/frontend counts and real CUDA artifact totals from `handoff/FINAL_TEST_REPORT.md`; do not memorize an older number after changing the artifact contract.
 
 ## 6:20–7:00 — AI-assisted development answer
 

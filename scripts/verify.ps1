@@ -38,14 +38,17 @@ try {
         }
     }
 
+    $health = $null
     try {
         $health = Invoke-RestMethod -Uri "http://127.0.0.1:8000/api/health" -TimeoutSec 2
+    } catch {
+        Write-Host "`n[INFO]  App is not running; launch it with Start-TerraFly.cmd for the visual check." -ForegroundColor Yellow
+    }
+    if ($null -ne $health) {
         if ($health.service -ne "TerraFly" -or $health.version -ne "1.0.0") {
             throw "Running service identity/version does not match TerraFly 1.0.0."
         }
         Write-Host "`n[PASS]  Running app health: TerraFly $($health.version)" -ForegroundColor Green
-    } catch [System.Net.WebException] {
-        Write-Host "`n[INFO]  App is not running; launch it with Start-TerraFly.cmd for the visual check." -ForegroundColor Yellow
     }
 
     Write-Host "`nALL REQUESTED TERRAFLY CHECKS PASSED." -ForegroundColor Green
