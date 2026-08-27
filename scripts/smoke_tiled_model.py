@@ -20,7 +20,7 @@ def main() -> int:
     sample_path = project_root / "sample_data" / "terrafly_synthetic_aerial.png"
     rgb = np.asarray(Image.open(sample_path).convert("RGB"), dtype=np.uint8)
     adapter = DepthAnythingV2Adapter(
-        "depth-anything/Depth-Anything-V2-Small-hf",
+        "depth-anything/Depth-Anything-V2-Large-hf",
         args.device,
         tile_trigger_pixels=1,
         tile_size=256,

@@ -21,6 +21,47 @@ export type MeasurementGrid = Omit<SurfaceGrid, "values"> & {
   vertical_datum?: string;
 };
 
+export type HeightLegend = {
+  minimum: number;
+  midpoint: number;
+  maximum: number;
+  units: "metres" | "relative — not metres";
+};
+
+export function heightColours(
+  grid: SurfaceGrid | MeasurementGrid,
+): { colours: Float32Array; legend: HeightLegend } {
+  const finite: number[] = [];
+  for (const value of grid.values) {
+    if (typeof value === "number" && Number.isFinite(value)) finite.push(value);
+  }
+  if (finite.length === 0) throw new Error("Height colour scale has no finite values.");
+  const minimum = Math.min(...finite);
+  const maximum = Math.max(...finite);
+  const span = Math.max(maximum - minimum, Number.EPSILON);
+  const low = new THREE.Color(0x2ca25f);
+  const high = new THREE.Color(0xd73027);
+  const missing = new THREE.Color(0x66706d);
+  const colours = new Float32Array(grid.values.length * 3);
+  grid.values.forEach((value, index) => {
+    const colour = typeof value === "number" && Number.isFinite(value)
+      ? low.clone().lerp(high, Math.max(0, Math.min(1, (value - minimum) / span)))
+      : missing;
+    colours[index * 3] = colour.r;
+    colours[index * 3 + 1] = colour.g;
+    colours[index * 3 + 2] = colour.b;
+  });
+  return {
+    colours,
+    legend: {
+      minimum,
+      midpoint: minimum + (maximum - minimum) / 2,
+      maximum,
+      units: "units" in grid && grid.units === "metre" ? "metres" : "relative — not metres",
+    },
+  };
+}
+
 export type ReconstructedStructure = {
   id: string;
   footprint: Array<{ x_fraction: number; y_fraction: number }>;

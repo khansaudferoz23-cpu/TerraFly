@@ -34,7 +34,7 @@ def main() -> int:
     settings = Settings(
         jobs_root=jobs_root,
         model_adapter="depth-anything-v2",
-        model_id="depth-anything/Depth-Anything-V2-Small-hf",
+        model_id="depth-anything/Depth-Anything-V2-Large-hf",
         device=args.device,
     )
     started = time.perf_counter()

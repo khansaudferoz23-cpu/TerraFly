@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import io
 import json
 import struct
 
@@ -78,21 +79,41 @@ def test_artifact_orientation_and_glb_contract(tmp_path):
     assert document["meshes"][0]["extras"]["geometry_source"] == "display_grid.json"
     assert document["meshes"][0]["extras"]["numeric_source"] == "relative_surface.npy"
     assert {material["name"] for material in document["materials"]} == {
-        "Embedded scene colours",
+        "Embedded source photo",
         "Synthetic neutral steep faces",
     }
+    assert "extensionsUsed" not in document
+    assert document["images"][0]["mimeType"] == "image/png"
+    assert document["materials"][0]["pbrMetallicRoughness"]["baseColorTexture"] == {"index": 0}
     assert all(view["byteLength"] > 0 for view in document["bufferViews"])
     assert sum(
         document["accessors"][primitive["indices"]]["count"]
         for primitive in document["meshes"][0]["primitives"]
     ) == (relative.shape[0] - 1) * (relative.shape[1] - 1) * 6
-    colour_view = document["bufferViews"][1]
-    colour_bytes = binary[
-        colour_view["byteOffset"] : colour_view["byteOffset"] + colour_view["byteLength"]
+    for primitive in document["meshes"][0]["primitives"]:
+        assert set(primitive["attributes"]) == {"POSITION", "TEXCOORD_0", "NORMAL"}
+        assert "COLOR_0" not in primitive["attributes"]
+    uv_accessor = document["accessors"][1]
+    uv_view = document["bufferViews"][uv_accessor["bufferView"]]
+    uv_bytes = binary[uv_view["byteOffset"] : uv_view["byteOffset"] + uv_view["byteLength"]]
+    uvs = np.frombuffer(uv_bytes, dtype="<f4").reshape(-1, 2)
+    np.testing.assert_allclose(uvs[0], [0, 1])
+    np.testing.assert_allclose(uvs[-1], [1, 0])
+    normal_accessor = document["accessors"][2]
+    normal_view = document["bufferViews"][normal_accessor["bufferView"]]
+    normal_bytes = binary[
+        normal_view["byteOffset"] : normal_view["byteOffset"] + normal_view["byteLength"]
     ]
-    colours = np.frombuffer(colour_bytes, dtype=np.uint8).reshape(-1, 3)
-    np.testing.assert_array_equal(colours[0], rgb[0, 0])
-    np.testing.assert_array_equal(colours[-1], rgb[-1, -1])
+    normals = np.frombuffer(normal_bytes, dtype="<f4").reshape(-1, 3)
+    assert np.isfinite(normals).all()
+    np.testing.assert_allclose(np.linalg.norm(normals, axis=1), 1.0, atol=1e-6)
+    assert np.all(normals[:, 1] > 0)
+    image_view = document["bufferViews"][document["images"][0]["bufferView"]]
+    image_bytes = binary[
+        image_view["byteOffset"] : image_view["byteOffset"] + image_view["byteLength"]
+    ]
+    embedded_rgb = np.asarray(Image.open(io.BytesIO(image_bytes)).convert("RGB"))
+    np.testing.assert_array_equal(embedded_rgb, rgb)
     diagnostics = json.loads((tmp_path / "height_diagnostics.json").read_text(encoding="utf-8"))
     assert diagnostics["geometry"]["source"] == "display_grid.json"
     assert diagnostics["geometry"]["canonical_numeric_source"] == "relative_surface.npy"
@@ -132,7 +153,7 @@ def test_glb_exports_a_synthetic_building_above_flat_ground(tmp_path):
     assert ground_height == pytest.approx(0.0)
     assert any(
         primitive["material"] == 1
-        and "COLOR_0" not in primitive["attributes"]
+        and set(primitive["attributes"]) == {"POSITION", "TEXCOORD_0", "NORMAL"}
         for primitive in document["meshes"][0]["primitives"]
     )
     structures = json.loads((tmp_path / "reconstructed_structures.json").read_text(encoding="utf-8"))

@@ -10,7 +10,7 @@ The only system Python is 3.14.0, while the Codex runtime provides Python 3.12.1
 
 ## D-003 — Separate inference truth from test speed
 
-Production defaults to Depth Anything V2 Small through Transformers. Fast tests use `DeterministicTestAdapter`, which requires an explicit test flag and writes a test-only warning into every result.
+Production originally defaulted to Depth Anything V2 Small through Transformers; D-021 upgrades the default to Large. Fast tests use `DeterministicTestAdapter`, which requires an explicit test flag and writes a test-only warning into every result.
 
 ## D-004 — Initial relative-height assumption (superseded by D-017)
 
@@ -32,9 +32,9 @@ Document the IR-colorization repository at its exact commit without copying its 
 
 Do not normalize each large-image tile independently because monocular depth scale and offset can vary per crop. Fit a positive affine alignment from each overlap to the already blended surface, feather the overlap, then normalize the complete raw surface once. Bound tile count and input-dependent memory before accepting work.
 
-## D-009 — GLB carries colour but never implies metres
+## D-009 — GLB carries colour but never implies metres (superseded by D-020)
 
-Export a dependency-free GLB 2.0 triangle mesh using the same sampled row/column order as the viewer. Embed scene colour as normalized vertex colour and store `relative_0_1`, `vertical_scale_metric=false`, and orientation in mesh extras. A portable 3D file is useful evidence; it does not unlock metric claims.
+The first portable GLB embedded sampled scene colours per vertex and stored `relative_0_1`, `vertical_scale_metric=false`, and orientation in mesh extras. D-020 replaces the display encoding with a real UV texture, normals, and PBR materials while retaining the same non-metric evidence boundary.
 
 ## D-010 — Point comparison reports samples, not distance
 
@@ -66,7 +66,7 @@ The final Windows ZIP contains all tracked source and `frontend/dist`, while Pyt
 
 ## D-017 — Make model-output direction explicit and preserve the pre-conversion array
 
-Treat Depth Anything V2 Small's raw relative output as inverse depth/proximity: larger means closer. Under the app's near-nadir overhead assumption, closer maps directly to higher relative surface after one global 2nd–98th percentile normalization; no extra inversion is applied. Preserve `raw_model_output.npy`, make `relative_surface.npy` the sole numeric geometry source, and write `height_diagnostics.json` with the convention, normalization count, geometry source, and a non-correcting global-tilt indicator. Synthetic flat-ground/raised-building tests must prove that both the numeric result and GLB keep the roof above the ground.
+Treat Depth Anything V2's raw relative output as inverse depth/proximity: larger means closer. Under the app's near-nadir overhead assumption, closer maps directly to higher relative surface after one global 2nd–98th percentile normalization; no extra inversion is applied. Preserve `raw_model_output.npy`, make `relative_surface.npy` the sole numeric geometry source, and write `height_diagnostics.json` with the convention, normalization count, geometry source, and a non-correcting global-tilt indicator. Synthetic flat-ground/raised-building tests must prove that both the numeric result and GLB keep the roof above the ground.
 
 ## D-018 — Add metric inspection without replacing display geometry
 
@@ -75,3 +75,15 @@ Keep the responsive Three.js mesh normalized for stable rendering, but after a c
 ## D-019 — Separate Bhuvan-style structures from the scientific DSM
 
 A single DSM heightfield cannot create the clean vertical façades shown by object-based 3D map systems. Detect conservative local raised components on the viewer grid, export convex footprints and relative base/roof values, and render them only in an optional Structures layer. Keep it off by default, mark it non-semantic, and never feed it back into the numeric DSM or calibration metrics.
+
+## D-020 — Export a real texture and lit geometry
+
+Keep mesh density independent from image sharpness. Embed the bounded native source RGB as PNG in GLB, add `TEXCOORD_0` and smooth unit `NORMAL` accessors, use standard PBR materials, and reserve a neutral untextured material for steep faces. The browser additionally exposes Photo and Height-colour modes, a numeric relative/metre legend, and a simulated sun direction. These are display improvements and never modify canonical arrays.
+
+## D-021 — Upgrade the default checkpoint, but require evidence
+
+Select `depth-anything/Depth-Anything-V2-Large-hf` by default and retain an environment override for controlled fallback. CUDA autocast and CPU OOM recovery remain mandatory on 8 GB VRAM. The CC-BY-NC-4.0 checkpoint is suitable only for the current non-commercial evaluation without a separate commercial licence review. A larger general-purpose model is not domain adaptation and cannot be called accurate remote-sensing height until a real held-out metric card exists.
+
+## D-022 — Real model metrics require real held-out height evidence
+
+Add a benchmark utility that masks invalid pixels and computes RMSE, MAE, bias, and Pearson correlation from aligned held-out reference data. Cards generated from synthetic evidence must label themselves software-only. RDAH-Net has an official public implementation/checkpoint path worth auditing; Depth2Elevation has a paper but no author implementation or weights were identified. Do not reimplement from a paper or fine-tune before dataset licensing, alignment, target semantics, and geographic splits pass review.

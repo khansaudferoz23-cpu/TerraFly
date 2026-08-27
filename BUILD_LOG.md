@@ -122,3 +122,15 @@ Status vocabulary: PASS, FAIL, BLOCKED, SKIPPED.
 - FAIL → PASS — exact `Start-TerraFly.cmd` reproduction failed with PowerShell `Start-Process: Key in dictionary: Path / PATH`. The launcher now normalizes duplicate process path entries before spawning services.
 - PASS — exact CMD rerun stayed open, served TerraFly 1.0.0 and the production page at `http://127.0.0.1:8000`, opened the browser path, and the complete ordinary checker passed while the app was live.
 - PASS — if Windows cannot open the default browser, the launcher now keeps the working server alive and prints the manual local address instead of stopping TerraFly.
+
+## 2026-08-27 — critical texture, lighting, model, and evidence repair
+
+- PASS — replaced GLB vertex-colour/unlit output with an embedded source PNG, orientation-tested UVs, smooth unit normals, lit PBR materials, and neutral steep-face material groups.
+- PASS — added Photo/Height colour modes, numeric relative/metre legends, and an adjustable sun azimuth; changed range handling to immediate input updates and visually verified 35°→140°.
+- PASS — kept canonical arrays untouched while retaining outlier removal, RGB-guided smoothing, conservative roof flattening, extreme-slope safety, and optional separate Structures.
+- PASS — upgraded the default checkpoint to Depth Anything V2 Large revision `7581137eff8d4e94f6e796d3baea0e9fa79b22d2`; verified the 1,341,322,868-byte weight file SHA-256 and both CUDA/CPU inference.
+- PASS — ran Small and Large on the identical stadium scene, preserving previews and numeric outputs plus runtime/VRAM diagnostics. Large delineated local structure more crisply; no accuracy claim was made without truth.
+- PASS — regenerated the bundled calibration oracle from Large and completed the full 18-artifact CUDA workflow in 7.517 s with every hash verified.
+- PASS — implemented masked RMSE, MAE, bias, and Pearson evaluation plus a metric-card generator that requires matching GeoTIFF CRS/affine grids for real evidence.
+- PASS — documented the official RDAH-Net code/checkpoint path, Depth2Elevation paper-only boundary, ISPRS candidate datasets/licences, and the blocked real metric card.
+- PASS — final automated gate passed 37 backend and 9 frontend tests plus the strict production build; production desktop/calibrated/phone browser checks logged zero warnings or errors.

@@ -1,6 +1,6 @@
 # Project status
 
-Last updated: 2026-08-26 IST
+Last updated: 2026-08-27 IST
 
 ## Intake result
 
@@ -12,7 +12,7 @@ Greenfield bootstrap. The authenticated GitHub account `khansaudferoz23-cpu` own
 - Size, extension, filename, pixel-count, corrupt-image, and decompression-bomb boundaries.
 - PNG/JPEG mode normalization and GeoTIFF CRS/transform/NoData inspection.
 - Strict `Relative`, `Georeferenced Relative`, and `Metric Calibrated` state vocabulary.
-- Real Depth Anything V2 Small adapter with CUDA/CPU selection and CUDA-OOM fallback.
+- Real Depth Anything V2 Large adapter configured as the default, with CUDA/CPU selection and CUDA-OOM fallback; its non-commercial checkpoint licence and unvalidated remote-sensing accuracy remain explicit.
 - Explicit inverse-depth/proximity convention with one normalization pass, preserved raw prediction, and no accidental roof inversion.
 - Test-only deterministic adapter with a normal-run safety interlock.
 - Per-job input hash, scientific state, model/device/revision, warnings, calibration refusal, and artifact hashes.
@@ -24,9 +24,9 @@ Greenfield bootstrap. The authenticated GitHub account `khansaudferoz23-cpu` own
 - Team technical guide, file-by-file repository ledger, UI rationale, and exact related-SAC sample audit.
 - Overlapping tiled inference with bounded tile count, overlap affine alignment, feather blending, global normalization, and recorded strategy metadata.
 - Input-dependent processing-memory budget enforced before job acceptance.
-- Asymmetric orientation contract shared by viewer grid, image texture, point sampling, and GLB vertex colours.
+- Asymmetric orientation contract shared by viewer grid, image texture, point sampling, GLB UVs, and A/B analysis values.
 - Orbit and pointer-lock first-person navigation plus two-point relative comparison with source pixel coordinates.
-- Standards-based GLB 2.0 mesh export with embedded vertex colours and explicit non-metric metadata.
+- Standards-based GLB 2.0 mesh export with embedded source-image texture, UVs, smooth unit normals, lit PBR materials, neutral steep faces, and explicit non-metric metadata.
 - Completed-result deletion and launcher reuse/port/log diagnostics without killing unknown processes.
 - Exact-grid aligned reference-DSM calibration with robust affine outlier handling and spatially held-out evaluation.
 - Ground-control calibration with separate control and validation point sets, bilinear relative sampling, and coverage gates.
@@ -38,6 +38,8 @@ Greenfield bootstrap. The authenticated GitHub account `khansaudferoz23-cpu` own
 - Problem-statement traceability explicitly distinguishes implemented elevation/visualization features from future hazard prediction and domain-specific training.
 - Canonical relative/metric arrays are now separated from a recorded display grid with isolated-spike replacement, RGB-guided bilateral smoothing, conservative rooftop flattening, and an extreme adjacent-delta safety cap.
 - Steep heightfield triangles use a neutral synthetic wall material in both Three.js and GLB instead of stretching top-down image pixels; default vertical exaggeration was retuned to 1.4×.
+- Viewer-selectable Photo and Height colours, a numeric relative/metre legend, and adjustable sun azimuth make height ordering and surface normals inspectable without changing saved data.
+- A reusable held-out height benchmark computes RMSE, MAE, bias, and Pearson correlation only from aligned finite masked truth; the metric card stays visibly blocked until a licensed real dataset is evaluated.
 
 ## Verified Day 1 baseline
 
@@ -103,3 +105,15 @@ The remaining scientific work is intentionally outside this software milestone: 
 - PASS — updated production app completed an in-app-browser CUDA stadium upload. At the retuned 1.4× default, mild faces retained aerial colour and steep faces rendered neutral without long texture drips; A/B inspection returned canonical relative values, and the browser logged no warnings or errors.
 - PASS — reproduced the reported non-opening CMD launcher: inherited duplicate `PATH`/`Path` entries caused PowerShell `Start-Process` to fail before Uvicorn launched. The launcher now normalizes that process environment, keeps TerraFly running if automatic browser opening fails, and passed an exact CMD launch plus live `http://127.0.0.1:8000` health/page check.
 - LIMIT — visual structure candidates are not building segmentation, and the synthetic calibration oracle is not a real accuracy score.
+
+## Critical-fix acceptance — 2026-08-27
+
+- PASS — GLB export now contains an embedded source PNG, `TEXCOORD_0`, smooth unit `NORMAL` vectors, lit PBR materials, and neutral steep faces; regression tests reject `COLOR_0` and `KHR_materials_unlit`.
+- PASS — the production viewer exposes Photo/Height colours, a fixed numeric legend (`relative — not metres` or calibrated metres), a responsive sun-direction slider, wireframe, Structures, and display-only exaggeration.
+- PASS — 37 backend tests and 9 frontend tests passed; strict TypeScript/Vite built 23 modules (807.84 kB JavaScript, 217.02 kB gzip) with only the existing non-failing chunk advisory.
+- PASS — default Depth Anything V2 Large revision `7581137eff8d4e94f6e796d3baea0e9fa79b22d2` passed CUDA and CPU smoke inference. CUDA peak allocation was 1,618.2 MB on the direct smoke and 1,699.6 MB on the same-stadium comparison.
+- PASS — Small/Large same-stadium comparison preserved both previews and numeric outputs; Large showed sharper local delineation, while the report explicitly refuses to infer accuracy without truth.
+- PASS — the Large-derived calibration fixture completed the full CUDA workflow in 7.517 s, reached `Metric Calibrated`, hash-verified 18 artifacts, recovered scale 39.99999987 and offset 100.00000004, and produced synthetic-oracle RMSE 0.00000210 m.
+- PASS — production browser acceptance covered a real stadium scene, Photo/Height switching, the relative legend, live sun update from 35° to 140°, a calibrated 100–140 m legend, and a 390×844 layout with 375 px document and 307 px toolbar/viewer/canvas. Browser warnings/errors: zero.
+- PASS — a masked benchmark utility now requires matching GeoTIFF CRS/affine grids for real evidence and writes RMSE, MAE, bias, Pearson correlation, data licence/split, hashes, and resource facts.
+- LIMIT — real height RMSE/MAE/Pearson remain intentionally blocked because no licensed independent RGB–DSM/nDSM held-out truth was supplied. RDAH-Net is documented as an audit candidate; Depth2Elevation has no verified author code/weights in scope.

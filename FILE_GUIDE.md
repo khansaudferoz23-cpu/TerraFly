@@ -36,8 +36,9 @@ Use this as the answer to “why does this file exist?” Paths are grouped by r
 | `backend/terrafly/imaging.py` | Filename/content validation, safe decoding, RGB normalization, GeoTIFF inspection including horizontal units, hashes, and single-band warnings. |
 | `backend/terrafly/jobs.py` | Creates per-run IDs/directories and atomically persists live job state. |
 | `backend/terrafly/pipeline.py` | Enforces the processing-memory budget, orchestrates validation → inference → artifacts, and converts failures into honest job states. |
-| `backend/terrafly/artifacts.py` | Preserves raw/numeric output; writes preview, texture, 16-bit, canonical analysis grid, RGB-guided display grid, separate visual structure candidates, steep-face-safe GLB, height/tilt/display diagnostics, and SHA-256 records. |
+| `backend/terrafly/artifacts.py` | Preserves raw/numeric output; writes preview, texture, 16-bit, canonical analysis grid, RGB-guided display grid, separate visual structure candidates, UV-textured/normal-bearing PBR GLB, height/tilt/display diagnostics, and SHA-256 records. |
 | `backend/terrafly/calibration.py` | Validates reference grids/GCPs, robustly fits scale and offset, performs held-out quality gates, preserves NoData, and writes metric/error plus matching viewer-analysis evidence only on pass. |
+| `backend/terrafly/evaluation.py` | Computes masked held-out RMSE, MAE, bias, and Pearson correlation without treating invalid pixels as evidence. |
 | `backend/terrafly/inference/__init__.py` | Marks the inference adapter directory as a package. |
 | `backend/terrafly/inference/base.py` | Defines the common prediction result and adapter interface used by real and test implementations. |
 | `backend/terrafly/inference/conventions.py` | Defines raw output meanings and performs the single tested conversion to normalized relative height. |
@@ -55,7 +56,8 @@ Use this as the answer to “why does this file exist?” Paths are grouped by r
 | `backend/tests/test_adapter_contract.py` | Verifies one-pass output conversion, raised-building ordering, finite output, and the test-adapter production interlock. |
 | `backend/tests/test_api.py` | Tests valid modes, numeric artifacts/hashes, single-band/TIR warnings, corrupt/unsafe/oversized rejection, and metric refusal. |
 | `backend/tests/test_geotiff.py` | Proves CRS/transform/NoData survive while vertical metric claims remain locked. |
-| `backend/tests/test_artifacts.py` | Parses GLB and proves grid/texture orientation, diagnostic provenance, spike cleanup, rooftop flattening, display-only separation, neutral wall faces, raised-roof ordering, and non-mutating structure candidates. |
+| `backend/tests/test_artifacts.py` | Parses GLB and proves embedded source texture, UVs, unit normals, PBR materials, orientation, diagnostic provenance, cleanup, neutral walls, raised-roof ordering, and non-mutating structure candidates. |
+| `backend/tests/test_evaluation.py` | Hand-checks real-height metric calculations, invalid-pixel masking, alignment refusal, and insufficient-evidence refusal. |
 | `backend/tests/test_tiling.py` | Proves coverage, overlap blending, affine scale/offset alignment, and maximum-tile refusal. |
 | `backend/tests/test_calibration.py` | Proves reference-DSM pass, outlier robustness, alignment refusal, poor-evidence rejection, GCP validation, metric grid alignment/values, metadata, and hashes. |
 
@@ -72,13 +74,13 @@ Use this as the answer to “why does this file exist?” Paths are grouped by r
 | `frontend/tsconfig.node.json` | TypeScript settings for Vite configuration code running in Node. |
 | `frontend/src/main.tsx` | Creates the React root and mounts `App`. |
 | `frontend/src/App.tsx` | Complete upload/progress/result/calibration/evidence workflow with visible Locked/Passed/Rejected decisions plus gated height/distance/slope analysis. |
-| `frontend/src/SurfaceViewer.tsx` | Three.js render lifecycle, orbit/first-person controls, metric-aware raycast markers, optional upright Structures layer, loading/error state, and display-only exaggeration. |
-| `frontend/src/surfaceGeometry.ts` | Pure orientation, mesh-building, pixel mapping, relative/metric bilinear sampling, and structure contracts separated for direct tests. |
+| `frontend/src/SurfaceViewer.tsx` | Three.js render lifecycle, Photo/Height-colour modes, relative/metre legend, adjustable sun, orbit/first-person controls, metric-aware markers, optional Structures, and display-only exaggeration. |
+| `frontend/src/surfaceGeometry.ts` | Pure orientation, mesh-building, height-colour scaling, pixel mapping, relative/metric bilinear sampling, and structure contracts separated for direct tests. |
 | `frontend/src/api.ts` | Typed boundary for jobs, reference calibration, cleanup, and artifact URLs. |
 | `frontend/src/types.ts` | TypeScript mirror of job, artifact, scientific-state, fit, evaluation, and gate responses. |
 | `frontend/src/styles.css` | Deliberate design tokens, layout hierarchy, responsive behavior, and viewer styling. |
 | `frontend/src/App.test.tsx` | Guards the non-metric promise, clean initial state, real file-selection action, and absence of fake future controls. |
-| `frontend/src/SurfaceViewer.test.ts` | Guards asymmetric image-to-geometry/UV orientation, source-pixel point sampling, and aligned metric-grid interpolation/NoData handling. |
+| `frontend/src/SurfaceViewer.test.ts` | Guards orientation, neutral wall grouping, truthful relative/metre colour scales, source-pixel sampling, and metric interpolation/NoData handling. |
 | `frontend/src/test-setup.ts` | Loads DOM matchers used by Vitest/Testing Library. |
 
 ## Scripts: setup, launch, fixtures, and smoke evidence
@@ -89,10 +91,12 @@ Use this as the answer to “why does this file exist?” Paths are grouped by r
 | `scripts/start.ps1` | Reuses a healthy TerraFly 1.0 service, refuses unknown port owners, serves the prebuilt interface/API at one address, records readable logs, opens the browser, and stops only children it started. |
 | `scripts/verify.ps1` | Runs dependency, backend, frontend, production-build, health, and optional full real-model calibration checks behind one command. |
 | `scripts/package_release.ps1` | Creates the tracked-source ZIP, Windows source/prebuilt-interface folder and ZIP, and SHA-256 checksum record without overwriting an existing release. |
-| `scripts/smoke_final_workflow.py` | Executes the real GeoTIFF → relative → aligned-reference → metric path and verifies all 17 hashes plus metre/CRS GeoTIFF tags. |
+| `scripts/smoke_final_workflow.py` | Executes the real GeoTIFF → relative → aligned-reference → metric path and verifies all 18 hashes plus metre/CRS GeoTIFF tags. |
 | `scripts/smoke_real_model.py` | Measures a direct real-model inference and records device/revision/output statistics. |
 | `scripts/smoke_real_api.py` | Exercises the complete real upload-to-artifacts API path for the bundled or a supplied scene, including every hash. |
 | `scripts/smoke_tiled_model.py` | Forces four real CUDA tiles and verifies strategy metadata, shape, range, dtype, finiteness, and output hash. |
+| `scripts/benchmark_height_model.py` | Generates a real-or-synthetic-labelled metric card from an aligned held-out pair with grid provenance and resource measurements. |
+| `scripts/compare_model_variants.py` | Runs Small and Large on the identical scene, saves height previews/numeric arrays, and records runtime, peak VRAM, and non-accuracy behavior comparisons. |
 | `scripts/create_offline_sample.py` | Regenerates the deterministic CC0 orientation/workflow fixture from code. |
 | `scripts/create_calibration_demo.py` | Reproducibly creates the bundled georeferenced input/reference software-oracle pair and its metadata; never claims survey truth. |
 | `scripts/create_handoff_manifest.py` | Hashes all committed source files into the final handoff manifest and records the verified environment/model/test boundary. |
@@ -110,6 +114,8 @@ Use this as the answer to “why does this file exist?” Paths are grouped by r
 | `docs/ARCHITECTURE.md` | Compact diagrams for runtime ownership, state transitions, evidence gating, and file responsibilities. |
 | `docs/DEMO_SCRIPT.md` | Timed 6–8 minute judge demonstration with exact clicks, spoken claims, and fallback path. |
 | `docs/JUDGE_QA.md` | Defensible short answers to scientific, UI, architecture, AI-use, `.npy`, and limitation questions. |
+| `docs/MODEL_UPGRADE_EVALUATION.md` | Records the Large-checkpoint licence/decision, RDAH-Net and Depth2Elevation audit, candidate data, and evidence gate. |
+| `docs/MODEL_METRIC_CARD.md` | Truthful live status of real benchmark evidence; remains BLOCKED until actual held-out data is evaluated. |
 
 ## Sample data
 

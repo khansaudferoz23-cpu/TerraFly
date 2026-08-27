@@ -2,8 +2,8 @@ import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { PointerLockControls } from "three/examples/jsm/controls/PointerLockControls.js";
-import { createStructureGeometry, createSurface, sampleMeasurementValue, sampleSurfacePoint } from "./surfaceGeometry";
-import type { InspectedPoint, MeasurementGrid, StructureLayer, SurfaceGrid } from "./surfaceGeometry";
+import { createStructureGeometry, createSurface, heightColours, sampleMeasurementValue, sampleSurfacePoint } from "./surfaceGeometry";
+import type { HeightLegend, InspectedPoint, MeasurementGrid, StructureLayer, SurfaceGrid } from "./surfaceGeometry";
 
 type Props = {
   gridUrl: string;
@@ -28,13 +28,17 @@ export function SurfaceViewer({ gridUrl, analysisGridUrl, textureUrl, measuremen
   const resetViewRef = useRef<(() => void) | null>(null);
   const markerGroupRef = useRef<THREE.Group | null>(null);
   const structureGroupRef = useRef<THREE.Group | null>(null);
+  const sunRef = useRef<THREE.DirectionalLight | null>(null);
   const pointsRef = useRef<InspectedPoint[]>([]);
   const navigationModeRef = useRef<"orbit" | "first-person">("orbit");
+  const surfaceModeRef = useRef<"photo" | "height">("photo");
   const [wireframe, setWireframe] = useState(false);
-  const [textureEnabled, setTextureEnabled] = useState(true);
+  const [surfaceMode, setSurfaceMode] = useState<"photo" | "height">("photo");
   const [exaggeration, setExaggeration] = useState(1.4);
+  const [sunAzimuth, setSunAzimuth] = useState(35);
   const [navigationMode, setNavigationMode] = useState<"orbit" | "first-person">("orbit");
   const [structuresEnabled, setStructuresEnabled] = useState(false);
+  const [heightLegend, setHeightLegend] = useState<HeightLegend | null>(null);
   const [viewerStatus, setViewerStatus] = useState<"loading" | "ready" | "error">("loading");
 
   function chooseNavigation(mode: "orbit" | "first-person") {
@@ -71,11 +75,21 @@ export function SurfaceViewer({ gridUrl, analysisGridUrl, textureUrl, measuremen
   }, [wireframe]);
 
   useEffect(() => {
+    surfaceModeRef.current = surfaceMode;
     if (!surfaceMaterialRef.current) return;
-    surfaceMaterialRef.current.map = textureEnabled ? textureRef.current : null;
-    surfaceMaterialRef.current.color.set(textureEnabled ? 0xffffff : 0x7d9c92);
+    const heightMode = surfaceMode === "height";
+    surfaceMaterialRef.current.map = heightMode ? null : textureRef.current;
+    surfaceMaterialRef.current.vertexColors = heightMode;
+    surfaceMaterialRef.current.color.set(0xffffff);
     surfaceMaterialRef.current.needsUpdate = true;
-  }, [textureEnabled]);
+  }, [surfaceMode]);
+
+  useEffect(() => {
+    const sun = sunRef.current;
+    if (!sun) return;
+    const radians = THREE.MathUtils.degToRad(sunAzimuth);
+    sun.position.set(Math.cos(radians) * 9, 10, Math.sin(radians) * 9);
+  }, [sunAzimuth]);
 
   useEffect(() => {
     const mesh = meshRef.current;
@@ -98,6 +112,7 @@ export function SurfaceViewer({ gridUrl, analysisGridUrl, textureUrl, measuremen
     const host = hostRef.current;
     if (!host) return undefined;
     setViewerStatus("loading");
+    setHeightLegend(null);
     setStructuresEnabled(false);
     pointsRef.current = [];
     onPointsChange?.([]);
@@ -129,7 +144,9 @@ export function SurfaceViewer({ gridUrl, analysisGridUrl, textureUrl, measuremen
 
     scene.add(new THREE.HemisphereLight(0xf4f7f5, 0x26312e, 2.3));
     const sun = new THREE.DirectionalLight(0xffffff, 2.2);
-    sun.position.set(4, 10, 3);
+    const initialSunRadians = THREE.MathUtils.degToRad(sunAzimuth);
+    sun.position.set(Math.cos(initialSunRadians) * 9, 10, Math.sin(initialSunRadians) * 9);
+    sunRef.current = sun;
     scene.add(sun);
     const gridHelper = new THREE.GridHelper(14, 14, 0x52625d, 0x2c3835);
     gridHelper.position.y = -0.04;
@@ -139,7 +156,7 @@ export function SurfaceViewer({ gridUrl, analysisGridUrl, textureUrl, measuremen
     scene.add(markerGroup);
 
     const surfaceMaterial = new THREE.MeshStandardMaterial({
-      color: textureEnabled ? 0xffffff : 0x7d9c92,
+      color: 0xffffff,
       roughness: 0.92,
       metalness: 0,
       side: THREE.DoubleSide,
@@ -188,10 +205,20 @@ export function SurfaceViewer({ gridUrl, analysisGridUrl, textureUrl, measuremen
         measurementGridRef.current = measurementGrid;
         textureRef.current = loadedTexture;
         loadedTexture.colorSpace = THREE.SRGBColorSpace;
-        surfaceMaterial.map = textureEnabled ? loadedTexture : null;
+        const colourSource = measurementGrid ?? analysisGrid;
+        const { colours, legend } = heightColours(colourSource);
+        if (colours.length !== grid.values.length * 3) {
+          throw new Error("Height colour grid does not match the display geometry.");
+        }
+        setHeightLegend(legend);
+        const geometry = createSurface(grid, exaggeration);
+        geometry.setAttribute("color", new THREE.BufferAttribute(colours, 3));
+        const heightMode = surfaceModeRef.current === "height";
+        surfaceMaterial.map = heightMode ? null : loadedTexture;
+        surfaceMaterial.vertexColors = heightMode;
         surfaceMaterial.needsUpdate = true;
         const mesh = new THREE.Mesh(
-          createSurface(grid, exaggeration),
+          geometry,
           [surfaceMaterial, wallMaterial],
         );
         meshRef.current = mesh;
@@ -353,6 +380,7 @@ export function SurfaceViewer({ gridUrl, analysisGridUrl, textureUrl, measuremen
       walkRef.current = null;
       markerGroupRef.current = null;
       structureGroupRef.current = null;
+      sunRef.current = null;
       resetViewRef.current = null;
     };
   }, [gridUrl, analysisGridUrl, textureUrl, measurementGridUrl, structureLayerUrl]);
@@ -364,12 +392,19 @@ export function SurfaceViewer({ gridUrl, analysisGridUrl, textureUrl, measuremen
           <button type="button" aria-pressed={navigationMode === "orbit"} className={navigationMode === "orbit" ? "active" : ""} onClick={() => chooseNavigation("orbit")}>Orbit</button>
           <button type="button" aria-pressed={navigationMode === "first-person"} className={navigationMode === "first-person" ? "active" : ""} onClick={() => chooseNavigation("first-person")}>First-person</button>
         </div>
-        <button type="button" aria-pressed={textureEnabled} className={textureEnabled ? "active" : ""} onClick={() => setTextureEnabled(!textureEnabled)}>Texture</button>
+        <div className="mode-switch" aria-label="Surface colour mode">
+          <button type="button" aria-pressed={surfaceMode === "photo"} className={surfaceMode === "photo" ? "active" : ""} onClick={() => setSurfaceMode("photo")}>Photo</button>
+          <button type="button" aria-pressed={surfaceMode === "height"} className={surfaceMode === "height" ? "active" : ""} onClick={() => setSurfaceMode("height")}>Height colours</button>
+        </div>
         <button type="button" aria-pressed={wireframe} className={wireframe ? "active" : ""} onClick={() => setWireframe(!wireframe)}>Wireframe</button>
         {structureLayerUrl && <button type="button" aria-pressed={structuresEnabled} className={structuresEnabled ? "active" : ""} onClick={() => setStructuresEnabled(!structuresEnabled)}>Structures</button>}
         <label>
           Vertical display <strong>{exaggeration.toFixed(1)}×</strong>
-          <input aria-label="Display vertical exaggeration" type="range" min="0.2" max="4" step="0.1" value={exaggeration} onChange={(event) => setExaggeration(Number(event.target.value))} />
+          <input aria-label="Display vertical exaggeration" type="range" min="0.2" max="4" step="0.1" value={exaggeration} onInput={(event) => setExaggeration(Number(event.currentTarget.value))} />
+        </label>
+        <label>
+          Sun direction <strong>{sunAzimuth}°</strong>
+          <input aria-label="Simulated sun direction" type="range" min="0" max="360" step="5" value={sunAzimuth} onInput={(event) => setSunAzimuth(Number(event.currentTarget.value))} />
         </label>
         <button type="button" onClick={clearPoints}>Clear points</button>
         <button type="button" onClick={() => resetViewRef.current?.()}>Reset</button>
@@ -377,6 +412,21 @@ export function SurfaceViewer({ gridUrl, analysisGridUrl, textureUrl, measuremen
       <div ref={hostRef} className="viewer" aria-label="Interactive textured elevation surface">
         {viewerStatus === "loading" && <div className="viewer-status">Preparing 3D surface…</div>}
         {viewerStatus === "error" && <div className="viewer-status error" role="alert">The 3D surface could not be loaded.</div>}
+        {heightLegend && (
+          <div className="height-legend" aria-label={`${heightLegend.units} height colour scale`}>
+            <strong>{heightLegend.units === "metres" ? "Calibrated height" : "Relative height"}</strong>
+            <span className="legend-mode">{heightLegend.units}</span>
+            <div className="legend-body">
+              <div className="legend-gradient" aria-hidden="true" />
+              <div className="legend-ticks">
+                <span>{heightLegend.maximum.toFixed(heightLegend.units === "metres" ? 1 : 2)}{heightLegend.units === "metres" ? " m" : ""}</span>
+                <span>{heightLegend.midpoint.toFixed(heightLegend.units === "metres" ? 1 : 2)}{heightLegend.units === "metres" ? " m" : ""}</span>
+                <span>{heightLegend.minimum.toFixed(heightLegend.units === "metres" ? 1 : 2)}{heightLegend.units === "metres" ? " m" : ""}</span>
+              </div>
+            </div>
+            {surfaceMode === "photo" && <small>Select Height colours to apply this scale.</small>}
+          </div>
+        )}
       </div>
       <p className="viewer-help">
         {navigationMode === "orbit"

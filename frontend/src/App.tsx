@@ -390,7 +390,7 @@ export default function App() {
               <b>Download · {fileSize(artifactRecord("structure_layer")?.bytes ?? 0)}</b>
             </a>}
             <a href={artifact("glb_mesh")} download>
-              <span><strong>{artifactRecord("glb_mesh")?.filename ?? "relative_surface.glb"}</strong><small>Portable relative display mesh: scene colour on mild faces and neutral synthetic material on steep faces to prevent vertical streaks.</small></span>
+              <span><strong>{artifactRecord("glb_mesh")?.filename ?? "relative_surface.glb"}</strong><small>Portable relative display mesh with embedded source-photo texture, UVs, smooth normals, lit PBR roof/ground material, and neutral steep faces.</small></span>
               <b>Download · {fileSize(artifactRecord("glb_mesh")?.bytes ?? 0)}</b>
             </a>
             <a href={artifact("manifest")} download>

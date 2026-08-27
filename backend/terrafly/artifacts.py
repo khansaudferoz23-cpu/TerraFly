@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import hashlib
+import io
 import json
 import struct
 from pathlib import Path
@@ -79,8 +80,37 @@ def _surface_triangle_indices(
     return np.asarray(textured, dtype="<u4"), np.asarray(walls, dtype="<u4")
 
 
-def _write_glb(path: Path, grid: np.ndarray, colours: np.ndarray) -> None:
-    """Write a display-only GLB with photo surfaces and neutral steep faces."""
+def _surface_normals(grid: np.ndarray) -> np.ndarray:
+    """Return smooth unit normals for a height grid in TerraFly mesh coordinates."""
+
+    rows, columns = grid.shape
+    aspect = rows / columns
+    x_coordinates = np.linspace(-5, 5, columns, dtype=np.float32)
+    z_coordinates = np.linspace(-5 * aspect, 5 * aspect, rows, dtype=np.float32)
+    derivative_z, derivative_x = np.gradient(
+        grid.astype(np.float32), z_coordinates, x_coordinates, edge_order=1
+    )
+    normals = np.stack(
+        (-derivative_x, np.ones_like(grid, dtype=np.float32), -derivative_z),
+        axis=-1,
+    )
+    lengths = np.linalg.norm(normals, axis=-1, keepdims=True)
+    return np.ascontiguousarray(normals / np.maximum(lengths, 1e-8), dtype="<f4")
+
+
+def _embedded_texture_png(rgb: np.ndarray, *, maximum_side: int = 2048) -> tuple[bytes, list[int]]:
+    """Encode a native-resolution source image for GLB, with a bounded safety cap."""
+
+    image = Image.fromarray(np.asarray(rgb, dtype=np.uint8), mode="RGB")
+    if max(image.size) > maximum_side:
+        image.thumbnail((maximum_side, maximum_side), Image.Resampling.LANCZOS)
+    output = io.BytesIO()
+    image.save(output, format="PNG", optimize=True)
+    return output.getvalue(), [image.height, image.width]
+
+
+def _write_glb(path: Path, grid: np.ndarray, rgb: np.ndarray) -> None:
+    """Write a textured, lit display GLB with neutral synthetic steep faces."""
     rows, columns = grid.shape
     aspect = rows / columns
     positions = np.empty((rows * columns, 3), dtype="<f4")
@@ -89,15 +119,34 @@ def _write_glb(path: Path, grid: np.ndarray, colours: np.ndarray) -> None:
     positions[:, 2] = np.repeat(
         np.linspace(-5 * aspect, 5 * aspect, rows, dtype=np.float32), columns
     )
+    texture_coordinates = np.empty((rows * columns, 2), dtype="<f4")
+    texture_coordinates[:, 0] = np.tile(
+        np.linspace(0, 1, columns, dtype=np.float32), rows
+    )
+    texture_coordinates[:, 1] = np.repeat(
+        np.linspace(1, 0, rows, dtype=np.float32), columns
+    )
+    normals = _surface_normals(grid).reshape(-1, 3)
     textured_indices, wall_indices = _surface_triangle_indices(grid)
-    colour_array = np.ascontiguousarray(colours.reshape(-1, 3), dtype=np.uint8)
+    texture_bytes, texture_shape = _embedded_texture_png(rgb)
 
     binary = bytearray()
     position_offset, position_length = _append_aligned(binary, positions.tobytes())
-    colour_offset, colour_length = _append_aligned(binary, colour_array.tobytes())
+    texture_coordinate_offset, texture_coordinate_length = _append_aligned(
+        binary, texture_coordinates.tobytes()
+    )
+    normal_offset, normal_length = _append_aligned(binary, normals.tobytes())
+    image_offset, image_length = _append_aligned(binary, texture_bytes)
     buffer_views: list[dict[str, object]] = [
         {"buffer": 0, "byteOffset": position_offset, "byteLength": position_length, "target": 34962},
-        {"buffer": 0, "byteOffset": colour_offset, "byteLength": colour_length, "target": 34962},
+        {
+            "buffer": 0,
+            "byteOffset": texture_coordinate_offset,
+            "byteLength": texture_coordinate_length,
+            "target": 34962,
+        },
+        {"buffer": 0, "byteOffset": normal_offset, "byteLength": normal_length, "target": 34962},
+        {"buffer": 0, "byteOffset": image_offset, "byteLength": image_length},
     ]
     accessors: list[dict[str, object]] = [
         {
@@ -110,15 +159,24 @@ def _write_glb(path: Path, grid: np.ndarray, colours: np.ndarray) -> None:
         },
         {
             "bufferView": 1,
-            "componentType": 5121,
-            "normalized": True,
-            "count": int(colour_array.shape[0]),
+            "componentType": 5126,
+            "count": int(texture_coordinates.shape[0]),
+            "type": "VEC2",
+            "min": texture_coordinates.min(axis=0).astype(float).tolist(),
+            "max": texture_coordinates.max(axis=0).astype(float).tolist(),
+        },
+        {
+            "bufferView": 2,
+            "componentType": 5126,
+            "count": int(normals.shape[0]),
             "type": "VEC3",
+            "min": normals.min(axis=0).astype(float).tolist(),
+            "max": normals.max(axis=0).astype(float).tolist(),
         },
     ]
     primitives: list[dict[str, object]] = []
 
-    def append_indices(indices: np.ndarray, *, material: int, include_colour: bool) -> None:
+    def append_indices(indices: np.ndarray, *, material: int) -> None:
         if not indices.size:
             return
         offset, length = _append_aligned(binary, indices.tobytes())
@@ -137,39 +195,45 @@ def _write_glb(path: Path, grid: np.ndarray, colours: np.ndarray) -> None:
                 "max": [int(indices.max())],
             }
         )
-        attributes = {"POSITION": 0}
-        if include_colour:
-            attributes["COLOR_0"] = 1
         primitives.append(
             {
-                "attributes": attributes,
+                "attributes": {"POSITION": 0, "TEXCOORD_0": 1, "NORMAL": 2},
                 "indices": accessor_index,
                 "material": material,
                 "mode": 4,
             }
         )
 
-    append_indices(textured_indices, material=0, include_colour=True)
-    append_indices(wall_indices, material=1, include_colour=False)
+    append_indices(textured_indices, material=0)
+    append_indices(wall_indices, material=1)
     while len(binary) % 4:
         binary.append(0)
 
     document = {
         "asset": {"version": "2.0", "generator": "TerraFly 1.0"},
-        "extensionsUsed": ["KHR_materials_unlit"],
         "buffers": [{"byteLength": len(binary)}],
         "bufferViews": buffer_views,
         "accessors": accessors,
+        "images": [{"name": "TerraFly source photo", "bufferView": 3, "mimeType": "image/png"}],
+        "samplers": [
+            {
+                "magFilter": 9729,
+                "minFilter": 9987,
+                "wrapS": 33071,
+                "wrapT": 33071,
+            }
+        ],
+        "textures": [{"name": "TerraFly source photo", "sampler": 0, "source": 0}],
         "materials": [
             {
-                "name": "Embedded scene colours",
+                "name": "Embedded source photo",
                 "doubleSided": True,
                 "pbrMetallicRoughness": {
                     "baseColorFactor": [1, 1, 1, 1],
+                    "baseColorTexture": {"index": 0},
                     "metallicFactor": 0,
-                    "roughnessFactor": 1,
+                    "roughnessFactor": 0.92,
                 },
-                "extensions": {"KHR_materials_unlit": {}},
             },
             {
                 "name": "Synthetic neutral steep faces",
@@ -179,7 +243,6 @@ def _write_glb(path: Path, grid: np.ndarray, colours: np.ndarray) -> None:
                     "metallicFactor": 0,
                     "roughnessFactor": 1,
                 },
-                "extensions": {"KHR_materials_unlit": {}},
             },
         ],
         "meshes": [
@@ -194,6 +257,10 @@ def _write_glb(path: Path, grid: np.ndarray, colours: np.ndarray) -> None:
                     "geometry_source": "display_grid.json",
                     "numeric_source": "relative_surface.npy",
                     "display_only_processing": True,
+                    "embedded_texture": "native source RGB, PNG, maximum side 2048 pixels",
+                    "embedded_texture_shape": texture_shape,
+                    "normals": "smooth per-vertex central-difference normals",
+                    "material_model": "pbrMetallicRoughness",
                     "steep_face_material": "synthetic neutral; aerial colour disabled",
                     "wall_delta_threshold": DISPLAY_WALL_DELTA_THRESHOLD,
                 },
@@ -730,7 +797,7 @@ def write_surface_artifacts(
         encoding="utf-8",
     )
     glb_path = job_dir / "relative_surface.glb"
-    _write_glb(glb_path, display_grid, grid_colours)
+    _write_glb(glb_path, display_grid, rgb)
     diagnostic_path = job_dir / "height_diagnostics.json"
     diagnostic_path.write_text(
         json.dumps(

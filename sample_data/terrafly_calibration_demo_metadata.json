@@ -7,9 +7,9 @@
   "input_geotiff": "terrafly_calibration_demo_input.tif",
   "input_geotiff_sha256": "f3d2a85c934434ba3f19196a6d3357eee2b6be4d7cc412631edea0ac11e62091",
   "reference_geotiff": "terrafly_calibration_demo_reference.tif",
-  "reference_geotiff_sha256": "f0c2192284b33e18c1686539faa256e20d9e07ae9e38c2c791db0773d0ee4d45",
-  "model_id": "depth-anything/Depth-Anything-V2-Small-hf",
-  "model_revision": "5426e4f0f36572d16453bbda7a8389317b1bef99",
+  "reference_geotiff_sha256": "64b22294ad5200a3659f7ee96e6b9b4924e3609791e7f545c3b3f0c00dd41e0b",
+  "model_id": "depth-anything/Depth-Anything-V2-Large-hf",
+  "model_revision": "7581137eff8d4e94f6e796d3baea0e9fa79b22d2",
   "device_used_to_generate": "cuda",
   "known_relation": {
     "equation": "synthetic_elevation_m = scale * relative_surface + offset",

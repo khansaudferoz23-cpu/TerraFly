@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { createStructureGeometry, createSurface, projectedDistanceMetres, sampleMeasurementValue, sampleSurfacePoint } from "./surfaceGeometry";
+import { createStructureGeometry, createSurface, heightColours, projectedDistanceMetres, sampleMeasurementValue, sampleSurfacePoint } from "./surfaceGeometry";
 import type { MeasurementGrid, ReconstructedStructure, SurfaceGrid } from "./surfaceGeometry";
 
 const asymmetricGrid: SurfaceGrid = {
@@ -44,6 +44,32 @@ describe("surface orientation contract", () => {
     expect(geometry.userData.texturedTriangleCount).toBeGreaterThan(0);
     expect(geometry.userData.neutralWallTriangleCount + geometry.userData.texturedTriangleCount).toBe(8);
     geometry.dispose();
+  });
+
+  it("builds truthful relative and metric height colour scales", () => {
+    const relative = heightColours(asymmetricGrid);
+    expect(relative.legend).toEqual({
+      minimum: 0.1,
+      midpoint: 0.35,
+      maximum: 0.6,
+      units: "relative — not metres",
+    });
+    expect(relative.colours).toHaveLength(asymmetricGrid.values.length * 3);
+    expect(relative.colours[0]).toBeLessThan(relative.colours.at(-3) ?? 0);
+
+    const metricGrid: MeasurementGrid = {
+      ...asymmetricGrid,
+      units: "metre",
+      values: [100, 110, 120, null, 140, 150],
+    };
+    const metric = heightColours(metricGrid);
+    expect(metric.legend).toEqual({
+      minimum: 100,
+      midpoint: 125,
+      maximum: 150,
+      units: "metres",
+    });
+    expect(Array.from(metric.colours).every(Number.isFinite)).toBe(true);
   });
 
   it("bilinearly samples relative values and reports source-image pixels", () => {

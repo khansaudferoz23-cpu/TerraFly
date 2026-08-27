@@ -2,7 +2,7 @@
 
 TerraFly source is being assembled from original project code and the listed dependencies; third-party packages retain their own licenses.
 
-- Depth Anything V2 Small code/checkpoint: Apache License 2.0 according to the official Depth Anything V2 repository. Base/Large/Giant have different, more restrictive licensing and are not selected.
+- Depth Anything V2 Large Transformers checkpoint (`depth-anything/Depth-Anything-V2-Large-hf`): CC-BY-NC-4.0 according to its official Hugging Face model card. TerraFly selects it for non-commercial SIH evaluation; any commercial use requires a separate licensing review. The surrounding Depth Anything V2 code has its own upstream licence terms.
 - PyTorch: BSD-style license; installed from the official PyTorch wheel index.
 - Hugging Face Transformers: Apache License 2.0.
 - FastAPI: MIT License.

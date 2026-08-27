@@ -12,11 +12,13 @@
 - SRTM is not integrated and would be coarse terrain context, not reliable individual building/tree height.
 - The optional Structures layer is a visual reconstruction from local relative-height components, not semantic building segmentation or measured architecture. It may include vegetation, merge nearby objects, simplify footprints, or miss low-contrast roofs. It never changes the numeric DSM.
 - The real checkpoint is verified locally on CPU and CUDA, but third-party environments and model weights are not redistributed. A new machine needs internet access for first setup/weight download; prepare the cache before going offline.
+- The default Depth Anything V2 Large checkpoint is CC-BY-NC-4.0 according to its official model card. TerraFly uses it for non-commercial evaluation; commercial deployment needs a separate model/licence decision.
 - First-person navigation is a free-flight inspection mode; it does not yet collide with or walk on the inferred surface.
 - Point A/B values remain relative until calibration passes. A passing calibration enables metric elevation and vertical difference from the metric analysis grid. Horizontal distance and slope are reported only for projected CRS inputs whose horizontal units are metres.
 - Tiling reduces memory pressure and aligns overlap scale/offset, but no remote-sensing ground truth is available to quantify whether it improves scientific accuracy.
 - Numeric `.npy` is canonical for the relative result. `relative_grid.json` remains the canonical sampled analysis grid; the visibly cleaned `display_grid.json` and GLB are explicitly display-only. After calibration, measurement readouts use a separate metric grid and full-resolution metric `.npy`/GeoTIFF remain the scientific artifacts.
 - Edge-aware smoothing and conservative rooftop flattening can improve readability but cannot turn a monocular prediction into architectural truth. Neutral steep-face shading prevents stretched aerial pixels; it does not recover real façade imagery. The optional Structures layer is still the only block-style extrusion path.
+- Height colours and the numeric legend visualize the current relative or calibrated grid; they do not add accuracy. Sun direction changes only the lighting, not the surface.
 - There is no real-world accuracy figure because no compatible independent surveyed ground truth was supplied.
 - GCP calibration is available through the typed API; the minimal UI exposes the aligned-reference workflow rather than an error-prone free-form point editor.
 - The final Windows ZIP includes the prebuilt interface and complete source, but it is not dependency-bundled or fully offline; setup still downloads third-party Python packages, npm packages, and model weights.

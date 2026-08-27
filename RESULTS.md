@@ -98,3 +98,18 @@ The hole/reversal bug is fixed. The large plane fractions are a separate monocul
 | Updated in-app browser | PARTIAL | initial page rendered; upload/generate interaction was denied by browser security auto-review, so no workaround was attempted |
 
 The new Structures layer is visualization evidence, not accuracy evidence. The metric numbers above come from the synthetic software oracle and prove the software relation/export path only.
+
+## Critical-fix acceptance — 2026-08-27
+
+| Check | Result | Evidence |
+|---|---:|---|
+| Backend suite | PASS | 37 tests: embedded GLB texture/UV/normals/PBR contract, masked metrics, exact geospatial benchmark registration, and all previous safety/science gates |
+| Frontend suite/build | PASS | 9 tests; Photo/Height scale semantics; strict 23-module build, 807.84 kB JS / 217.02 kB gzip |
+| Large CUDA / CPU smoke | PASS | revision `7581137eff8d4e94f6e796d3baea0e9fa79b22d2`; CUDA 5.388 s and 1,618.2 MB peak; CPU 6.733 s |
+| Small versus Large, same stadium | PASS | steady-state CUDA 0.029 s / 0.072 s; 255.3 MB / 1,699.6 MB peak; relative correlation 0.9446; Large preview visibly sharper but not called more accurate |
+| Large full calibration workflow | PASS | 7.517 s; 18/18 artifact hashes; scale 39.99999987; offset 100.00000004; synthetic RMSE 0.00000210 m; R² ≈ 1 |
+| Production browser | PASS | real stadium WebGL, Photo/Height modes, relative legend, working 35°→140° sun control, calibrated 100–140 m legend, zero browser warnings/errors |
+| Responsive 390×844 | PASS | 375 px document and 307 px toolbar/viewer/canvas; no horizontal overflow |
+| Real held-out model metric card | BLOCKED | evaluator is implemented, but no licensed independent aligned RGB–DSM/nDSM truth exists in scope |
+
+The GLB fix separates mesh density from texture sharpness: the source photograph is now a real embedded texture with UVs, normals, and lit PBR material. Height colours and lighting are inspectable display modes only. The synthetic calibration number above remains a software-oracle result and must not be presented as Large-model accuracy.

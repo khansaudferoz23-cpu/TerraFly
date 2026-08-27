@@ -1,6 +1,6 @@
 # TerraFly cookbook
 
-Version 1.0 · final four-day build · 2026-08-26
+Version 1.0 · critical-fix release · 2026-08-27
 
 This cookbook explains what was built, why every major part exists, how the scientific safeguards work, and how the team can defend an AI-assisted implementation honestly.
 
@@ -25,7 +25,7 @@ The application has three scientific states:
 | FastAPI + Pydantic | Typed upload, job, calibration, artifact, and error contracts |
 | Pillow + Rasterio | Safe image decoding and honest geospatial metadata/mask handling |
 | NumPy | Full-resolution float32 relative and metric arrays |
-| Depth Anything V2 Small | Real pretrained relative monocular depth baseline |
+| Depth Anything V2 Large | Real pretrained relative monocular depth baseline; CC-BY-NC-4.0 non-commercial checkpoint |
 | PyTorch + Transformers | CUDA/CPU model execution and checkpoint loading |
 | React + TypeScript | Professional stateful workbench and typed API client |
 | Three.js | Textured 3D mesh, orbit, free flight, wireframe, and raycast points |
@@ -57,7 +57,7 @@ Single-band data is repeated into RGB only so the optical model can execute. The
 
 ## Step 2 — estimate relative structure
 
-`backend/terrafly/inference/depth_anything_v2.py` loads `depth-anything/Depth-Anything-V2-Small-hf`, records its revision, prefers CUDA, and recovers on CPU after CUDA out-of-memory. TerraFly preserves the raw prediction first. The adapter declares it inverse depth/proximity—larger means closer—and, for a near-nadir scene, maps it directly to higher relative surface after one 2nd–98th percentile normalization. There is no extra inversion.
+`backend/terrafly/inference/depth_anything_v2.py` defaults to `depth-anything/Depth-Anything-V2-Large-hf`, records its resolved revision, prefers CUDA, and recovers on CPU after CUDA out-of-memory. TerraFly preserves the raw prediction first. The adapter declares it inverse depth/proximity—larger means closer—and, for a near-nadir scene, maps it directly to higher relative surface after one 2nd–98th percentile normalization. There is no extra inversion. Large improves backbone capacity, but it does not by itself prove remote-sensing height accuracy.
 
 Large images use `inference/tiling.py`. Overlapping crops cannot be normalized independently because monocular depth has arbitrary scale and offset. TerraFly aligns tile overlaps with a positive affine relation, feather-blends them, and normalizes only the complete surface. Tile count and memory are bounded.
 
@@ -93,10 +93,11 @@ The `.npy` files from the related SAC IR-colorization repository are not missing
 
 - Orbit is for whole-scene inspection and A/B raycast samples. Before calibration they are relative; after a pass they read the metric analysis grid.
 - First-person is free flight: mouse look, W/A/S/D, Q/E vertical movement, Shift boost, and Escape release.
-- Texture and Wireframe reveal two interpretations of the same display geometry. Steep triangles always use a neutral wall material, because a top-down photograph has no genuine façade pixels to project there.
+- Photo and Height colours reveal two interpretations of the same display geometry. Height colours include a visible numeric legend labelled as relative values or metres. Wireframe can be overlaid in either mode. Steep triangles always use a neutral wall material, because a top-down photograph has no genuine façade pixels to project there.
+- Sun azimuth rotates the directional light so surface normals and relief can be inspected; it never modifies height values.
 - Structures adds a Bhuvan-style visual extrusion layer. It is off by default, can include trees or miss roofs, and never changes scientific values.
 - Vertical exaggeration defaults to 1.4× and changes display vertices only; it never changes the saved numeric array.
-- The GLB uses the processed display grid. Mild faces keep embedded scene colour; steep faces use neutral material to prevent vertical texture streaks. It is portable but not full-resolution or metric.
+- The GLB uses the processed display grid. It embeds the source PNG, maps it through UVs, exports smooth unit normals, and uses lit PBR materials. Mild faces keep the photograph; steep faces use neutral material to prevent vertical texture streaks. It is portable but not full-resolution or metric.
 
 ## Step 5 — calibrate without cheating
 
@@ -148,8 +149,10 @@ Real evaluation needs independently surveyed, co-registered height truth with a 
 - GeoTIFF CRS/transform/NoData without false vertical claims;
 - tile coverage/alignment/blending/refusal;
 - GLB container, geometry, colour, orientation, and non-metric metadata;
+- embedded GLB texture, UV corner orientation, unit normals, lit PBR materials, and absence of baked `COLOR_0`/unlit output;
 - inverse-depth/depth convention mapping and raised-roof-above-ground ordering in the exported GLB;
 - viewer top/left orientation and point sampling;
+- height-colour range/legend semantics for relative and metric grids;
 - completed-job cleanup path safety;
 - exact calibration alignment;
 - robust outlier recovery;

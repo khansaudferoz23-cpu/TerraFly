@@ -91,7 +91,7 @@ def create_bundle(
     create_input(source, input_output)
     inspected = inspect_image(input_output.read_bytes(), input_output.name, max_pixels=2_000_000)
     prediction = DepthAnythingV2Adapter(
-        "depth-anything/Depth-Anything-V2-Small-hf", device
+        "depth-anything/Depth-Anything-V2-Large-hf", device
     ).predict(inspected.rgb)
     write_reference(
         prediction.relative_height,

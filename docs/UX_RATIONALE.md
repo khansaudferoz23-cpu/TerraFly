@@ -45,7 +45,7 @@ Those behaviors were preserved.
 - The progress bar and stage labels come from backend state.
 - The selected image is previewed before running.
 - Single-band inputs receive a visible domain warning.
-- Texture, wireframe, vertical display exaggeration, and reset are the only viewer controls because each has a current use.
+- Photo/Height colours, numeric legend, sun direction, wireframe, optional Structures, navigation, display exaggeration, point clearing, and reset are kept because each has a current inspection use.
 - The viewer shows loading and error states instead of silently rendering an empty box.
 - Every downloadable output includes a one-sentence purpose.
 

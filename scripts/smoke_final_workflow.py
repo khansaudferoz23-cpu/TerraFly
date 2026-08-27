@@ -35,7 +35,7 @@ def main() -> int:
             jobs_root=Path(temporary) / "jobs",
             frontend_dist=project_root / "frontend" / "dist",
             model_adapter="depth-anything-v2",
-            model_id="depth-anything/Depth-Anything-V2-Small-hf",
+            model_id="depth-anything/Depth-Anything-V2-Large-hf",
             device=args.device,
         )
         with TestClient(create_app(settings)) as client:

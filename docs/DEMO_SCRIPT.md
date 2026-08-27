@@ -32,9 +32,9 @@ Say:
 ## 2:00–3:20 — inspect in 3D like a drone
 
 1. Orbit with left drag, pan with right drag, and zoom.
-2. Toggle **Texture** and **Wireframe**.
+2. Switch between **Photo** and **Height colours**; point out the numeric `relative — not metres` legend, then toggle **Wireframe**.
 3. Toggle **Structures** and explain that its clean upright objects are a separate Bhuvan-style visual candidate layer, not a DSM correction or building truth.
-4. Move the vertical display slider and state that it changes display only.
+4. Move the vertical display slider and the simulated sun direction; state that both change display only.
 5. Click two points in Orbit; show relative A/B values and pixel coordinates.
 6. Choose **First-person**, click the viewer, mouse-look, fly with W/A/S/D, ascend with E, descend with Q, hold Shift for boost, and press Escape.
 
@@ -61,7 +61,7 @@ Immediately disclose:
 Show the evidence list and explain:
 
 - `.npy` is lossless numeric data; PNG is a visual preview.
-- GLB is portable relative 3D; mild faces carry scene colour and steep faces use synthetic neutral material.
+- GLB is portable relative 3D; it embeds the source image as a real UV texture, exports smooth normals and lit PBR materials, and keeps steep faces synthetic-neutral.
 - Manifest records input, model/device/revision, warnings, and hashes.
 - Metric GeoTIFF preserves CRS, grid, NoData, metre units, datum, and source.
 - Error map is estimate minus reference.

@@ -14,7 +14,11 @@ Projection destroys absolute scale and offset; many differently sized 3D scenes 
 
 ## Which model is real?
 
-`depth-anything/Depth-Anything-V2-Small-hf` at recorded revision `5426e4f0f36572d16453bbda7a8389317b1bef99`. It is a relative monocular depth baseline. The deterministic adapter is test-only, gated by configuration, and visibly labelled.
+TerraFly now defaults to `depth-anything/Depth-Anything-V2-Large-hf`; every job records the resolved checkpoint revision. It is still a general-purpose relative monocular depth baseline, not a remote-sensing height model, and its CC-BY-NC-4.0 checkpoint licence restricts commercial use. The deterministic adapter is test-only, gated by configuration, and visibly labelled.
+
+## What changed in the critical visual repair?
+
+The GLB now embeds the actual source photograph as a PNG, maps it with `TEXCOORD_0`, exports smooth unit `NORMAL` vectors, and uses lit PBR materials. It no longer substitutes baked vertex colours or an unlit extension. In the live viewer, Photo and Height colours are separate modes; Height colours include a visible numeric relative/metre legend, and the sun azimuth control exposes normal and shading quality. Steep faces remain neutral because an overhead photograph contains no genuine façade pixels.
 
 ## How does calibration work?
 
@@ -107,3 +111,7 @@ Real-world height accuracy is not established without independent aligned survey
 ## What would you do next?
 
 Acquire licensed paired optical/DSM or nDSM scenes with masks and vertical metadata; split geographically before tiles; establish baselines; evaluate per land-cover/object class; then consider domain-specific fine-tuning only if the data gate passes.
+
+## Did you report the requested RMSE, MAE, and correlation?
+
+The evaluator and JSON metric-card generator are implemented and tested, but the real model metric card is deliberately marked `BLOCKED` until independent, licensed, aligned held-out RGB–DSM/nDSM truth is acquired. Synthetic calibration-oracle errors are excluded because reporting them as model accuracy would be false evidence.

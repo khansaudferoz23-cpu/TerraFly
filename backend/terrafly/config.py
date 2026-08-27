@@ -16,7 +16,7 @@ class Settings:
     )
     model_adapter: str = os.getenv("TERRAFLY_MODEL_ADAPTER", "depth-anything-v2")
     model_id: str = os.getenv(
-        "TERRAFLY_MODEL_ID", "depth-anything/Depth-Anything-V2-Small-hf"
+        "TERRAFLY_MODEL_ID", "depth-anything/Depth-Anything-V2-Large-hf"
     )
     device: str = os.getenv("TERRAFLY_DEVICE", "auto")
     max_upload_bytes: int = int(os.getenv("TERRAFLY_MAX_UPLOAD_BYTES", str(25 * 1024 * 1024)))

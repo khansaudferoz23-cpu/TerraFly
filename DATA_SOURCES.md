@@ -10,8 +10,8 @@ The final release also includes a reproducible synthetic calibration pair:
 
 | File | SHA-256 | Role |
 |---|---|---|
-| `terrafly_calibration_demo_input.tif` | `f3d2a85fdcd6a6673d42e4762b5e778222fbd4199e8f05091f56a3b87fda2091` | 480×320 RGB GeoTIFF input with EPSG:32643 and a fixed affine grid |
-| `terrafly_calibration_demo_reference.tif` | `a7888e944436c775759449ce52cc3a89e1c313f5397d6ba3c50d2e3bd1d7aef` | Aligned synthetic software oracle defined as `40 × relative + 100`, with 12 training-only outliers |
+| `terrafly_calibration_demo_input.tif` | `f3d2a85c934434ba3f19196a6d3357eee2b6be4d7cc412631edea0ac11e62091` | 480×320 RGB GeoTIFF input with EPSG:32643 and a fixed affine grid |
+| `terrafly_calibration_demo_reference.tif` | `64b22294ad5200a3659f7ee96e6b9b4924e3609791e7f545c3b3f0c00dd41e0b` | Large-model-aligned synthetic software oracle defined as `40 × relative + 100`, with 12 training-only outliers |
 | `terrafly_calibration_demo_metadata.json` | Reproducibility record | Generator inputs, model revision/device, hashes, affine relation, and exact disclaimer |
 
 This pair is allowed only for software demonstration: it proves grid validation, robust fitting, held-out evaluation, state transitions, artifact integrity, and GeoTIFF metadata. It is not independently surveyed evidence and cannot establish real-world height accuracy.
@@ -54,10 +54,12 @@ Depth Anything V2 was not validated here for TIR. TerraFly repeats readable sing
 
 ## Model
 
-- Checkpoint identifier: `depth-anything/Depth-Anything-V2-Small-hf`
+- Default checkpoint identifier: `depth-anything/Depth-Anything-V2-Large-hf`
 - Intended role: relative monocular depth only.
 - Weight files are downloaded to local caches and ignored by Git.
-- Verified checkpoint revision: `5426e4f0f36572d16453bbda7a8389317b1bef99`.
+- Verified checkpoint revision: `7581137eff8d4e94f6e796d3baea0e9fa79b22d2`.
+- Verified `model.safetensors`: 1,341,322,868 bytes; SHA-256 `4e01e34ed5549b529b70b92d53226bc370f03041977b390d3dde45d47f516cf9`.
+- Checkpoint licence: CC-BY-NC-4.0 according to the official model card; current use is non-commercial evaluation only.
 
 ## Future training gate
 

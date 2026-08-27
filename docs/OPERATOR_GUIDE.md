@@ -75,10 +75,11 @@ This is free-flight inspection. It does not collide with or walk on the surface.
 
 ### Other viewer controls
 
-- **Texture:** toggles the original scene colour on the mesh.
+- **Photo / Height colours:** switches between the sharp source-photo texture and a green-to-red height view. The fixed legend says either `relative — not metres` or calibrated metres and shows minimum, midpoint, and maximum values.
 - **Wireframe:** exposes the triangles used by the browser surface.
 - **Structures:** shows/hides optional upright footprint extrusions inferred from local relative-height contrast. This Bhuvan-style visual layer may include trees or miss roofs and never changes the DSM.
-- **Vertical display:** changes only visual exaggeration from 0.2× to 6×. It never edits the saved `.npy` values.
+- **Vertical display:** changes only visual exaggeration from 0.2× to 4×. It never edits the saved `.npy` values.
+- **Sun direction:** rotates the simulated directional light so normals and surface relief can be checked under different illumination without changing geometry or measurements.
 - **Clear points:** removes A/B markers.
 - **Reset:** restores the camera; it does not rerun the model.
 
@@ -130,7 +131,7 @@ The full check additionally runs the real model and the entire calibration demo,
 - Progress reaches **Complete · 100%**.
 - The textured 3D model appears without a red error.
 - Orbit, zoom, pan, First-person, Q/E, and Shift boost respond.
-- Texture, Wireframe, and Structures visibly toggle. Structures starts off and does not alter the DSM.
+- Photo/Height colours, Wireframe, and Structures visibly toggle. Height colours show the correct numeric legend; Structures starts off and does not alter the DSM.
 - Two orbit clicks show relative A/B before calibration and metric elevation/difference after a pass.
 - Provenance shows model revision, device, input hash, and CRS.
 - Every evidence link downloads a real file; unavailable files are not shown.

@@ -4,7 +4,7 @@ Read this before presenting the project. The goal is not to memorize code; it is
 
 ## The 30-second explanation
 
-TerraFly accepts one PNG, JPEG, or GeoTIFF. It validates the file and runs Depth Anything V2 Small, which estimates **relative monocular depth**, not physical elevation. TerraFly creates a 0–1 surface and an interactive 3D inspection view. A georeferenced run may then be calibrated only with independent vertical evidence. Robust scale/offset fitting and held-out quality gates decide whether separate metric GeoTIFF/`.npy` files exist; after a pass, A/B inspection reads a separate metric analysis grid while the display geometry remains normalized.
+TerraFly accepts one PNG, JPEG, or GeoTIFF. It validates the file and defaults to Depth Anything V2 Large, which estimates **relative monocular depth**, not physical elevation. TerraFly creates a 0–1 surface and an interactive 3D inspection view. A georeferenced run may then be calibrated only with independent vertical evidence. Robust scale/offset fitting and held-out quality gates decide whether separate metric GeoTIFF/`.npy` files exist; after a pass, A/B inspection reads a separate metric analysis grid while the display geometry remains normalized.
 
 ## Request flow
 
@@ -16,7 +16,7 @@ FastAPI validation ── rejects unsafe name/format/size/pixel count
   │
   ├─ records image metadata, hash, CRS/transform when present
   ▼
-Inference adapter ── Depth Anything V2 Small on CUDA, CPU fallback
+Inference adapter ── Depth Anything V2 Large on CUDA autocast, CPU/OOM fallback
   │ large input: bounded overlap tiles → affine align → feather blend
   ▼
 Raw output ── preserve `.npy` → apply declared convention once → relative 0–1 surface
@@ -52,7 +52,7 @@ A GeoTIFF can add a coordinate reference system, pixel size, map position, and b
 | `relative_grid.json` | Canonical downsampled surface values, maximum 192×192 | Relative A/B sampling and metric-grid alignment | The visibly cleaned mesh or full-resolution result |
 | `display_grid.json` | Separate RGB-guided, outlier-cleaned, conservatively roof-flattened, slope-bounded relative values | Keeps the heightfield readable without changing analysis | A scientific DSM, calibration input, or measurement source |
 | `reconstructed_structures.json` | Convex raised-object candidates derived from local relative contrast | Optional Bhuvan-style upright visual layer | Semantic buildings, surveyed geometry, or a DSM edit |
-| `relative_surface.glb` | Display-grid GLB 2.0 mesh: scene colours on mild faces and neutral material on steep faces | Portable anti-streak 3D inspection in compatible tools | Metric or full-resolution elevation |
+| `relative_surface.glb` | Display-grid GLB 2.0 mesh: embedded source PNG, UVs, smooth normals, PBR surface material, and neutral steep faces | Sharp, lit, anti-streak 3D inspection in compatible tools | Metric or full-resolution elevation |
 | `job.json` | Live persisted job state | Lets progress survive separate API requests | Final immutable evidence |
 | `job_manifest.json` | Final input/model/warning/artifact record | Reproducibility and audit trail | A secret or credential file |
 | `calibration_reference.tif` | Exact submitted aligned DSM evidence | Reproduce the gate decision and its source hash | Automatically trustworthy ground truth |
@@ -68,7 +68,7 @@ The web UI always offers preview, relative numeric surface, raw model output, he
 
 ### Real adapter
 
-`DepthAnythingV2Adapter` loads `depth-anything/Depth-Anything-V2-Small-hf`, records its exact revision, prefers CUDA, and falls back to CPU after a CUDA out-of-memory error. It preserves the raw output, declares it `inverse_depth_or_proximity`, and maps larger/closer values directly to higher relative surface for near-nadir scenes after one robust global normalization. It also warns that this is not metric and that global perspective tilt may remain.
+`DepthAnythingV2Adapter` defaults to `depth-anything/Depth-Anything-V2-Large-hf`, records its exact revision, prefers CUDA autocast, and falls back to CPU after a CUDA out-of-memory error. It preserves the raw output, declares it `inverse_depth_or_proximity`, and maps larger/closer values directly to higher relative surface for near-nadir scenes after one robust global normalization. It also warns that this is not metric and that global perspective tilt may remain. Large is still a general-purpose model; see `docs/MODEL_UPGRADE_EVALUATION.md` for domain-adaptation and real-benchmark status.
 
 When an image exceeds the configured trigger, the adapter predicts overlapping tiles. Because tile crops can have different arbitrary depth scale and offset, overlap values fit a positive affine alignment before feather blending. Only the complete blended raw surface is normalized. Tile count, size, overlap, and mode are written to the job configuration.
 
@@ -195,5 +195,5 @@ If an answer is unclear, open the named source file in `FILE_GUIDE.md` and trace
 2. Use Orbit for left-drag rotate, right-drag pan, wheel zoom, and A/B point comparison.
 3. Use First-person for mouse-look, `W/A/S/D`, `Q/E`, Shift boost, and `Esc` release.
 4. Run the bundled GeoTIFF/reference pair and say “synthetic software oracle” before showing the near-zero error.
-5. Double-click `Check-TerraFly.cmd`, and know that `scripts\verify.ps1 -Full` adds the real model, 17 artifact hashes, metric analysis-grid verification, and metric GeoTIFF inspection.
+5. Double-click `Check-TerraFly.cmd`, and know that `scripts\verify.ps1 -Full` adds the real model, 18 artifact hashes, metric analysis-grid verification, and metric GeoTIFF inspection.
 6. If asked for the final release proof, open `handoff/FINAL_TEST_REPORT.md`; if asked how anything works, open `docs/cookbook/TERRAFLY_COOKBOOK.md`.

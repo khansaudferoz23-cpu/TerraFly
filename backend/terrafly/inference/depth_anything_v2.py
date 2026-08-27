@@ -9,7 +9,7 @@ from .tiling import predict_tiled
 
 
 class DepthAnythingV2Adapter:
-    """Lazy real-model adapter for the Apache-2.0 Depth Anything V2 Small checkpoint."""
+    """Lazy real-model adapter for a declared Depth Anything V2 checkpoint."""
 
     def __init__(
         self,
