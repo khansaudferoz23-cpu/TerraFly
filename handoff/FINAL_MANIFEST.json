@@ -1,8 +1,8 @@
 {
   "schema_version": "1.0",
   "milestone": "TerraFly 1.0 final release",
-  "generated_at": "2026-08-27T15:17:59.558667+00:00",
-  "git_commit": "da836981ad359cb60a36e3ab73a2c3a79fd2fdbb",
+  "generated_at": "2026-08-27T17:06:33.238417+00:00",
+  "git_commit": "c57b6d8d237baece8d492ecb0a8c171bf36ca183",
   "environment": {
     "os": "Windows-11-10.0.26200-SP0",
     "python": "3.12.13",
@@ -29,9 +29,11 @@
     "weights_included": false
   },
   "tests": {
-    "backend": "PASS (37)",
-    "frontend": "PASS (9)",
+    "backend": "PASS (40)",
+    "frontend": "PASS (10)",
     "frontend_build": "PASS",
+    "source_dem_terrain": "PASS (alignment, overlap gate, metre preservation, NoData, provenance, mountain rendering)",
+    "bundled_terrain_smoke": "PASS (15 artifacts)",
     "real_cpu": "PASS",
     "real_cuda": "PASS",
     "real_cuda_api": "PASS",
@@ -75,8 +77,8 @@
     },
     {
       "path": "BUILD_LOG.md",
-      "bytes": 17949,
-      "sha256": "636daffa01b2c9533e6d1e40cb7bb3113cc7db7738cba5598ebc72007c0f3c85"
+      "bytes": 18933,
+      "sha256": "b1452242a8b1f6f131c03c3be23228324d7923246eff440f012292e4e7f3eb42"
     },
     {
       "path": "Check-TerraFly.cmd",
@@ -85,8 +87,8 @@
     },
     {
       "path": "DATA_SOURCES.md",
-      "bytes": 5034,
-      "sha256": "7abc0a4286fd6ccbb337cce55e3899db595cf8788ea3dc75a291938b93c85148"
+      "bytes": 6568,
+      "sha256": "bee888900510685fcdd7284abb5f861ff81b903007cd560b61e3e5dd2fc4450a"
     },
     {
       "path": "DECISIONS.md",
@@ -95,8 +97,8 @@
     },
     {
       "path": "FILE_GUIDE.md",
-      "bytes": 16727,
-      "sha256": "a6e662f9e13a29fb97ecf5dfe3d4e44bf67f4df26ab59dc4d37ebaff02fe0425"
+      "bytes": 18014,
+      "sha256": "4561fce14fe084404e1b45b69971ffae730c960757c9e775af96483e50d40cc8"
     },
     {
       "path": "FOUR_DAY_PLAN.md",
@@ -110,23 +112,23 @@
     },
     {
       "path": "LIMITATIONS.md",
-      "bytes": 4847,
-      "sha256": "7c562d4d6d9f1e2011d712a58d40735d1098f8e0a24f48743af48a538420be81"
+      "bytes": 5612,
+      "sha256": "fc96b60d15127075e88905a4acc4a67f45c505a3607b6d180fd3f305e9464f02"
     },
     {
       "path": "PROJECT_STATUS.md",
-      "bytes": 14535,
-      "sha256": "549f4669972890fd04e718703fecb1c923352897b06ae21c546416891525af14"
+      "bytes": 16242,
+      "sha256": "64c54685e746182eb8500ff46deac96feeea4095e4b8110cc6224435deb5cf77"
     },
     {
       "path": "README.md",
-      "bytes": 7399,
-      "sha256": "4f87081490000203af304bf79977e1bff5a304193f882bda7f1a9049ae197e82"
+      "bytes": 9581,
+      "sha256": "14c0b38541e50bfc0ce89888209aeb49ce12a44e4aa2fee28786756b2c30a19b"
     },
     {
       "path": "RESULTS.md",
-      "bytes": 10563,
-      "sha256": "4a0fe5e9d087a7b9886960ed3bc40c09feca1b23d1d926dbb95ed7868a9528be"
+      "bytes": 11954,
+      "sha256": "17e159b934b030239695f2aab6d218e43ca80f42bf23953e5d463e1a683168bb"
     },
     {
       "path": "Start-TerraFly.cmd",
@@ -145,13 +147,13 @@
     },
     {
       "path": "backend/terrafly/artifacts.py",
-      "bytes": 35248,
-      "sha256": "6aa4eb51041819a7e41878aa8251bd6120e1d9683869fcda44a2ec77a14f8681"
+      "bytes": 37412,
+      "sha256": "6327075bf69bd061e18568e8822848416d9e604a8595b8c284ba94360ed1c62a"
     },
     {
       "path": "backend/terrafly/calibration.py",
-      "bytes": 22610,
-      "sha256": "5b53cddb51da278e9608e43b538ae6eb052fbb8a0df8dbe046c6350ebb09f394"
+      "bytes": 22656,
+      "sha256": "ebce52396ad95eb1d5e9b035ee09913046d67ffd9ae8378e28c0dc0e58104efc"
     },
     {
       "path": "backend/terrafly/config.py",
@@ -210,8 +212,8 @@
     },
     {
       "path": "backend/terrafly/main.py",
-      "bytes": 7968,
-      "sha256": "702653aaa30e40da6f9e4a34e1f6184c707973c69682081f61f02ffd59b5dccf"
+      "bytes": 12088,
+      "sha256": "d98c0f8ecc316fdafd1ea0a3d2d8ca3182ff68de60171e40a3c2ada819f1286c"
     },
     {
       "path": "backend/terrafly/pipeline.py",
@@ -220,8 +222,13 @@
     },
     {
       "path": "backend/terrafly/schemas.py",
-      "bytes": 2199,
-      "sha256": "4b5a29a17982e03bbb1ca9d19c6457d9477d2b0a24af6750b07d512be4c5790c"
+      "bytes": 2243,
+      "sha256": "c8886da798c8b02a7cb5916773306a5ec7111211461a62bd87573f5b1f648f2d"
+    },
+    {
+      "path": "backend/terrafly/terrain.py",
+      "bytes": 15652,
+      "sha256": "8f16532e82dea311213d63c55ae7c671dd285ee823920d5137bb32f66531684f"
     },
     {
       "path": "backend/tests/__init__.py",
@@ -240,8 +247,8 @@
     },
     {
       "path": "backend/tests/test_api.py",
-      "bytes": 5618,
-      "sha256": "098df6be6243331e9ff5b511ad05508e43a151bf98816276fbf12dc5351fdc68"
+      "bytes": 5647,
+      "sha256": "d94ea670bffd91536e7f9573cf65645ba42d9c5f1499eea804e527c252aca821"
     },
     {
       "path": "backend/tests/test_artifacts.py",
@@ -264,6 +271,11 @@
       "sha256": "919a3aa6b9e8c9b81a4479e52e93c13c153a16cf19bceb9e155befaf54202956"
     },
     {
+      "path": "backend/tests/test_terrain.py",
+      "bytes": 6983,
+      "sha256": "466cd298f2e627eb67a801a3f03964b5c2eacdbac1ea3dc82d12d2d3001c26eb"
+    },
+    {
       "path": "backend/tests/test_tiling.py",
       "bytes": 2258,
       "sha256": "664b244b361ecc039a55835e443e3a82af072a6326eeb485ca42c16b7389d85c"
@@ -275,13 +287,13 @@
     },
     {
       "path": "docs/DEMO_SCRIPT.md",
-      "bytes": 4895,
-      "sha256": "4cc5f85d48ebd31e52d627431d8b75aa0657a70e6b0d9078b50d7b409152c889"
+      "bytes": 4545,
+      "sha256": "ce069d65b12eb03214a42951d0351594650b113ebeb8f89b83851f7c24c8bdec"
     },
     {
       "path": "docs/JUDGE_QA.md",
-      "bytes": 9303,
-      "sha256": "90dfb44c65842c4a3f487bc6fc1ee059b10073f9c8754e4e3b0b2fa8e8767f58"
+      "bytes": 11092,
+      "sha256": "e16e7cc6923e00536a4698ffcc50e3fbef5970319d13c4ae8a1c2c282c5d96b0"
     },
     {
       "path": "docs/MODEL_METRIC_CARD.md",
@@ -295,8 +307,8 @@
     },
     {
       "path": "docs/OPERATOR_GUIDE.md",
-      "bytes": 8233,
-      "sha256": "1729441b9fc4bf601e69f0577f3f60a0484dd41182f4f25c822c13e8a226b423"
+      "bytes": 9164,
+      "sha256": "32395f39d48693cf1447ad0888499f23431730e8230f671e1e1082150011c05d"
     },
     {
       "path": "docs/PS_REQUIREMENTS_TRACEABILITY.md",
@@ -304,9 +316,19 @@
       "sha256": "fd961d2825f6eb770fbbd5f0d4a579e7c2b824ec3972ef04521c68ac40575ffc"
     },
     {
+      "path": "docs/REAL_TERRAIN_DATA_GUIDE.md",
+      "bytes": 3119,
+      "sha256": "55b2f59381a15f912a4c4bb1afd69a79157bbb16c71bebba66f86ddeb8e7697a"
+    },
+    {
       "path": "docs/TEAM_TECHNICAL_GUIDE.md",
       "bytes": 15622,
       "sha256": "4010a626dce7c57c18623de44be9e6ef778ffd57f4937fc2e91cacce493cd2fd"
+    },
+    {
+      "path": "docs/TRAINING_ROADMAP.md",
+      "bytes": 4240,
+      "sha256": "5d3f07b7326ee9886d57b0918851e9978b9177f98f59597e0caf58946de61d08"
     },
     {
       "path": "docs/UX_RATIONALE.md",
@@ -340,13 +362,13 @@
     },
     {
       "path": "frontend/src/App.test.tsx",
-      "bytes": 1175,
-      "sha256": "8a1f9c1a6380086b906125b1c2ef004c9de40778be037b3d686a22d8005ed855"
+      "bytes": 2470,
+      "sha256": "47cd972e0606f58514930e55b0442e5e8db0357e52ddc6c7bef7ebc172edbf93"
     },
     {
       "path": "frontend/src/App.tsx",
-      "bytes": 27436,
-      "sha256": "fdd4a61e7592d23dd8daae00c96a89193e872913247266ff5d17e64651176706"
+      "bytes": 34553,
+      "sha256": "47b1a57769bc6164ea81c4c21551e6679b328a494c3a7393dde3b864b8486791"
     },
     {
       "path": "frontend/src/SurfaceViewer.test.ts",
@@ -355,13 +377,13 @@
     },
     {
       "path": "frontend/src/SurfaceViewer.tsx",
-      "bytes": 20441,
-      "sha256": "337496d94888c23ab6d809ae0bd26c557df2d810f09042c46f4966e58f9454c0"
+      "bytes": 20722,
+      "sha256": "601eaec92202b557219c875a4a6138f90a7e9f86170b6f50c1771ab3b8c28269"
     },
     {
       "path": "frontend/src/api.ts",
-      "bytes": 1892,
-      "sha256": "64cb6255f917cc7a92157c185f67e0bc1c39cbb1aaf9a1a9ab5a93396cf98a2f"
+      "bytes": 2740,
+      "sha256": "0cdfdb6f6c95326f96df59ba9f204d4bf0e27dc0e2817163612e10011f7a2aa3"
     },
     {
       "path": "frontend/src/main.tsx",
@@ -370,13 +392,13 @@
     },
     {
       "path": "frontend/src/styles.css",
-      "bytes": 18651,
-      "sha256": "6a92775d4cbf96ca9a3b72a493c80bc3896fc3e835aea20509ca1e8651603de2"
+      "bytes": 20802,
+      "sha256": "05eff578ddb27892efd94f665c1c9f09aa888b4e9c3f1769c388f02b74fb6324"
     },
     {
       "path": "frontend/src/surfaceGeometry.ts",
-      "bytes": 8844,
-      "sha256": "6efebf85da97123561642575b1b759e6b78c9d4e77f929f46bd9fbc15fa84ec5"
+      "bytes": 8877,
+      "sha256": "45f55b885e61ee8ffe6c0474c8f23fbc00b0a34c1242b1c85d672c4fc06af512"
     },
     {
       "path": "frontend/src/test-setup.ts",
@@ -385,8 +407,8 @@
     },
     {
       "path": "frontend/src/types.ts",
-      "bytes": 1267,
-      "sha256": "4314f22f02aa58d51044dadd057887df969f197c9695905efb30e16740a899c7"
+      "bytes": 1289,
+      "sha256": "d5526a0d1c08ed6bddca89e583d248543812c532c43ab50fb0f04352faaa3a7d"
     },
     {
       "path": "frontend/tsconfig.app.json",
@@ -460,8 +482,8 @@
     },
     {
       "path": "handoff/FINAL_TEST_REPORT.md",
-      "bytes": 5792,
-      "sha256": "e9f21b1ab0cc74d27ba992aaa022624825c326db909fb4d551a6fe102646efeb"
+      "bytes": 6971,
+      "sha256": "ac922a30a418191621daba88518204c701c2e80e82ce5c3d794a9b160782dfee"
     },
     {
       "path": "pyproject.toml",
@@ -480,8 +502,8 @@
     },
     {
       "path": "sample_data/README.md",
-      "bytes": 1061,
-      "sha256": "b53eb8d00bd764e4d04cd915dd872a22752fc938a7b7493f9fedbe29b3173fb0"
+      "bytes": 1852,
+      "sha256": "f464cf5943dd18d11f17aa2c1ec42146cefd8756ece0063787bcce95d34646c2"
     },
     {
       "path": "sample_data/terrafly_calibration_demo_input.tif",
@@ -504,6 +526,21 @@
       "sha256": "b3edde0a3336da667ea23b0a61eac4623a53211d140b2e4a2bcaaf6d0aa77cb0"
     },
     {
+      "path": "sample_data/terrafly_terrain_demo_dem.tif",
+      "bytes": 197091,
+      "sha256": "78c4d1189aa16b6d03f5e87d3817cdf2321560947daf750d309c655512b1f2d9"
+    },
+    {
+      "path": "sample_data/terrafly_terrain_demo_imagery.tif",
+      "bytes": 501281,
+      "sha256": "0de9577881c36303762c34bf6c8ee2607afc1b48eee9c08e71db31d0b7204210"
+    },
+    {
+      "path": "sample_data/terrafly_terrain_demo_metadata.json",
+      "bytes": 554,
+      "sha256": "38181defbabb56d44aa6753966dbcc3ed1810cfb8ec774c7293a8bb58855de11"
+    },
+    {
       "path": "scripts/benchmark_height_model.py",
       "bytes": 6481,
       "sha256": "6aa6574123e833f3aa19f1b3c4085231032be3d22332059b1030a1496821037a"
@@ -520,13 +557,18 @@
     },
     {
       "path": "scripts/create_handoff_manifest.py",
-      "bytes": 5013,
-      "sha256": "d15248a7ea34c4b3e8c69695d530b6ac61128110002d875dfcf2b3bab37b609a"
+      "bytes": 5202,
+      "sha256": "e9ade3445a668fe56223d7df49e0f10395c07e0bd544b9709c91ea4020def749"
     },
     {
       "path": "scripts/create_offline_sample.py",
       "bytes": 1450,
       "sha256": "2d34647fdaf46d00d727d82f19a493ae073a73026d8b9ec162c5ce0977ef38a8"
+    },
+    {
+      "path": "scripts/create_terrain_demo.py",
+      "bytes": 4760,
+      "sha256": "9ecab293af1be484ff99f8dd9c6844a13c443e22e245298b3c1fd03df03f5ac3"
     },
     {
       "path": "scripts/package_release.ps1",
@@ -554,6 +596,11 @@
       "sha256": "8b2ac92ff8be4a7f6f7226e4fe4fe46eb2ae206a6a8ee0012db7c567d7b57958"
     },
     {
+      "path": "scripts/smoke_terrain_workflow.py",
+      "bytes": 2901,
+      "sha256": "d050355c9bd1431c582594e2757dddce6e378a1fcd54c147fe9aa5b8e62b7988"
+    },
+    {
       "path": "scripts/smoke_tiled_model.py",
       "bytes": 1854,
       "sha256": "ee9d34c0a853a30e97c8c6d06b1975022947fedd100d9c388ed57072ee387081"
@@ -565,8 +612,8 @@
     },
     {
       "path": "scripts/verify.ps1",
-      "bytes": 2426,
-      "sha256": "433642f32ff6a6191ac83755c41d6b9957b33ff8f5ee69ecdf82321573303f28"
+      "bytes": 2527,
+      "sha256": "0e666ab26353fbe92b48f50bd840833cd0beb1e843844eeee2d882c8f1d739fc"
     }
   ]
 }
