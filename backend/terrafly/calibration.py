@@ -224,6 +224,7 @@ def _write_metric_grid(
     metric: np.ndarray,
     *,
     vertical_datum: str,
+    measurement_role: str = "calibrated elevation samples for 3D point analysis",
 ) -> None:
     """Write metric samples on the exact same grid used by the 3D viewer."""
 
@@ -245,7 +246,7 @@ def _write_metric_grid(
                 "orientation": relative_grid["orientation"],
                 "units": "metre",
                 "vertical_datum": vertical_datum,
-                "measurement_role": "calibrated elevation samples for 3D point analysis",
+                "measurement_role": measurement_role,
                 "geometry_source": "relative_grid.json",
                 "values": values,
             },

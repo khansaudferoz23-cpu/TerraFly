@@ -1,0 +1,13 @@
+{
+  "schema_version": "1.0",
+  "scientific_role": "synthetic software demonstration only",
+  "not_real_world_accuracy": true,
+  "imagery": "terrafly_terrain_demo_imagery.tif",
+  "dem": "terrafly_terrain_demo_dem.tif",
+  "source_description": "TerraFly bundled synthetic mountain DEM",
+  "vertical_datum": "TerraFly synthetic demo datum",
+  "crs": "EPSG:32643",
+  "imagery_resolution_m": 10,
+  "dem_resolution_m": 20,
+  "purpose": "Exercise DEM alignment, metric artifacts, texture mapping, and mountain-preserving rendering without external downloads."
+}

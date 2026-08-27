@@ -10,6 +10,7 @@ export type SurfaceGrid = {
   scientific_role?: string;
   numeric_source?: string;
   analysis_grid?: string;
+  wall_delta_threshold?: number;
   values: number[];
 };
 

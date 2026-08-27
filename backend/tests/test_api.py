@@ -100,6 +100,7 @@ def test_capabilities_state_the_metric_contract(client):
         "Relative",
         "Georeferenced Relative",
         "Metric Calibrated",
+        "Metric Source DEM",
     ]
     assert payload["tiled_inference"] is True
     assert payload["tile_size"] > payload["tile_overlap"]

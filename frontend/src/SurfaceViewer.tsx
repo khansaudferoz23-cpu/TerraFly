@@ -11,10 +11,11 @@ type Props = {
   textureUrl: string;
   measurementGridUrl?: string;
   structureLayerUrl?: string;
+  terrainMode?: boolean;
   onPointsChange?: (points: InspectedPoint[]) => void;
 };
 
-export function SurfaceViewer({ gridUrl, analysisGridUrl, textureUrl, measurementGridUrl, structureLayerUrl, onPointsChange }: Props) {
+export function SurfaceViewer({ gridUrl, analysisGridUrl, textureUrl, measurementGridUrl, structureLayerUrl, terrainMode = false, onPointsChange }: Props) {
   const hostRef = useRef<HTMLDivElement>(null);
   const surfaceMaterialRef = useRef<THREE.MeshStandardMaterial | null>(null);
   const wallMaterialRef = useRef<THREE.MeshStandardMaterial | null>(null);
@@ -211,7 +212,7 @@ export function SurfaceViewer({ gridUrl, analysisGridUrl, textureUrl, measuremen
           throw new Error("Height colour grid does not match the display geometry.");
         }
         setHeightLegend(legend);
-        const geometry = createSurface(grid, exaggeration);
+        const geometry = createSurface(grid, exaggeration, grid.wall_delta_threshold ?? undefined);
         geometry.setAttribute("color", new THREE.BufferAttribute(colours, 3));
         const heightMode = surfaceModeRef.current === "height";
         surfaceMaterial.map = heightMode ? null : loadedTexture;
@@ -414,7 +415,7 @@ export function SurfaceViewer({ gridUrl, analysisGridUrl, textureUrl, measuremen
         {viewerStatus === "error" && <div className="viewer-status error" role="alert">The 3D surface could not be loaded.</div>}
         {heightLegend && (
           <div className="height-legend" aria-label={`${heightLegend.units} height colour scale`}>
-            <strong>{heightLegend.units === "metres" ? "Calibrated height" : "Relative height"}</strong>
+            <strong>{terrainMode ? "Source DEM elevation" : heightLegend.units === "metres" ? "Calibrated height" : "Relative height"}</strong>
             <span className="legend-mode">{heightLegend.units}</span>
             <div className="legend-body">
               <div className="legend-gradient" aria-hidden="true" />
@@ -433,7 +434,7 @@ export function SurfaceViewer({ gridUrl, analysisGridUrl, textureUrl, measuremen
           ? "Drag to orbit · right-drag to pan · scroll to zoom · click the surface to compare points"
           : "Click to enter · mouse to look · W/A/S/D move · Q/E down/up · hold Shift for boost · Esc exits"}
       </p>
-      <p className="viewer-help">Steep faces use neutral wall shading so the top-down image is never stretched into vertical drips. Display cleanup does not change measured values.</p>
+      <p className="viewer-help">{terrainMode ? "Measured terrain keeps the optical texture across real slopes. Display normalization and exaggeration do not change DEM measurements." : "Steep faces use neutral wall shading so the top-down image is never stretched into vertical drips. Display cleanup does not change measured values."}</p>
     </div>
   );
 }

@@ -38,6 +38,7 @@ Use this as the answer to “why does this file exist?” Paths are grouped by r
 | `backend/terrafly/pipeline.py` | Enforces the processing-memory budget, orchestrates validation → inference → artifacts, and converts failures into honest job states. |
 | `backend/terrafly/artifacts.py` | Preserves raw/numeric output; writes preview, texture, 16-bit, canonical analysis grid, RGB-guided display grid, separate visual structure candidates, UV-textured/normal-bearing PBR GLB, height/tilt/display diagnostics, and SHA-256 records. |
 | `backend/terrafly/calibration.py` | Validates reference grids/GCPs, robustly fits scale and offset, performs held-out quality gates, preserves NoData, and writes metric/error plus matching viewer-analysis evidence only on pass. |
+| `backend/terrafly/terrain.py` | Validates a source DEM, reprojects/aligns it to optical imagery, preserves metric values/NoData, creates mountain-faithful display geometry, and records provenance without claiming added resolution. |
 | `backend/terrafly/evaluation.py` | Computes masked held-out RMSE, MAE, bias, and Pearson correlation without treating invalid pixels as evidence. |
 | `backend/terrafly/inference/__init__.py` | Marks the inference adapter directory as a package. |
 | `backend/terrafly/inference/base.py` | Defines the common prediction result and adapter interface used by real and test implementations. |
@@ -60,6 +61,7 @@ Use this as the answer to “why does this file exist?” Paths are grouped by r
 | `backend/tests/test_evaluation.py` | Hand-checks real-height metric calculations, invalid-pixel masking, alignment refusal, and insufficient-evidence refusal. |
 | `backend/tests/test_tiling.py` | Proves coverage, overlap blending, affine scale/offset alignment, and maximum-tile refusal. |
 | `backend/tests/test_calibration.py` | Proves reference-DSM pass, outlier robustness, alignment refusal, poor-evidence rejection, GCP validation, metric grid alignment/values, metadata, and hashes. |
+| `backend/tests/test_terrain.py` | Proves source-DEM alignment/resampling, metric artifacts, mountain texture preservation, provenance, and insufficient-overlap refusal. |
 
 ## Frontend: user experience and 3D inspection
 
@@ -99,6 +101,8 @@ Use this as the answer to “why does this file exist?” Paths are grouped by r
 | `scripts/compare_model_variants.py` | Runs Small and Large on the identical scene, saves height previews/numeric arrays, and records runtime, peak VRAM, and non-accuracy behavior comparisons. |
 | `scripts/create_offline_sample.py` | Regenerates the deterministic CC0 orientation/workflow fixture from code. |
 | `scripts/create_calibration_demo.py` | Reproducibly creates the bundled georeferenced input/reference software-oracle pair and its metadata; never claims survey truth. |
+| `scripts/create_terrain_demo.py` | Reproducibly creates the bundled two-resolution synthetic mountain optical/DEM pair. |
+| `scripts/smoke_terrain_workflow.py` | Exercises the complete measured-terrain API and artifact contract without loading an ML model. |
 | `scripts/create_handoff_manifest.py` | Hashes all committed source files into the final handoff manifest and records the verified environment/model/test boundary. |
 
 ## Documentation: team ownership and later evidence
@@ -114,6 +118,8 @@ Use this as the answer to “why does this file exist?” Paths are grouped by r
 | `docs/ARCHITECTURE.md` | Compact diagrams for runtime ownership, state transitions, evidence gating, and file responsibilities. |
 | `docs/DEMO_SCRIPT.md` | Timed 6–8 minute judge demonstration with exact clicks, spoken claims, and fallback path. |
 | `docs/JUDGE_QA.md` | Defensible short answers to scientific, UI, architecture, AI-use, `.npy`, and limitation questions. |
+| `docs/REAL_TERRAIN_DATA_GUIDE.md` | Licensed real-mountain data acquisition, preparation, attribution, and claim boundary. |
+| `docs/TRAINING_ROADMAP.md` | Data-gated DFC23 building footprint, height, boundary, and uncertainty model plan. |
 | `docs/MODEL_UPGRADE_EVALUATION.md` | Records the Large-checkpoint licence/decision, RDAH-Net and Depth2Elevation audit, candidate data, and evidence gate. |
 | `docs/MODEL_METRIC_CARD.md` | Truthful live status of real benchmark evidence; remains BLOCKED until actual held-out data is evaluated. |
 
@@ -127,6 +133,9 @@ Use this as the answer to “why does this file exist?” Paths are grouped by r
 | `sample_data/terrafly_calibration_demo_input.tif` | Small georeferenced RGB input used to exercise the final aligned-reference workflow. |
 | `sample_data/terrafly_calibration_demo_reference.tif` | Pixel-aligned synthetic software oracle for gate/metadata testing only; never real ground truth. |
 | `sample_data/terrafly_calibration_demo_metadata.json` | Reproducibility facts, generator relation, hashes, model revision, and disclaimer for the pair. |
+| `sample_data/terrafly_terrain_demo_imagery.tif` | Bundled synthetic 10 m optical texture for measured-terrain workflow demonstrations. |
+| `sample_data/terrafly_terrain_demo_dem.tif` | Bundled synthetic 20 m source DEM covering the same extent. |
+| `sample_data/terrafly_terrain_demo_metadata.json` | Measured-terrain fixture source/datum and non-real-world declaration. |
 
 The downloaded SAC TIR/RGB preview PNGs are **not committed** here because they belong to a separate challenge repository and no project license was supplied. Their source, hashes, dimensions, and meanings are recorded in `DATA_SOURCES.md`.
 

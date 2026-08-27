@@ -1,91 +1,96 @@
 # TerraFly final demo script
 
-Target length: 6–8 minutes. Rehearse once with `docs/OPERATOR_GUIDE.md` open nearby.
+Target length: 6–8 minutes. Lead with measured mountain terrain, not a boxy city or an unsupported screenshot reconstruction.
 
 ## Before judges arrive
 
-1. Run `Check-TerraFly.cmd`; photograph or keep the PASS result available.
-2. Start TerraFly with `Start-TerraFly.cmd`.
-3. Confirm the app opens at `http://127.0.0.1:8000`.
-4. Keep the two calibration demo GeoTIFFs easy to find under `sample_data`.
-5. Do not depend on internet during the presentation after the model cache is ready.
+1. Run `Check-TerraFly.cmd`; keep the PASS result available.
+2. Start TerraFly with `Start-TerraFly.cmd` and confirm `http://127.0.0.1:8000`.
+3. Keep the two `terrafly_terrain_demo_*.tif` files and the two calibration demo GeoTIFFs easy to find.
+4. If using real terrain, rehearse that exact pair once and keep its source/attribution visible.
+5. Do not depend on internet during the presentation.
 
-## 0:00–0:40 — problem and promise
-
-Say:
-
-> “TerraFly turns one optical image into a traceable relative 3D surface. A single image cannot honestly prove elevation in metres, so metric files stay locked until independent vertical evidence passes held-out quality gates.”
-
-Point to **Output scope**. Explain the three states: Relative, Georeferenced Relative, Metric Calibrated.
-
-## 0:40–2:00 — generate the real result
-
-1. Upload `sample_data\terrafly_calibration_demo_input.tif`.
-2. Select **Generate surface**.
-3. As progress moves, say: validation → preprocessing → real Depth Anything V2 inference → mesh/evidence.
-4. On completion, point out **Georeferenced Relative**, model revision, device, input hash, and CRS.
+## 0:00–0:40 — problem and two honest paths
 
 Say:
 
-> “The CRS locates pixels horizontally. It still does not provide vertical scale or datum, so TerraFly correctly refuses metres here.”
+> “A photograph provides colour but not reliable elevation. TerraFly therefore has two separate workflows. DEM Terrain uses a named elevation source for measured mountains; Photo AI estimates only relative shape until independent calibration passes.”
 
-## 2:00–3:20 — inspect in 3D like a drone
+Point to **DEM Terrain — Recommended** and **Photo AI — Experimental**.
 
-1. Orbit with left drag, pan with right drag, and zoom.
-2. Switch between **Photo** and **Height colours**; point out the numeric `relative — not metres` legend, then toggle **Wireframe**.
-3. Toggle **Structures** and explain that its clean upright objects are a separate Bhuvan-style visual candidate layer, not a DSM correction or building truth.
-4. Move the vertical display slider and the simulated sun direction; state that both change display only.
-5. Click two points in Orbit; show relative A/B values and pixel coordinates.
-6. Choose **First-person**, click the viewer, mouse-look, fly with W/A/S/D, ascend with E, descend with Q, hold Shift for boost, and press Escape.
+## 0:40–2:15 — build the mountain hero result
+
+1. Keep **DEM Terrain** selected.
+2. Upload `sample_data\terrafly_terrain_demo_imagery.tif` as optical texture.
+3. Upload `sample_data\terrafly_terrain_demo_dem.tif` as source DEM.
+4. Source: `TerraFly bundled synthetic mountain DEM`.
+5. Datum: `TerraFly synthetic demo datum`.
+6. Select **Build measured terrain**.
 
 Say:
 
-> “This is a responsive inspection mesh. RGB-guided cleanup calms noisy roofs, and neutral steep faces prevent the top-down photograph from dripping down walls. The untouched `.npy` and analysis grid remain the measurement sources; the GLB and viewer never pretend to be surveyed geometry.”
+> “The texture is 10 metre grid imagery and the DEM is a coarser 20 metre grid. TerraFly aligns the DEM, but explicitly records that resampling does not create higher-resolution evidence.”
 
-## 3:20–5:00 — prove the metric gate
+Immediately disclose that the bundled pair is a synthetic software demonstration. For the final real-world presentation, replace it with the licensed pair prepared through `REAL_TERRAIN_DATA_GUIDE.md`.
 
-1. Upload `terrafly_calibration_demo_reference.tif` in the calibration panel.
-2. Evidence source: `Bundled synthetic software oracle`.
-3. Vertical datum: `Demo benchmark datum`.
-4. Maximum held-out RMSE: `0.5`.
-5. Select **Evaluate and calibrate**.
-6. Show Passed, scale near 40, RMSE near zero, R² near 1, datum, and new metric/error files.
-7. Click a ground-like point then a raised feature. Show calibrated elevation and vertical difference. If the projected-metre input yields horizontal separation, show distance and slope.
+## 2:15–3:45 — inspect metric terrain
+
+1. Orbit and zoom; compare **Photo** and **Height colours**.
+2. Move the simulated sun and show that steep mountain slopes remain textured.
+3. Toggle Wireframe so judges see that the surface is a real height mesh.
+4. Click valley A and ridge B. Show both elevations, vertical difference, horizontal distance, and slope.
+5. Briefly enter First-person mode if time allows.
+
+Say:
+
+> “The DEM controls geometry and metre values; the optical image controls colour. Display normalization and exaggeration never change the saved elevation.”
+
+## 3:45–4:40 — prove provenance
+
+Open the run provenance and evidence bundle. Show:
+
+- Source DEM hash and original file.
+- Aligned metric `.npy` and GeoTIFF.
+- `terrain_alignment_report.json` with both grids, coverage, resampling method, source, and datum.
+- Textured GLB with embedded image, UVs, normals, and lit material.
+
+Say:
+
+> “TerraFly validates file structure and alignment. The named DEM provider remains responsible for source accuracy; we never call resampled 30 metre data ten metre truth.”
+
+## 4:40–5:35 — show the experimental AI boundary
+
+Clear the result and select **Photo AI**. Explain that a screenshot can produce an interesting relative visualization but not Google Earth-quality measured terrain. If time permits, upload `terrafly_synthetic_aerial.png` and generate it.
+
+Point out `relative — not metres`, model revision, device, input hash, and warnings.
+
+Say:
+
+> “This path is useful for rapid visual hypothesis generation. It is not our measured mountain claim.”
+
+## 5:35–6:35 — prove the metric calibration gate
+
+Use the bundled calibration input/reference and follow the form values in `OPERATOR_GUIDE.md`. Show that Photo AI-derived metric files appear only after held-out checks pass.
 
 Immediately disclose:
 
-> “This reference was derived from the output with a known relation and training-only outliers. It proves our robust calibration software, not real-world model accuracy. Real claims require independent surveyed truth.”
+> “This reference was derived from the output with a known relation and training-only outliers. It proves calibration software, not real-world model accuracy.”
 
-## 5:00–6:20 — reproducibility and safety
-
-Show the evidence list and explain:
-
-- `.npy` is lossless numeric data; PNG is a visual preview.
-- GLB is portable relative 3D; it embeds the source image as a real UV texture, exports smooth normals and lit PBR materials, and keeps steep faces synthetic-neutral.
-- Manifest records input, model/device/revision, warnings, and hashes.
-- Metric GeoTIFF preserves CRS, grid, NoData, metre units, datum, and source.
-- Error map is estimate minus reference.
-- Bad/misaligned evidence produces a rejection report and no metric file.
-
-Mention the current backend/frontend counts and real CUDA artifact totals from `handoff/FINAL_TEST_REPORT.md`; do not memorize an older number after changing the artifact contract.
-
-## 6:20–7:00 — AI-assisted development answer
+## 6:35–7:15 — future training answer
 
 Say:
 
-> “We used AI-assisted development and we own the result. We can trace a request through the API, model, artifacts, UI, calibration gate, and tests; explain why every file exists; reproduce the build; and state what the system does not prove.”
+> “Mountains are solved through evidence-backed DEM geometry. Urban photo-only improvement is a separate model-training phase using aligned overhead RGB/SAR, building masks, and nDSM labels split by city. We will not train on unrelated images and height files or on our own predictions.”
 
-End with the limitation and next scientific step: obtain independent, aligned, surveyed remote-sensing ground truth and evaluate spatially held-out real scenes.
+Reference `TRAINING_ROADMAP.md` and the DFC23 data gate.
 
 ## Never say
 
-- “The PNG gives elevation.”
+- “Google Earth generated this for us.”
+- “A screenshot contains true mountain elevation.”
+- “Resampling improves DEM resolution.”
+- “The bundled synthetic pair proves Himalayan accuracy.”
 - “The AI knows building height.”
-- “The synthetic RMSE is our model accuracy.”
-- “The SAC thermal `.npy` files are our height labels.”
-- “The display exaggeration changes the data.”
-- “Calibration passed because the screen turned green.”
+- “The synthetic calibration RMSE is model accuracy.”
 - “Structures are verified buildings.”
 - “TerraFly predicts disasters.”
-
-Use the measured report, artifact files, and gate criteria instead.

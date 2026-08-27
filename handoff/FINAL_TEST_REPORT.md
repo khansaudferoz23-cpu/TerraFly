@@ -9,9 +9,10 @@ Model: `depth-anything/Depth-Anything-V2-Large-hf` revision `7581137eff8d4e94f6e
 | Check | Result | Final observation |
 |---|---:|---|
 | Python dependency consistency | PASS | `pip check`: no broken requirements |
-| Backend scientific/safety suite | PASS | 37 tests, including embedded GLB texture/UV/normals/PBR, canonical/display separation, cleanup, direction, metric registration, and safety gates |
-| Frontend interaction suite | PASS | 9 tests, including relative/metre height-colour semantics plus existing geometry, sampling, and interaction contracts |
-| Strict production build | PASS | TypeScript/Vite passed; JS 807.84 kB, gzip 217.02 kB; non-failing chunk advisory |
+| Backend scientific/safety suite | PASS | 40 tests, including source-DEM alignment/refusal/unit guard, embedded GLB texture/UV/normals/PBR, canonical/display separation, cleanup, direction, metric registration, and safety gates |
+| Frontend interaction suite | PASS | 10 tests, including default measured-terrain submission, relative/metre height-colour semantics, geometry, sampling, and interaction contracts |
+| Bundled terrain smoke | PASS | 640×480 optical texture plus 320×240 metric DEM completed with 15 declared artifacts |
+| Strict production build | PASS | TypeScript/Vite passed; JS 814.62 kB, gzip 218.52 kB; non-failing chunk advisory |
 | npm production audit | PASS | 0 vulnerabilities |
 | PowerShell/CMD entry points | PASS | Reproduced and repaired duplicate `PATH`/`Path` `Start-Process` crash; exact CMD launch, production readiness, browser-open path, parser, and checker passed |
 | Python compilation/diff whitespace | PASS | all backend/scripts compile; `git diff --check` clean |
@@ -53,10 +54,19 @@ The passing artifact set includes `metric_analysis_grid.json`, whose values and 
 
 - Both source and Windows ZIPs were extracted into fresh folders whose names contain spaces.
 - Every tracked source blob matched the committed Git object before the final evidence refresh.
-- All 37 backend tests passed in the repaired source using the prepared test environment; the updated source/Windows archives are generated under `outputs\critical-fix-2026-08-27` after the final commit.
+- All 40 backend tests passed in the repaired source using the prepared test environment; updated source/Windows archives are generated after the final commit.
 - The extracted Windows release contained `frontend\dist` and served both `/` and `/api/health` as TerraFly 1.0.0 on isolated port 8010.
 - The final rerun verifies `handoff\FINAL_MANIFEST.json` entries and both archive checksums. Exact ZIP byte lengths and SHA-256 values are written beside the archives in `TerraFly_FINAL_SHA256.txt`, avoiding a circular archive-hash claim inside the archive itself.
 
 ## Scientific acceptance boundary
 
 This report proves software behavior, the repaired height convention, true embedded-texture/normal/PBR GLB export, canonical/display separation, edge-aware visual cleanup, neutral steep-face handling, the separated structure layer, metric viewer sampling, Large-model execution, and the synthetic calibration oracle. It does not prove real-world height accuracy, semantic building reconstruction, recovered façade imagery, or disaster prediction. The real metric card remains blocked because no compatible independently surveyed remote-sensing height dataset was supplied, and strong scene-wide perspective tilt remains diagnosed rather than corrected.
+
+## Measured mountain workflow acceptance
+
+- PASS — a georeferenced optical image and differently sized georeferenced DEM were aligned, processed, and exposed as `Metric Source DEM`.
+- PASS — the original DEM, aligned float32 values, metre GeoTIFF, exact viewer analysis grid, source/datum labels, alignment report, diagnostics, hashes, and textured terrain GLB were available in the evidence bundle.
+- PASS — metric values and NoData were kept separate from display normalization; reprojection was not described as improving DEM resolution.
+- PASS — mountain mode disabled city-specific roof cleanup, smoothing, structures, and neutral-wall substitution, preserving texture on genuine steep slopes.
+- PASS — browser acceptance showed the measured workflow as the default, a metre elevation legend, a mountain-specific explanation, and 15 evidence artifacts.
+- LIMIT — the included mountain pair is synthetic. Real-world accuracy belongs to the selected DEM product and must be presented with its metadata and limitations.

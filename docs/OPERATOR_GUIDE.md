@@ -27,14 +27,23 @@ If the app does not open, read the launcher message. Logs are in `runtime\logs`.
 
 The setup is large because the real CUDA/CPU ML runtime is several gigabytes. Model weights are not redistributed inside the source release; the real checkpoint is downloaded into the ignored local cache.
 
-## 2. Fastest 3D demonstration
+## 2. Fastest measured mountain demonstration
 
-1. Under **Select an input scene**, choose `sample_data\terrafly_synthetic_aerial.png`.
-2. Select **Generate surface**.
-3. Wait for **Complete · 100%**.
-4. Scroll to **Relative surface analysis**.
+1. Keep **DEM Terrain · Recommended** selected.
+2. Choose `sample_data\terrafly_terrain_demo_imagery.tif` as the optical texture.
+3. Choose `sample_data\terrafly_terrain_demo_dem.tif` as the source DEM.
+4. Enter source `TerraFly bundled synthetic mountain DEM`.
+5. Enter datum `TerraFly synthetic demo datum`.
+6. Select **Build measured terrain** and wait for **Complete · 100%**.
+7. Scroll to **Measured terrain analysis**.
 
-Expected state: **Relative**. That is correct for a PNG. It must not say metres.
+Expected state: **Metric Source DEM**. The texture grid is 10 m and the supplied DEM grid is 20 m; the alignment report must say that resampling did not improve the DEM's native information. The pair is a synthetic workflow demonstration, not evidence of real Himalayan accuracy.
+
+For a real judge scene, follow `docs\REAL_TERRAIN_DATA_GUIDE.md` and rehearse the licensed pair before presentation.
+
+### Photo-only comparison
+
+Select **Photo AI · Experimental**, choose `sample_data\terrafly_synthetic_aerial.png`, and select **Generate relative surface**. Expected state: **Relative**. That is correct for a PNG and it must not say metres.
 
 ## 3. Move around the 3D model
 
@@ -77,7 +86,7 @@ This is free-flight inspection. It does not collide with or walk on the surface.
 
 - **Photo / Height colours:** switches between the sharp source-photo texture and a green-to-red height view. The fixed legend says either `relative — not metres` or calibrated metres and shows minimum, midpoint, and maximum values.
 - **Wireframe:** exposes the triangles used by the browser surface.
-- **Structures:** shows/hides optional upright footprint extrusions inferred from local relative-height contrast. This Bhuvan-style visual layer may include trees or miss roofs and never changes the DSM.
+- **Structures:** appears only for Photo AI and shows/hides optional upright footprint extrusions inferred from local relative-height contrast. This Bhuvan-style visual layer may include trees or miss roofs and never changes the DSM. It is intentionally absent in mountain DEM mode.
 - **Vertical display:** changes only visual exaggeration from 0.2× to 4×. It never edits the saved `.npy` values.
 - **Sun direction:** rotates the simulated directional light so normals and surface relief can be checked under different illumination without changing geometry or measurements.
 - **Clear points:** removes A/B markers.
@@ -113,7 +122,7 @@ For real data, replace the demo reference with an independently sourced single-b
 
 Double-click `Check-TerraFly.cmd`.
 
-Expected final line: **TerraFly verification PASSED**. It checks dependencies, all backend safety/scientific tests, frontend interactions, and the production build.
+Expected final line: **TerraFly verification PASSED**. It checks dependencies, all backend safety/scientific tests, the complete bundled measured-terrain workflow, frontend interactions, and the production build.
 
 ### Full real-model checker
 

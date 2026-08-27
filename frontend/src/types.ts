@@ -1,4 +1,4 @@
-export type ScientificState = "Relative" | "Georeferenced Relative" | "Metric Calibrated";
+export type ScientificState = "Relative" | "Georeferenced Relative" | "Metric Calibrated" | "Metric Source DEM";
 
 export type Artifact = {
   name: string;

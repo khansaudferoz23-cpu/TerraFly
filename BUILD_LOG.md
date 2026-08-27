@@ -134,3 +134,12 @@ Status vocabulary: PASS, FAIL, BLOCKED, SKIPPED.
 - PASS — implemented masked RMSE, MAE, bias, and Pearson evaluation plus a metric-card generator that requires matching GeoTIFF CRS/affine grids for real evidence.
 - PASS — documented the official RDAH-Net code/checkpoint path, Depth2Elevation paper-only boundary, ISPRS candidate datasets/licences, and the blocked real metric card.
 - PASS — final automated gate passed 37 backend and 9 frontend tests plus the strict production build; production desktop/calibrated/phone browser checks logged zero warnings or errors.
+
+## 2026-08-27 — source-DEM terrain release
+
+- Added source-DEM validation, CRS reprojection/alignment, overlap refusal, NoData-safe metric outputs, exact metre viewer sampling, alignment diagnostics, and source provenance.
+- Added a measured-terrain API and default UI workflow while preserving the existing Photo AI path as explicitly relative and experimental.
+- Added a mountain-specific rendering policy: no rooftop flattening, image-guided smoothing, structure overlay, or neutral-wall replacement; vertical exaggeration remains display-only.
+- Added a reproducible synthetic optical/DEM pair, generator, API test coverage, and an end-to-end terrain smoke check.
+- Added `REAL_TERRAIN_DATA_GUIDE.md` and `TRAINING_ROADMAP.md`, with strict boundaries around Google Earth captures, real DEM accuracy, DFC23 terms, geographic splits, and held-out metrics.
+- PASS — final verification: 40 backend tests, terrain smoke with 15 artifacts, 10 frontend tests, and production build.

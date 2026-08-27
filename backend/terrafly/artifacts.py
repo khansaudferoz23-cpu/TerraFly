@@ -109,7 +109,18 @@ def _embedded_texture_png(rgb: np.ndarray, *, maximum_side: int = 2048) -> tuple
     return output.getvalue(), [image.height, image.width]
 
 
-def _write_glb(path: Path, grid: np.ndarray, rgb: np.ndarray) -> None:
+def _write_glb(
+    path: Path,
+    grid: np.ndarray,
+    rgb: np.ndarray,
+    *,
+    scientific_state: str = "Relative",
+    units: str = "relative_0_1",
+    numeric_source: str = "relative_surface.npy",
+    mesh_name: str = "Relative surface",
+    display_only_processing: bool = True,
+    wall_delta_threshold: float = DISPLAY_WALL_DELTA_THRESHOLD,
+) -> None:
     """Write a textured, lit display GLB with neutral synthetic steep faces."""
     rows, columns = grid.shape
     aspect = rows / columns
@@ -127,7 +138,9 @@ def _write_glb(path: Path, grid: np.ndarray, rgb: np.ndarray) -> None:
         np.linspace(1, 0, rows, dtype=np.float32), columns
     )
     normals = _surface_normals(grid).reshape(-1, 3)
-    textured_indices, wall_indices = _surface_triangle_indices(grid)
+    textured_indices, wall_indices = _surface_triangle_indices(
+        grid, wall_delta_threshold=wall_delta_threshold
+    )
     texture_bytes, texture_shape = _embedded_texture_png(rgb)
 
     binary = bytearray()
@@ -247,26 +260,26 @@ def _write_glb(path: Path, grid: np.ndarray, rgb: np.ndarray) -> None:
         ],
         "meshes": [
             {
-                "name": "Relative surface",
+                "name": mesh_name,
                 "primitives": primitives,
                 "extras": {
-                    "scientific_state": "Relative",
-                    "units": "relative_0_1",
+                    "scientific_state": scientific_state,
+                    "units": units,
                     "vertical_scale_metric": False,
                     "orientation": "row 0 is image top; column 0 is image left",
                     "geometry_source": "display_grid.json",
-                    "numeric_source": "relative_surface.npy",
-                    "display_only_processing": True,
+                    "numeric_source": numeric_source,
+                    "display_only_processing": display_only_processing,
                     "embedded_texture": "native source RGB, PNG, maximum side 2048 pixels",
                     "embedded_texture_shape": texture_shape,
                     "normals": "smooth per-vertex central-difference normals",
                     "material_model": "pbrMetallicRoughness",
                     "steep_face_material": "synthetic neutral; aerial colour disabled",
-                    "wall_delta_threshold": DISPLAY_WALL_DELTA_THRESHOLD,
+                    "wall_delta_threshold": wall_delta_threshold,
                 },
             }
         ],
-        "nodes": [{"mesh": 0, "name": "TerraFly relative surface"}],
+        "nodes": [{"mesh": 0, "name": f"TerraFly {mesh_name.lower()}"}],
         "scenes": [{"nodes": [0]}],
         "scene": 0,
     }
@@ -727,6 +740,7 @@ def write_surface_artifacts(
     raw_model_output: np.ndarray,
     conversion_diagnostics: dict[str, object],
     tilt_diagnostics: dict[str, object] | None = None,
+    source_kind: str = "model",
 ) -> list[Artifact]:
     if relative.ndim != 2 or relative.shape != rgb.shape[:2]:
         raise ValueError("Surface and texture dimensions must match.")
@@ -736,7 +750,10 @@ def write_surface_artifacts(
     if raw_model_output.ndim != 2 or raw_model_output.shape != relative.shape:
         raise ValueError("Raw model output and relative height dimensions must match.")
 
-    raw_path = job_dir / "raw_model_output.npy"
+    if source_kind not in {"model", "source_dem"}:
+        raise ValueError("Unsupported surface artifact source kind.")
+    source_dem = source_kind == "source_dem"
+    raw_path = job_dir / ("aligned_source_dem.npy" if source_dem else "raw_model_output.npy")
     np.save(raw_path, raw_model_output, allow_pickle=False)
     surface_path = job_dir / "relative_surface.npy"
     np.save(surface_path, relative.astype(np.float32), allow_pickle=False)
@@ -769,9 +786,21 @@ def write_surface_artifacts(
         ),
         encoding="utf-8",
     )
-    display_grid, display_diagnostics = build_display_grid(
-        grid.astype(np.float32), grid_colours
-    )
+    if source_dem:
+        display_grid = grid.astype(np.float32).copy()
+        display_diagnostics = {
+            "processing_mode": "source_dem_faithful",
+            "numeric_surface_unchanged": True,
+            "outlier_pixels_replaced": 0,
+            "rooftop_regions_flattened": 0,
+            "rooftop_pixels_flattened": 0,
+            "slope_cap_applied": False,
+            "reason": "A supplied DEM is already the geometry source; AI-oriented roof cleanup and smoothing are disabled.",
+        }
+    else:
+        display_grid, display_diagnostics = build_display_grid(
+            grid.astype(np.float32), grid_colours
+        )
     display_grid_path = job_dir / "display_grid.json"
     display_grid_path.write_text(
         json.dumps(
@@ -785,6 +814,7 @@ def write_surface_artifacts(
                 "scientific_role": "display geometry only",
                 "numeric_source": surface_path.name,
                 "analysis_grid": grid_path.name,
+                "wall_delta_threshold": 2.0 if source_dem else DISPLAY_WALL_DELTA_THRESHOLD,
                 "values": display_grid.ravel().tolist(),
             },
             separators=(",", ":"),
@@ -792,23 +822,36 @@ def write_surface_artifacts(
         encoding="utf-8",
     )
     structure_path = job_dir / "reconstructed_structures.json"
-    structure_path.write_text(
-        json.dumps(reconstruct_structure_candidates(display_grid), indent=2),
-        encoding="utf-8",
+    if not source_dem:
+        structure_path.write_text(
+            json.dumps(reconstruct_structure_candidates(display_grid), indent=2),
+            encoding="utf-8",
+        )
+    glb_path = job_dir / ("terrain_surface.glb" if source_dem else "relative_surface.glb")
+    _write_glb(
+        glb_path,
+        display_grid,
+        rgb,
+        scientific_state="Metric Source DEM" if source_dem else "Relative",
+        units="metre measurements; normalized display geometry" if source_dem else "relative_0_1",
+        numeric_source="metric_surface.npy" if source_dem else "relative_surface.npy",
+        mesh_name="Source DEM terrain" if source_dem else "Relative surface",
+        display_only_processing=True,
+        wall_delta_threshold=2.0 if source_dem else DISPLAY_WALL_DELTA_THRESHOLD,
     )
-    glb_path = job_dir / "relative_surface.glb"
-    _write_glb(glb_path, display_grid, rgb)
-    diagnostic_path = job_dir / "height_diagnostics.json"
+    diagnostic_path = job_dir / ("terrain_diagnostics.json" if source_dem else "height_diagnostics.json")
+    source_diagnostic_key = "aligned_source_dem" if source_dem else "raw_model_output"
     diagnostic_path.write_text(
         json.dumps(
             {
                 "schema_version": "1.0",
                 "conversion": conversion_diagnostics,
-                "raw_model_output": {
+                source_diagnostic_key: {
                     "filename": raw_path.name,
                     "shape": list(raw_model_output.shape),
                     "dtype": str(raw_model_output.dtype),
-                    "preserved_before_height_conversion": True,
+                    "preserved_before_height_conversion": not source_dem,
+                    "source_role": "aligned metric DEM used for terrain geometry" if source_dem else "untouched model prediction",
                 },
                 "relative_height": {
                     "filename": surface_path.name,
@@ -819,7 +862,7 @@ def write_surface_artifacts(
                 },
                 "geometry": {
                     "source": display_grid_path.name,
-                    "canonical_numeric_source": surface_path.name,
+                    "canonical_numeric_source": "metric_surface.npy" if source_dem else surface_path.name,
                     "canonical_analysis_grid": grid_path.name,
                     "display_processing_changes_measurements": False,
                     "colour_preview_is_geometry_source": False,
@@ -833,14 +876,13 @@ def write_surface_artifacts(
         encoding="utf-8",
     )
     return [
-        _artifact("raw_model_output", raw_path, "application/octet-stream"),
+        _artifact("source_dem_aligned" if source_dem else "raw_model_output", raw_path, "application/octet-stream"),
         _artifact("numeric_surface", surface_path, "application/octet-stream"),
         _artifact("preview", preview_path, "image/png"),
         _artifact("texture", texture_path, "image/png"),
         _artifact("height_texture", height_path, "image/png"),
         _artifact("surface_grid", grid_path, "application/json"),
         _artifact("display_grid", display_grid_path, "application/json"),
-        _artifact("structure_layer", structure_path, "application/json"),
         _artifact("glb_mesh", glb_path, "model/gltf-binary"),
         _artifact("height_diagnostics", diagnostic_path, "application/json"),
-    ]
+    ] + ([] if source_dem else [_artifact("structure_layer", structure_path, "application/json")])

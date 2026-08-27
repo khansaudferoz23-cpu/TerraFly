@@ -1,10 +1,25 @@
 # TerraFly
 
-TerraFly converts one optical RGB satellite or aerial image into a **relative surface/depth proxy**, preserves geospatial metadata when a GeoTIFF provides it, and renders the result as an inspectable 3D height field.
+TerraFly provides two deliberately separate paths: **DEM Terrain** combines a georeferenced optical image with a supplied elevation model for credible metric mountain terrain, while **Photo AI** converts one optical image into an explicitly relative surface/depth proxy. Both render as inspectable textured 3D height fields and preserve a traceable evidence bundle.
 
 > A PNG or JPG does not contain enough evidence to recover elevation in metres. A georeferenced GeoTIFF adds horizontal location and scale, not a trustworthy vertical scale. TerraFly unlocks metric DSM output only after a documented vertical calibration succeeds.
 
-## Current working path
+## Recommended mountain path: DEM Terrain
+
+Optical GeoTIFF + single-band DEM GeoTIFF → validate source metadata → reproject/resample the DEM onto the optical grid when required → preserve metric values and NoData → normalize a separate display surface → texture and inspect in 3D → export the aligned metric GeoTIFF, `.npy`, GLB, grid, provenance, and alignment report.
+
+This workflow is the default in the interface because it solves the central mountain problem honestly: the DEM supplies geometry and the optical image supplies colour. Reprojection is recorded and never described as improving the DEM's native resolution. AI-oriented roof smoothing and neutral-wall substitution are disabled, so real mountain ridges remain faithful and fully textured. TerraFly validates file structure, spatial coverage, and alignment; it does not independently certify the named DEM's accuracy.
+
+Try it offline with:
+
+- `sample_data/terrafly_terrain_demo_imagery.tif`
+- `sample_data/terrafly_terrain_demo_dem.tif`
+- Source: `TerraFly bundled synthetic mountain DEM`
+- Datum: `TerraFly synthetic demo datum`
+
+The pair is synthetic software evidence, not real-world accuracy evidence. `docs/REAL_TERRAIN_DATA_GUIDE.md` explains how to replace it with licensed Sentinel-2 imagery and NASA SRTM elevation.
+
+## Experimental path: Photo AI
 
 Upload PNG, JPG/JPEG, or GeoTIFF → validate safely → run an interchangeable inference adapter → save a float32 relative array → create 2D/3D display artifacts → inspect provenance and export results.
 
@@ -25,6 +40,13 @@ An optional **Structures** control adds a separate Bhuvan-style visual reconstru
 
 The bundled calibration pair proves software correctness with synthetic truth; it is not a real-world accuracy claim. Real operational use requires trustworthy independently surveyed reference data.
 
+### Why the two paths must remain separate
+
+- DEM Terrain reports metre values because the user supplied a named metric elevation source.
+- Photo AI reports relative 0–1 structure because one photograph cannot establish metre scale or hidden terrain.
+- Photo AI may unlock calibrated metres only when independent held-out evidence passes the existing gate.
+- Building-focused training is a later model-development project; it is not needed to render measured mountain terrain.
+
 ## Final Windows launch
 
 1. Run `scripts\setup.ps1` once in PowerShell. The first setup installs dependencies, builds the interface, and downloads model weights when the first real analysis runs.
@@ -42,13 +64,15 @@ Run `Check-TerraFly.cmd` for the ordinary automated check. For the complete real
 - **Inspect values:** click ground A and roof/terrain B. Relative jobs show relative values; a passing calibration shows elevation and vertical difference in metres. Projected metre CRS inputs also show horizontal distance and slope.
 - **Visual controls:** Photo/Height colours, a numeric relative-or-metre legend, simulated sun direction, Wireframe, optional Structures, vertical display exaggeration, Clear points, and Reset affect inspection only; they never alter the saved numeric array.
 
-The exact bundled metric demo and troubleshooting steps are in `docs/OPERATOR_GUIDE.md`.
+The exact bundled metric demos and troubleshooting steps are in `docs/OPERATOR_GUIDE.md`.
 
 ## Understand before presenting
 
 - `docs/TEAM_TECHNICAL_GUIDE.md`: architecture, outputs, model limits, SAC sample distinction, judge answers, and team learning split.
 - `docs/PS_REQUIREMENTS_TRACEABILITY.md`: official problem-statement requirement-by-requirement implementation and limitation map.
 - `docs/OPERATOR_GUIDE.md`: launch, orbit/drone controls, bundled calibration demo, checks, and troubleshooting.
+- `docs/REAL_TERRAIN_DATA_GUIDE.md`: how to obtain and prepare a licensed real mountain imagery/DEM pair.
+- `docs/TRAINING_ROADMAP.md`: gated DFC23 building-height training plan for the later model phase.
 - `docs/cookbook/TERRAFLY_COOKBOOK.md`: final explain-everything cookbook for the team.
 - `docs/DEMO_SCRIPT.md` and `docs/JUDGE_QA.md`: the presentation sequence and defence answers.
 - `docs/ARCHITECTURE.md`: runtime, state, evidence-gate, and ownership diagrams.
@@ -63,7 +87,7 @@ The exact bundled metric demo and troubleshooting steps are in `docs/OPERATOR_GU
 .\scripts\verify.ps1 -Full
 ```
 
-The first command runs dependency, backend, frontend, and production-build checks. `-Full` also runs the real Depth Anything V2 CUDA/CPU calibration workflow and verifies every declared artifact hash plus metric GeoTIFF metadata.
+The first command runs dependency, backend, frontend, production-build, and bundled measured-terrain workflow checks. `-Full` also runs the real Depth Anything V2 CUDA/CPU calibration workflow and verifies every declared artifact hash plus metric GeoTIFF metadata.
 
 ## Layout
 

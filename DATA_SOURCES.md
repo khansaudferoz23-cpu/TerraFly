@@ -64,3 +64,19 @@ Depth Anything V2 was not validated here for TIR. TerraFly repeats readable sing
 ## Future training gate
 
 Fine-tuning requires aligned RGB, target DSM/DTM/nDSM, valid mask, source-scene identity, units, alignment/resolution metadata, and hashes. Split by geographic scene before cropping. RGB-only inputs do not pass this gate.
+
+## Measured terrain demonstration
+
+The repository includes a generated software-demonstration pair:
+
+| File | Role |
+|---|---|
+| `terrafly_terrain_demo_imagery.tif` | 640×480 georeferenced synthetic optical texture on a 10 m grid |
+| `terrafly_terrain_demo_dem.tif` | 320×240 georeferenced synthetic elevation surface on a 20 m grid |
+| `terrafly_terrain_demo_metadata.json` | generator settings, hashes, grids, source label, datum label, and disclaimer |
+
+This pair intentionally exercises cross-resolution alignment. It is not a satellite scene, surveyed elevation source, or accuracy result.
+
+For a real mountain demonstration, use licensed optical imagery and a DEM that overlaps the same area and whose CRS, grid, vertical datum, resolution, date, and accuracy are documented. Recommended starting points are [Copernicus Sentinel-2 Level-2A](https://documentation.dataspace.copernicus.eu/APIs/SentinelHub/Data/S2L2A.html) for optical imagery and [NASA LP DAAC elevation data](https://www.earthdata.nasa.gov/centers/lp-daac) for SRTM access. Google Earth screenshots are not training or reconstruction inputs; Google’s [Geo usage guidelines](https://about.google/brand-resource-center/products-and-services/geo-guidelines/) apply.
+
+For the later overhead building model, the official [IEEE GRSS Data Fusion Contest 2023](https://www.grss-ieee.org/community/technical-committees/2023-ieee-grss-data-fusion-contest/) is the most relevant starting point. Dataset terms must be reviewed and accepted before download or training.

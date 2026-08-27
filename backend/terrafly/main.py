@@ -14,6 +14,7 @@ from .imaging import SUPPORTED_EXTENSIONS, inspect_image, read_upload
 from .jobs import JobStore
 from .pipeline import estimated_working_bytes, run_job
 from .schemas import Capabilities, GcpCalibrationRequest, JobManifest, JobStatus
+from .terrain import TerrainInputError, inspect_source_dem, run_source_dem_job
 
 
 def create_app(settings: Settings | None = None) -> FastAPI:
@@ -42,7 +43,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             default_model=active_settings.model_id,
             tile_size=active_settings.tile_size,
             tile_overlap=active_settings.tile_overlap,
-            scientific_states=["Relative", "Georeferenced Relative", "Metric Calibrated"],
+            scientific_states=["Relative", "Georeferenced Relative", "Metric Calibrated", "Metric Source DEM"],
         )
 
     @app.post("/api/jobs", response_model=JobManifest, status_code=202)
@@ -63,6 +64,75 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         (store.job_dir(manifest.job_id) / stored_filename).write_bytes(data)
         store.save(manifest)
         background_tasks.add_task(run_job, manifest.job_id, active_settings)
+        return manifest
+
+    @app.post("/api/terrain-jobs", response_model=JobManifest, status_code=202)
+    async def create_terrain_job(
+        imagery: UploadFile,
+        dem: UploadFile,
+        background_tasks: BackgroundTasks,
+        source_description: str = Form(min_length=3, max_length=300),
+        vertical_datum: str = Form(min_length=2, max_length=100),
+        vertical_units: str = Form(default="metre", min_length=1, max_length=20),
+    ) -> JobManifest:
+        imagery_filename, imagery_data = await read_upload(imagery, active_settings.max_upload_bytes)
+        dem_filename, dem_data = await read_upload(dem, active_settings.max_upload_bytes)
+        if Path(imagery_filename).suffix.lower() not in {".tif", ".tiff"}:
+            raise HTTPException(status_code=415, detail="Terrain mode requires a georeferenced optical GeoTIFF.")
+        inspected = inspect_image(imagery_data, imagery_filename, active_settings.max_pixels)
+        if inspected.geospatial is None:
+            raise HTTPException(status_code=400, detail="The optical GeoTIFF needs a CRS for terrain alignment.")
+        try:
+            dem_inspection = inspect_source_dem(dem_data, dem_filename, active_settings.max_pixels)
+        except TerrainInputError as exc:
+            raise HTTPException(status_code=400, detail=str(exc)) from exc
+        accepted_metre_units = {"m", "meter", "meters", "metre", "metres"}
+        if vertical_units.strip().lower() not in accepted_metre_units:
+            raise HTTPException(status_code=400, detail="Terrain mode currently requires DEM elevation values in metres.")
+        reported_units = dem_inspection.metadata.get("reported_vertical_units")
+        if reported_units and str(reported_units).strip().lower() not in accepted_metre_units:
+            raise HTTPException(
+                status_code=400,
+                detail=f"The DEM reports vertical units as {reported_units!r}. Convert its elevation values to metres before upload.",
+            )
+        estimate = estimated_working_bytes(inspected.rgb.shape[1], inspected.rgb.shape[0]) * 2
+        if estimate > active_settings.max_working_bytes:
+            raise HTTPException(
+                status_code=413,
+                detail="The image/DEM pair exceeds the configured processing-memory safety budget.",
+            )
+        source = source_description.strip()
+        datum = vertical_datum.strip()
+        if len(source) < 3 or len(datum) < 2:
+            raise HTTPException(status_code=400, detail="DEM source and vertical datum cannot be blank.")
+        store = JobStore(active_settings.jobs_root)
+        manifest = store.create(imagery_filename, inspected.metadata, inspected.geospatial, inspected.warnings)
+        imagery_suffix = Path(imagery_filename).suffix.lower()
+        dem_suffix = Path(dem_filename).suffix.lower()
+        manifest.input["stored_filename"] = f"input{imagery_suffix}"
+        manifest.input["workflow"] = "source_dem_terrain"
+        manifest.input["dem"] = {
+            **dem_inspection.metadata,
+            "geospatial": dem_inspection.geospatial,
+            "stored_filename": f"source_dem{dem_suffix}",
+        }
+        manifest.calibration = {
+            "method": "source_dem",
+            "status": "pending",
+            "metric_output_allowed": False,
+            "reason": "The source DEM is waiting for spatial alignment checks.",
+            "evidence": {
+                "source_description": source,
+                "vertical_datum": datum,
+                "vertical_units": "metre",
+                "dem_filename": dem_filename,
+                "dem_sha256": dem_inspection.metadata["sha256"],
+            },
+        }
+        (store.job_dir(manifest.job_id) / str(manifest.input["stored_filename"])).write_bytes(imagery_data)
+        (store.job_dir(manifest.job_id) / str(manifest.input["dem"]["stored_filename"])).write_bytes(dem_data)
+        store.save(manifest)
+        background_tasks.add_task(run_source_dem_job, manifest.job_id, active_settings)
         return manifest
 
     @app.get("/api/jobs/{job_id}", response_model=JobManifest)

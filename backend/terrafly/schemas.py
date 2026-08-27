@@ -10,6 +10,7 @@ class ScientificState(StrEnum):
     RELATIVE = "Relative"
     GEOREFERENCED_RELATIVE = "Georeferenced Relative"
     METRIC_CALIBRATED = "Metric Calibrated"
+    METRIC_SOURCE_DEM = "Metric Source DEM"
 
 
 class JobStatus(StrEnum):

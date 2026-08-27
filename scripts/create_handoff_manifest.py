@@ -94,9 +94,11 @@ def main() -> None:
             "weights_included": False,
         },
         "tests": {
-            "backend": "PASS (37)",
-            "frontend": "PASS (9)",
+            "backend": "PASS (40)",
+            "frontend": "PASS (10)",
             "frontend_build": "PASS",
+            "source_dem_terrain": "PASS (alignment, overlap gate, metre preservation, NoData, provenance, mountain rendering)",
+            "bundled_terrain_smoke": "PASS (15 artifacts)",
             "real_cpu": "PASS",
             "real_cuda": "PASS",
             "real_cuda_api": "PASS",

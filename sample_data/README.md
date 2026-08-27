@@ -11,3 +11,11 @@ It is original TerraFly project material released under CC0-1.0. It is not satel
 - `terrafly_calibration_demo_metadata.json` records hashes, model revision, device, equation, and the non-ground-truth warning.
 
 Use these two GeoTIFFs only to demonstrate that TerraFly's calibration, rejection gate, metadata, and metric-artifact plumbing work. The reference is not surveyed, not independent, and not evidence of model accuracy.
+
+## Measured terrain demonstration pair
+
+- `terrafly_terrain_demo_imagery.tif` is a 640×480 synthetic optical texture on a 10 m EPSG:32643 grid.
+- `terrafly_terrain_demo_dem.tif` is a 320×240 synthetic mountain DEM on a 20 m grid covering the same extent.
+- `terrafly_terrain_demo_metadata.json` records the source/datum text and the explicit non-real-world warning.
+
+Select **DEM Terrain**, upload those two files, enter `TerraFly bundled synthetic mountain DEM` as the source and `TerraFly synthetic demo datum` as the datum, then build the terrain. The different grids intentionally exercise TerraFly's recorded reprojection/resampling path. This proves the measured-terrain software workflow and visual geometry; it does not prove accuracy on the Himalayas or any other real location.

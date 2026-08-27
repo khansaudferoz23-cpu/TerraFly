@@ -1,15 +1,18 @@
 # Limitations
 
 - Monocular output is a relative depth-derived surface, not surveyed elevation.
+- DEM Terrain reports elevations from the uploaded source, not independently measured elevations created by TerraFly. Its accuracy, age, surface/terrain definition, void filling, and vertical datum remain properties of the named DEM product.
+- Reprojecting or resampling a coarse DEM onto a finer optical grid improves alignment only; it does not create finer elevation evidence. TerraFly records both native and output grids.
+- DEM Terrain requires at least 90% overlap after alignment. Remaining NoData is preserved in metric artifacts and filled only for continuous display geometry.
 - GeoTIFF georeferencing alone does not supply vertical scale or a vertical datum.
 - The raw checkpoint output is inverse-depth/proximity-like. TerraFly's nearer-means-higher mapping assumes a near-nadir overhead scene; façades, oblique views, water, haze, shadows, and occlusions can still violate that assumption.
 - Monocular perspective can create a dominant image-plane tilt unrelated to terrain. TerraFly measures and warns about it in `height_diagnostics.json` but does not silently subtract a plane or claim it has been corrected.
 - Single-band imagery is repeated into RGB for compatibility. Thermal/TIR is outside the current pretrained model's validated optical domain and receives an explicit demonstration-only warning.
 - Calibration is a single global affine scale and offset. It cannot correct spatially varying model distortion, local relief errors, temporal change, occlusion, or domain shift.
-- The reference-DSM path requires the exact same CRS, dimensions, and affine pixel grid; Day 3 does not reproject or resample evidence.
+- Photo AI's reference-calibration path requires the exact same CRS, dimensions, and affine pixel grid. DEM Terrain is a separate source-data workflow and can transparently reproject/resample its supplied DEM.
 - A pass is only as trustworthy as the reference source, vertical datum, declared RMSE threshold, spatial coverage, and independence of held-out data.
 - The bundled calibration evidence is synthetic and proves software behavior, not real-world satellite/aerial height accuracy.
-- SRTM is not integrated and would be coarse terrain context, not reliable individual building/tree height.
+- SRTM and other source DEMs can now drive terrain geometry, but their native resolution is suitable for broad ridges/valleys—not reliable individual building or tree height.
 - The optional Structures layer is a visual reconstruction from local relative-height components, not semantic building segmentation or measured architecture. It may include vegetation, merge nearby objects, simplify footprints, or miss low-contrast roofs. It never changes the numeric DSM.
 - The real checkpoint is verified locally on CPU and CUDA, but third-party environments and model weights are not redistributed. A new machine needs internet access for first setup/weight download; prepare the cache before going offline.
 - The default Depth Anything V2 Large checkpoint is CC-BY-NC-4.0 according to its official model card. TerraFly uses it for non-commercial evaluation; commercial deployment needs a separate model/licence decision.
@@ -17,7 +20,7 @@
 - Point A/B values remain relative until calibration passes. A passing calibration enables metric elevation and vertical difference from the metric analysis grid. Horizontal distance and slope are reported only for projected CRS inputs whose horizontal units are metres.
 - Tiling reduces memory pressure and aligns overlap scale/offset, but no remote-sensing ground truth is available to quantify whether it improves scientific accuracy.
 - Numeric `.npy` is canonical for the relative result. `relative_grid.json` remains the canonical sampled analysis grid; the visibly cleaned `display_grid.json` and GLB are explicitly display-only. After calibration, measurement readouts use a separate metric grid and full-resolution metric `.npy`/GeoTIFF remain the scientific artifacts.
-- Edge-aware smoothing and conservative rooftop flattening can improve readability but cannot turn a monocular prediction into architectural truth. Neutral steep-face shading prevents stretched aerial pixels; it does not recover real façade imagery. The optional Structures layer is still the only block-style extrusion path.
+- In Photo AI, edge-aware smoothing and conservative rooftop flattening can improve readability but cannot turn a monocular prediction into architectural truth. Neutral steep-face shading prevents stretched aerial pixels; it does not recover real façade imagery. DEM Terrain disables those city-oriented cleanup rules and keeps texture on genuine steep slopes.
 - Height colours and the numeric legend visualize the current relative or calibrated grid; they do not add accuracy. Sun direction changes only the lighting, not the surface.
 - There is no real-world accuracy figure because no compatible independent surveyed ground truth was supplied.
 - GCP calibration is available through the typed API; the minimal UI exposes the aligned-reference workflow rather than an error-prone free-form point editor.

@@ -49,6 +49,13 @@ h1 { max-width: 760px; margin: 0; color: #111917; font-size: clamp(40px, 5.2vw, 
 .section-heading h2 { margin: 0; color: #15201c; font-size: 25px; font-weight: 630; letter-spacing: -.035em; }
 .section-heading > p { max-width: 440px; margin: 0; color: var(--muted); font-size: 12px; line-height: 1.5; text-align: right; }
 
+.workflow-switch { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+.workflow-switch button { display: grid; grid-template-columns: auto 1fr; gap: 5px 14px; padding: 16px 18px; color: var(--ink); text-align: left; background: #f7f9f7; border: 1px solid var(--line); border-radius: 8px; cursor: pointer; }
+.workflow-switch button.active { background: var(--accent-soft); border-color: #8ab8aa; box-shadow: inset 3px 0 0 var(--accent); }
+.workflow-switch span { grid-row: span 2; align-self: center; padding: 5px 7px; color: var(--accent-dark); background: #fff; border-radius: 99px; font: 650 9px/1 var(--mono); text-transform: uppercase; }
+.workflow-switch strong { font-size: 14px; }
+.workflow-switch small { color: var(--muted); font-size: 11px; }
+
 .input-layout { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(330px, .8fr); min-height: 310px; border-top: 1px solid var(--soft-line); }
 .upload-area { display: grid; grid-template-columns: 112px 1fr; gap: 24px; align-items: center; padding: 30px 38px 30px 10px; border-right: 1px solid var(--soft-line); cursor: pointer; transition: background .18s ease; }
 .upload-area:hover, .upload-area.dragging { background: #f6faf8; }
@@ -58,8 +65,19 @@ h1 { max-width: 760px; margin: 0; color: #111917; font-size: clamp(40px, 5.2vw, 
 .upload-area strong { display: block; color: var(--ink); font-size: 17px; font-weight: 610; overflow-wrap: anywhere; }
 .upload-area span { display: block; margin-top: 9px; color: var(--muted); font-size: 13px; }
 .upload-area.has-file { background: #fafcfb; }
+.terrain-inputs { display: grid; align-content: center; gap: 12px; padding: 28px 38px 28px 10px; border-right: 1px solid var(--soft-line); }
+.terrain-picker { position: relative; display: grid; gap: 7px; padding: 18px; background: #f9fbfa; border: 1px dashed #a8b9b2; border-radius: 8px; cursor: pointer; }
+.terrain-picker:hover, .terrain-picker.has-file { background: #f1f7f4; border-color: #79a999; }
+.terrain-picker input { position: absolute; width: 1px; height: 1px; opacity: 0; }
+.terrain-picker > span, .terrain-fields span { color: var(--accent-dark); font: 650 9px/1 var(--mono); letter-spacing: .05em; text-transform: uppercase; }
+.terrain-picker strong { color: var(--ink); font-size: 13px; overflow-wrap: anywhere; }
+.terrain-picker small { color: var(--muted); font-size: 11px; }
 
 .run-panel { display: flex; flex-direction: column; justify-content: center; padding: 32px 0 32px 34px; }
+.terrain-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 0 0 14px; }
+.terrain-fields label { display: grid; gap: 6px; }
+.terrain-fields input { width: 100%; min-height: 39px; padding: 9px 10px; color: var(--ink); background: #fff; border: 1px solid #cfd7d2; border-radius: 5px; font-size: 11px; outline: none; }
+.terrain-fields input:focus { border-color: #6c9f90; box-shadow: 0 0 0 3px #e5f0ec; }
 .run-summary { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; color: var(--muted); font-size: 12px; }
 .run-summary strong { color: var(--ink); font-weight: 630; }
 .progress-track { height: 4px; overflow: hidden; background: #e5e9e6; border-radius: 99px; }
@@ -199,6 +217,7 @@ footer { display: flex; justify-content: space-between; gap: 24px; padding-top: 
   .scope-note { max-width: 650px; }
   .input-layout, .analysis-layout, .calibration-layout, .gate-result { grid-template-columns: 1fr; }
   .upload-area { min-height: 230px; border-right: 0; border-bottom: 1px solid var(--soft-line); }
+  .terrain-inputs { border-right: 0; border-bottom: 1px solid var(--soft-line); }
   .run-panel { padding: 30px 10px; }
   .result-inspector { padding: 0; }
   .comparison-pair img { height: 220px; }
@@ -213,6 +232,7 @@ footer { display: flex; justify-content: space-between; gap: 24px; padding-top: 
   .workbench, .result-section, .calibration-section, .evidence-section { padding: 20px; }
   .section-heading { align-items: flex-start; flex-direction: column; gap: 10px; }
   .section-heading > p { text-align: left; }
+  .workflow-switch, .terrain-fields { grid-template-columns: 1fr; }
   .upload-area { grid-template-columns: 76px 1fr; gap: 15px; padding: 24px 4px; }
   .upload-area > .contour-mark { width: 68px; height: 68px; }
   .upload-area img { width: 72px; height: 72px; }

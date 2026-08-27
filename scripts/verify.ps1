@@ -27,6 +27,7 @@ Push-Location $projectRoot
 try {
     Invoke-Check "Python dependencies" { & $python -m pip check }
     Invoke-Check "Backend scientific and safety tests" { & $python -m pytest -q }
+    Invoke-Check "Bundled measured-terrain workflow" { & $python scripts\smoke_terrain_workflow.py }
     Invoke-Check "Frontend interaction tests" { Push-Location $frontend; try { npm test } finally { Pop-Location } }
     Invoke-Check "Production interface build" { Push-Location $frontend; try { npm run build } finally { Pop-Location } }
 

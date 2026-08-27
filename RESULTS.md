@@ -113,3 +113,18 @@ The new Structures layer is visualization evidence, not accuracy evidence. The m
 | Real held-out model metric card | BLOCKED | evaluator is implemented, but no licensed independent aligned RGB–DSM/nDSM truth exists in scope |
 
 The GLB fix separates mesh density from texture sharpness: the source photograph is now a real embedded texture with UVs, normals, and lit PBR material. Height colours and lighting are inspectable display modes only. The synthetic calibration number above remains a software-oracle result and must not be presented as Large-model accuracy.
+
+## Measured terrain result — 2026-08-27
+
+The project now has a scientific path designed for mountains: optical GeoTIFF texture plus a compatible metric DEM. Unlike the photo-only AI path, this workflow does not infer or calibrate elevation from appearance. It aligns the named DEM, preserves its metre values, and uses normalization only to draw the mesh.
+
+| Verification | Result | Observation |
+|---|---:|---|
+| Terrain API workflow | PASS | differently sized georeferenced grids aligned with at least 90% valid overlap and completed as `Metric Source DEM` |
+| Metric preservation | PASS | float32 NPY/GeoTIFF and viewer samples retained source DEM metres and NoData semantics |
+| Mountain rendering | PASS | roof cleanup, smoothing, structures, and synthetic neutral walls disabled; optical texture retained over steep slopes |
+| Provenance | PASS | source name, vertical datum, source hash, alignment/resampling report, and accuracy boundary exported |
+| Bundled smoke | PASS | 640×480 optical texture plus 320×240 DEM produced a textured GLB and 15 declared artifacts |
+| Automated suites | PASS | 40 backend tests, 10 frontend tests, strict production build |
+
+The bundled mountain is synthetic and demonstrates the software path only. A real judge demonstration should replace it with licensed, co-covering optical imagery and SRTM, Copernicus, or another documented DEM source.

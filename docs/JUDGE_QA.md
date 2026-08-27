@@ -2,7 +2,27 @@
 
 ## What is TerraFly?
 
-A local workbench that estimates a relative surface from one optical image, renders it in 3D, preserves reproducibility evidence, and creates metric elevation files only after independent vertical calibration passes held-out checks.
+A local workbench with two explicit paths: DEM Terrain combines georeferenced optical texture with a named elevation source for metric terrain; Photo AI estimates a relative surface from one image and creates AI-derived metric files only after independent vertical calibration passes held-out checks.
+
+## Why are there two workflows?
+
+They answer different scientific questions. DEM Terrain asks, “How can I inspect and export a supplied elevation source in textured 3D?” Photo AI asks, “What relative surface structure does a monocular model estimate from this image?” Combining those claims would make supplied evidence and AI inference indistinguishable.
+
+## Does DEM Terrain use AI?
+
+No AI is needed for its geometry. TerraFly validates the pair, reprojects/resamples the DEM onto the optical grid if necessary, preserves metric values and NoData, and builds an interactive textured terrain. The source DEM—not TerraFly—is the elevation authority.
+
+## Does resampling a 30 m DEM onto a 10 m image create 10 m elevation?
+
+No. It creates a 10 m output grid for texture/geometry alignment but retains the information limits of the native 30 m DEM. The alignment report records both resolutions and states this explicitly.
+
+## Can I use a Google Earth screenshot as the input?
+
+Do not use it as reconstruction data. A screenshot lacks reliable elevation metadata and Google's Geo Guidelines prohibit using captured Earth output to reconstruct 3D models. Use licensed optical imagery plus an authoritative DEM. A properly attributed Google Earth screenshot may be shown only as a visual comparison where the applicable guidelines allow it.
+
+## Why do mountains look better in DEM Terrain?
+
+Mountains are continuous height surfaces, and the geometry comes from the DEM rather than brightness, snow, or cast shadows. TerraFly also disables city-oriented roof smoothing and keeps imagery textured across real steep slopes. Photo AI remains vulnerable to snow, shadow, haze, occlusion, and global image-plane bias.
 
 ## Is the first result a DSM?
 

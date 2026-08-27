@@ -117,3 +117,15 @@ The remaining scientific work is intentionally outside this software milestone: 
 - PASS — production browser acceptance covered a real stadium scene, Photo/Height switching, the relative legend, live sun update from 35° to 140°, a calibrated 100–140 m legend, and a 390×844 layout with 375 px document and 307 px toolbar/viewer/canvas. Browser warnings/errors: zero.
 - PASS — a masked benchmark utility now requires matching GeoTIFF CRS/affine grids for real evidence and writes RMSE, MAE, bias, Pearson correlation, data licence/split, hashes, and resource facts.
 - LIMIT — real height RMSE/MAE/Pearson remain intentionally blocked because no licensed independent RGB–DSM/nDSM held-out truth was supplied. RDAH-Net is documented as an audit candidate; Depth2Elevation has no verified author code/weights in scope.
+
+## Measured mountain terrain workflow — 2026-08-27
+
+- PASS — added a judge-ready `DEM Terrain` workflow that requires a georeferenced optical GeoTIFF plus a georeferenced, single-band source DEM covering the same area.
+- PASS — the DEM is reprojected onto the optical grid with recorded bilinear resampling, overlap must be at least 90%, NoData remains explicit in metric exports, and no increase in native DEM resolution is claimed.
+- PASS — source elevation stays in metres in float32 NPY/GeoTIFF and the exact viewer analysis grid; robust normalization and vertical exaggeration are display-only.
+- PASS — mountain mode disables city-oriented roof cleanup, smoothing, reconstructed structures, and neutral-wall texture substitution so genuine steep slopes retain their texture.
+- PASS — the UI defaults to measured terrain, keeps Photo AI as a separate relative experiment, names the source and vertical datum, and exposes the original DEM, alignment report, diagnostics, metric grid, metric raster, and textured GLB.
+- PASS — added a reproducible two-resolution synthetic mountain pair and an end-to-end terrain smoke test. It is a software demonstration, not a real-world accuracy benchmark.
+- PASS — added real-data, judge-demo, and overhead-model training guides. Real Himalaya presentation data should use properly licensed optical imagery plus a compatible DEM, not a Google Earth screenshot.
+- PASS — final gate covers 40 backend tests, 10 frontend tests, the terrain smoke workflow, and the strict production build.
+- LIMIT — TerraFly validates input format, CRS alignment, overlap, provenance, and software behavior; elevation accuracy remains that of the named DEM source.
