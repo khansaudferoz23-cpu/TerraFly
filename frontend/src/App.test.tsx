@@ -7,7 +7,7 @@ Object.defineProperty(URL, "revokeObjectURL", { value: vi.fn() });
 
 afterEach(cleanup);
 
-describe("TerraFly scientific contract", () => {
+describe("FlatEarth3D scientific contract", () => {
   it("defaults to the measured terrain workflow and keeps photo AI explicitly relative", () => {
     render(<App />);
     expect(screen.getByText(/recommended for mountains/i)).toBeInTheDocument();
