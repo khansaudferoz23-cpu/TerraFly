@@ -137,9 +137,9 @@ Real evaluation needs independently surveyed, co-registered height truth with a 
 
 ## Step 7 — serve and verify
 
-`scripts/setup.ps1` creates the local Python environment, installs the exact npm lockfile, and builds the production interface. `Start-TerraFly.cmd` launches a single local FastAPI service that serves both API and prebuilt UI at `127.0.0.1:8000`. Development mode can still use Vite when `frontend/dist` is absent.
+`scripts/setup.ps1` creates the local Python environment, installs the exact npm lockfile, and builds the production interface. `Start-FlatEarth3D.cmd` launches a single local FastAPI service that serves both API and prebuilt UI at `127.0.0.1:8000`. Development mode can still use Vite when `frontend/dist` is absent.
 
-`Check-TerraFly.cmd` runs the fast release gate. `scripts/verify.ps1 -Full` adds the real end-to-end CUDA/CPU calibration smoke. `scripts/package_release.ps1` creates source and Windows release archives plus SHA-256 checksums.
+`Check-FlatEarth3D.cmd` runs the fast release gate. `scripts/verify.ps1 -Full` adds the real end-to-end CUDA/CPU calibration smoke. `scripts/package_release.ps1` creates source and Windows release archives plus SHA-256 checksums.
 
 ## What the tests protect
 

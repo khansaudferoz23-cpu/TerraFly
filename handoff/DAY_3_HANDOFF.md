@@ -9,7 +9,7 @@ PASS — TerraFly 0.3.0 now has an evidence-driven path from a georeferenced rel
 ## Launch
 
 1. Complete one-time setup with `powershell -ExecutionPolicy Bypass -File scripts\setup.ps1` if needed.
-2. Double-click `Start-TerraFly.cmd`.
+2. Double-click `Start-FlatEarth3D.cmd`.
 3. Upload a georeferenced GeoTIFF, generate the surface, and use the **Metric calibration** section with an exactly aligned reference DSM.
 
 ## Fast verification

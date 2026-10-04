@@ -1,4 +1,4 @@
-# TerraFly file guide
+# FlatEarth3D file guide
 
 Use this as the answer to “why does this file exist?” Paths are grouped by responsibility. Machine-generated runtime folders are explained at the end.
 
@@ -22,8 +22,8 @@ Use this as the answer to “why does this file exist?” Paths are grouped by r
 | `THIRD_PARTY_NOTICES.md` | Names third-party model/code licenses and prevents accidental license misrepresentation. |
 | `pyproject.toml` | Python package metadata, pinned runtime/test dependencies, pytest configuration, and source path. |
 | `requirements-ml-cu130.txt` | Explicit CUDA 13.0 PyTorch installation set for the observed RTX 5060 environment. |
-| `Start-TerraFly.cmd` | Beginner Windows entry point; changes into the repository and invokes the PowerShell launcher. |
-| `Check-TerraFly.cmd` | Beginner Windows verification entry point; keeps the window open and reports the final automated gate clearly. |
+| `Start-FlatEarth3D.cmd` | Beginner Windows entry point; changes into the repository and invokes the PowerShell launcher. |
+| `Check-FlatEarth3D.cmd` | Beginner Windows verification entry point; keeps the window open and reports the final automated gate clearly. |
 
 ## Backend: application and scientific pipeline
 
@@ -90,7 +90,7 @@ Use this as the answer to “why does this file exist?” Paths are grouped by r
 | File | Purpose and reason to keep it |
 |---|---|
 | `scripts/setup.ps1` | Creates the local Python environment, installs Python/frontend dependencies, and builds the final interface without changing global Python. |
-| `scripts/start.ps1` | Reuses a healthy TerraFly 1.0 service, refuses unknown port owners, serves the prebuilt interface/API at one address, records readable logs, opens the browser, and stops only children it started. |
+| `scripts/start.ps1` | Reuses a healthy FlatEarth3D service, refuses unknown port owners, serves the prebuilt interface/API at one address, records readable logs, opens the browser, and stops only children it started. |
 | `scripts/verify.ps1` | Runs dependency, backend, frontend, production-build, health, and optional full real-model calibration checks behind one command. |
 | `scripts/package_release.ps1` | Creates the tracked-source ZIP, Windows source/prebuilt-interface folder and ZIP, and SHA-256 checksum record without overwriting an existing release. |
 | `scripts/smoke_final_workflow.py` | Executes the real GeoTIFF → relative → aligned-reference → metric path and verifies all 18 hashes plus metre/CRS GeoTIFF tags. |
@@ -113,7 +113,7 @@ Use this as the answer to “why does this file exist?” Paths are grouped by r
 | `docs/PS_REQUIREMENTS_TRACEABILITY.md` | Maps every supplied problem-statement requirement to implementation, verification, and the exact claim boundary. |
 | `docs/UX_RATIONALE.md` | What was right/wrong with the first UI and the human design rationale for the revision. |
 | `docs/cookbook/COOKBOOK_SOURCE_INDEX.md` | Curated evidence/source index reserved for the later requested cookbook deliverable. |
-| `docs/cookbook/TERRAFLY_COOKBOOK.md` | Final team cookbook explaining the promise, architecture, inference, files, calibration math, tests, limitations, and judge defence. |
+| `docs/cookbook/FLATEARTH3D_COOKBOOK.md` | Final team cookbook explaining the promise, architecture, inference, files, calibration math, tests, limitations, and judge defence. |
 | `docs/OPERATOR_GUIDE.md` | Exact setup/launch, 3D orbit and drone controls, bundled calibration run, visual checks, and troubleshooting. |
 | `docs/ARCHITECTURE.md` | Compact diagrams for runtime ownership, state transitions, evidence gating, and file responsibilities. |
 | `docs/DEMO_SCRIPT.md` | Timed 6–8 minute judge demonstration with exact clicks, spoken claims, and fallback path. |

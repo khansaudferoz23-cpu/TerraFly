@@ -4,8 +4,8 @@ Target length: 6–8 minutes. Lead with measured mountain terrain, not a boxy ci
 
 ## Before judges arrive
 
-1. Run `Check-TerraFly.cmd`; keep the PASS result available.
-2. Start TerraFly with `Start-TerraFly.cmd` and confirm `http://127.0.0.1:8000`.
+1. Run `Check-FlatEarth3D.cmd`; keep the PASS result available.
+2. Start FlatEarth3D with `Start-FlatEarth3D.cmd` and confirm `http://127.0.0.1:8000`.
 3. Keep the two `terrafly_terrain_demo_*.tif` files and the two calibration demo GeoTIFFs easy to find.
 4. If using real terrain, rehearse that exact pair once and keep its source/attribution visible.
 5. Do not depend on internet during the presentation.

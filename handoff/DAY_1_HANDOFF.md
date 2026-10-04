@@ -9,7 +9,7 @@ PASS — TerraFly now has a coherent Windows-first upload-to-relative-surface ap
 ## Launch
 
 1. Complete the one-time setup with `powershell -ExecutionPolicy Bypass -File scripts\setup.ps1`.
-2. Double-click `Start-TerraFly.cmd`.
+2. Double-click `Start-FlatEarth3D.cmd`.
 3. Keep the launcher window open. It waits for readiness and opens `http://127.0.0.1:5173` automatically.
 
 The first real generation needs network access to cache the roughly 99 MB model checkpoint. Later runs can use that project-local cache offline.

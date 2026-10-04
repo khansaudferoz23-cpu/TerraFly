@@ -1,13 +1,13 @@
 # TerraFly operator guide
 
-This is the practical “open it, fly it, and prove it works” guide. Read `docs/cookbook/TERRAFLY_COOKBOOK.md` when you want the deeper explanation.
+This is the practical “open it, fly it, and prove it works” guide. Read `docs/cookbook/FLATEARTH3D_COOKBOOK.md` when you want the deeper explanation.
 
 ## 1. Start TerraFly
 
 ### On the computer where setup is already complete
 
 1. Open the TerraFly folder.
-2. Double-click `Start-TerraFly.cmd`.
+2. Double-click `Start-FlatEarth3D.cmd`.
 3. Keep the launcher window open.
 4. The final release opens `http://127.0.0.1:8000` automatically. It runs only on this computer.
 
@@ -23,7 +23,7 @@ If the app does not open, read the launcher message. Logs are in `runtime\logs`.
    powershell -ExecutionPolicy Bypass -File scripts\setup.ps1
    ```
 
-4. Double-click `Start-TerraFly.cmd`.
+4. Double-click `Start-FlatEarth3D.cmd`.
 
 The setup is large because the real CUDA/CPU ML runtime is several gigabytes. Model weights are not redistributed inside the source release; the real checkpoint is downloaded into the ignored local cache.
 
@@ -120,7 +120,7 @@ For real data, replace the demo reference with an independently sourced single-b
 
 ### One-click fast checker
 
-Double-click `Check-TerraFly.cmd`.
+Double-click `Check-FlatEarth3D.cmd`.
 
 Expected final line: **TerraFly verification PASSED**. It checks dependencies, all backend safety/scientific tests, the complete bundled measured-terrain workflow, frontend interactions, and the production build.
 

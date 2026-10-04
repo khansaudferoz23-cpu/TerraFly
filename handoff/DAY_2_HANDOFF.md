@@ -9,7 +9,7 @@ PASS — TerraFly 0.2.0 now has a robust relative-surface inspection workflow: b
 ## Launch
 
 1. Complete one-time setup with `powershell -ExecutionPolicy Bypass -File scripts\setup.ps1` if needed.
-2. Double-click `Start-TerraFly.cmd`.
+2. Double-click `Start-FlatEarth3D.cmd`.
 3. Keep the launcher window open. It reuses healthy TerraFly services, detects conflicting ports, saves readable logs under `runtime\logs`, and opens the app automatically.
 
 ## Fast verification

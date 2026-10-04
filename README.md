@@ -1,23 +1,23 @@
 # FlatEarth3D
 
-FlatEarth3D is the current project name for **Single-View Height Estimation & 3D Reconstruction**. This repository may still use the legacy/internal name **TerraFly** in scripts, package names, service settings, and older documentation.
+FlatEarth3D is the current project name for **Single-View Height Estimation & 3D Reconstruction**. Some internal script, package, service, and sample names still use the legacy project slug for compatibility.
 
 FlatEarth3D provides two deliberately separate paths: **DEM Terrain** combines a georeferenced optical image with a supplied elevation model for credible metric mountain terrain, while **Photo AI** converts one optical image into an explicitly relative surface/depth proxy. Both render as inspectable textured 3D height fields and preserve a traceable evidence bundle.
 
-> A PNG or JPG does not contain enough evidence to recover elevation in metres. A georeferenced GeoTIFF adds horizontal location and scale, not a trustworthy vertical scale. TerraFly unlocks metric DSM output only after a documented vertical calibration succeeds.
+> A PNG or JPG does not contain enough evidence to recover elevation in metres. A georeferenced GeoTIFF adds horizontal location and scale, not a trustworthy vertical scale. FlatEarth3D unlocks metric DSM output only after a documented vertical calibration succeeds.
 
 ## Recommended mountain path: DEM Terrain
 
 Optical GeoTIFF + single-band DEM GeoTIFF → validate source metadata → reproject/resample the DEM onto the optical grid when required → preserve metric values and NoData → normalize a separate display surface → texture and inspect in 3D → export the aligned metric GeoTIFF, `.npy`, GLB, grid, provenance, and alignment report.
 
-This workflow is the default in the interface because it solves the central mountain problem honestly: the DEM supplies geometry and the optical image supplies colour. Reprojection is recorded and never described as improving the DEM's native resolution. AI-oriented roof smoothing and neutral-wall substitution are disabled, so real mountain ridges remain faithful and fully textured. TerraFly validates file structure, spatial coverage, and alignment; it does not independently certify the named DEM's accuracy.
+This workflow is the default in the interface because it solves the central mountain problem honestly: the DEM supplies geometry and the optical image supplies colour. Reprojection is recorded and never described as improving the DEM's native resolution. AI-oriented roof smoothing and neutral-wall substitution are disabled, so real mountain ridges remain faithful and fully textured. FlatEarth3D validates file structure, spatial coverage, and alignment; it does not independently certify the named DEM's accuracy.
 
 Try it offline with:
 
 - `sample_data/terrafly_terrain_demo_imagery.tif`
 - `sample_data/terrafly_terrain_demo_dem.tif`
-- Source: `TerraFly bundled synthetic mountain DEM`
-- Datum: `TerraFly synthetic demo datum`
+- Source: `FlatEarth3D bundled synthetic mountain DEM`
+- Datum: `FlatEarth3D synthetic demo datum`
 
 The pair is synthetic software evidence, not real-world accuracy evidence. `docs/REAL_TERRAIN_DATA_GUIDE.md` explains how to replace it with licensed Sentinel-2 imagery and NASA SRTM elevation.
 
@@ -29,7 +29,7 @@ The normal adapter defaults to the real `depth-anything/Depth-Anything-V2-Large-
 
 The viewer now uses a separate, recorded display grid: isolated spikes are replaced, an RGB-guided bilateral pass suppresses within-surface noise, conservative raised connected regions are median-flattened, and an adjacent-delta safety cap removes only extreme display faces. Steep triangles receive a neutral wall material instead of stretched top-down image pixels. The portable GLB embeds the source PNG as a UV texture, exports smooth unit normals, and uses lit PBR materials rather than vertex colours or an unlit extension. None of these display operations touch `relative_surface.npy`, `relative_grid.json`, metric calibration, or A/B measurements.
 
-TerraFly 1.0 adds two evidence-driven calibration paths. An exactly aligned reference DSM can be evaluated in the app; surveyed control points plus separate validation points are available through the API. Robust scale/offset fitting, spatially held-out validation, coverage/inlier/RMSE/R² gates, source NoData preservation, and an explicit pass/reject decision prevent a cosmetic “metres” toggle. Only a passing run receives metric `.npy`, analysis-grid, and GeoTIFF artifacts. The display mesh remains a responsive normalized surface, while its A/B inspection reads calibrated elevations, height difference, and—when the source has projected metre units—horizontal distance and slope.
+FlatEarth3D adds two evidence-driven calibration paths. An exactly aligned reference DSM can be evaluated in the app; surveyed control points plus separate validation points are available through the API. Robust scale/offset fitting, spatially held-out validation, coverage/inlier/RMSE/R² gates, source NoData preservation, and an explicit pass/reject decision prevent a cosmetic "metres" toggle. Only a passing run receives metric `.npy`, analysis-grid, and GeoTIFF artifacts. The display mesh remains a responsive normalized surface, while its A/B inspection reads calibrated elevations, height difference, and, when the source has projected metre units, horizontal distance and slope.
 
 An optional **Structures** control adds a separate Bhuvan-style visual reconstruction layer with upright walls. It is inferred from local relative-height components, remains off by default, never changes the numeric DSM, and is explicitly warned as non-semantic: trees may be included and low-contrast roofs may be missed.
 
@@ -52,12 +52,12 @@ The bundled calibration pair proves software correctness with synthetic truth; i
 ## Final Windows launch
 
 1. Run `scripts\setup.ps1` once in PowerShell. The first setup installs dependencies, builds the interface, and downloads model weights when the first real analysis runs.
-2. Double-click `Start-TerraFly.cmd`.
-3. Keep the launcher window open. TerraFly opens the single production address `http://127.0.0.1:8000` automatically.
+2. Double-click the Windows launcher in the repo root.
+3. Keep the launcher window open. FlatEarth3D opens the single production address `http://127.0.0.1:8000` automatically.
 
 The app binds only to this computer (`127.0.0.1`). Model weights and uploaded/generated jobs stay in ignored local folders.
 
-Run `Check-TerraFly.cmd` for the ordinary automated check. For the complete real-model calibration proof, run `scripts\verify.ps1 -Full` in PowerShell.
+Run the Windows check command in the repo root for the ordinary automated check. For the complete real-model calibration proof, run `scripts\verify.ps1 -Full` in PowerShell.
 
 ## Use the 3D viewer
 
@@ -75,7 +75,7 @@ The exact bundled metric demos and troubleshooting steps are in `docs/OPERATOR_G
 - `docs/OPERATOR_GUIDE.md`: launch, orbit/drone controls, bundled calibration demo, checks, and troubleshooting.
 - `docs/REAL_TERRAIN_DATA_GUIDE.md`: how to obtain and prepare a licensed real mountain imagery/DEM pair.
 - `docs/TRAINING_ROADMAP.md`: gated DFC23 building-height training plan for the later model phase.
-- `docs/cookbook/TERRAFLY_COOKBOOK.md`: final explain-everything cookbook for the team.
+- `docs/cookbook/FLATEARTH3D_COOKBOOK.md`: final explain-everything cookbook for the team.
 - `docs/DEMO_SCRIPT.md` and `docs/JUDGE_QA.md`: the presentation sequence and defence answers.
 - `docs/ARCHITECTURE.md`: runtime, state, evidence-gate, and ownership diagrams.
 - `FILE_GUIDE.md`: why every tracked source/config/test/document exists.

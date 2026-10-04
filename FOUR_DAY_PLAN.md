@@ -18,6 +18,6 @@ SRTM was deliberately not added: no valid credential/offline source was supplied
 
 COMPLETE — The scientific promise was frozen; the production interface is served from one local address; a portable Windows source/build folder, final source and Windows ZIPs, checksums, clean extracted-path proof, browser/responsive checks, diagrams, reports, operator guide, cookbook, demo script, judge Q&A, and private GitHub milestone were completed.
 
-Next entry point: run `Check-TerraFly.cmd`, rehearse `docs/DEMO_SCRIPT.md`, and replace the bundled synthetic calibration oracle with trustworthy independently surveyed evidence before making real-world accuracy claims.
+Next entry point: run `Check-FlatEarth3D.cmd`, rehearse `docs/DEMO_SCRIPT.md`, and replace the bundled synthetic calibration oracle with trustworthy independently surveyed evidence before making real-world accuracy claims.
 
 Priority remains: relative pipeline → 3D viewer → GeoTIFF correctness → evaluation → calibration → packaging → optional fine-tuning.

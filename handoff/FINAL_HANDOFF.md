@@ -18,9 +18,9 @@ Scientific promise: one optical image produces a traceable relative surface; met
 ## Exact operation
 
 1. On a new Windows machine, extract `TerraFly_FINAL_WINDOWS.zip`, connect to the internet, and run `scripts\setup.ps1` once.
-2. Double-click `Start-TerraFly.cmd` and keep its window open.
+2. Double-click `Start-FlatEarth3D.cmd` and keep its window open.
 3. Read `docs\OPERATOR_GUIDE.md` for every viewer control and the bundled calibration demonstration.
-4. Double-click `Check-TerraFly.cmd` before presenting.
+4. Double-click `Check-FlatEarth3D.cmd` before presenting.
 5. Run `powershell -ExecutionPolicy Bypass -File scripts\verify.ps1 -Full` for the real-model, 18-artifact, metric-GeoTIFF proof.
 
 ## Judge demonstration files

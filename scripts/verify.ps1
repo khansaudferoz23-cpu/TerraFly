@@ -43,7 +43,7 @@ try {
     try {
         $health = Invoke-RestMethod -Uri "http://127.0.0.1:8000/api/health" -TimeoutSec 2
     } catch {
-        Write-Host "`n[INFO]  App is not running; launch it with Start-TerraFly.cmd for the visual check." -ForegroundColor Yellow
+        Write-Host "`n[INFO]  App is not running; launch it with Start-FlatEarth3D.cmd for the visual check." -ForegroundColor Yellow
     }
     if ($null -ne $health) {
         if ($health.service -ne "TerraFly" -or $health.version -ne "1.0.0") {

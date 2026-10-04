@@ -81,7 +81,7 @@
       "sha256": "b1452242a8b1f6f131c03c3be23228324d7923246eff440f012292e4e7f3eb42"
     },
     {
-      "path": "Check-TerraFly.cmd",
+      "path": "Check-FlatEarth3D.cmd",
       "bytes": 305,
       "sha256": "183243b9c2e6e7456213832a459f73bc121f6250727ebf7edff7878529f0a2ca"
     },
@@ -131,7 +131,7 @@
       "sha256": "17e159b934b030239695f2aab6d218e43ca80f42bf23953e5d463e1a683168bb"
     },
     {
-      "path": "Start-TerraFly.cmd",
+      "path": "Start-FlatEarth3D.cmd",
       "bytes": 228,
       "sha256": "d2aebaf9a88aa14de7025340daef3d249adf6670a01df65b28fbfd4135dc962d"
     },
@@ -341,7 +341,7 @@
       "sha256": "d30452ce7a4fe38d3f0ccd69494bcf73faac99934be88d02e9c24535e2c49755"
     },
     {
-      "path": "docs/cookbook/TERRAFLY_COOKBOOK.md",
+      "path": "docs/cookbook/FLATEARTH3D_COOKBOOK.md",
       "bytes": 13028,
       "sha256": "7f3f0157d83296b48c8b7a532d4bae88a9bf996bfe1dfe5889412cec7ac4e93a"
     },
