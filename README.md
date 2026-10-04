@@ -1,6 +1,8 @@
-# TerraFly
+# FlatEarth3D
 
-TerraFly provides two deliberately separate paths: **DEM Terrain** combines a georeferenced optical image with a supplied elevation model for credible metric mountain terrain, while **Photo AI** converts one optical image into an explicitly relative surface/depth proxy. Both render as inspectable textured 3D height fields and preserve a traceable evidence bundle.
+FlatEarth3D is the current project name for **Single-View Height Estimation & 3D Reconstruction**. This repository may still use the legacy/internal name **TerraFly** in scripts, package names, service settings, and older documentation.
+
+FlatEarth3D provides two deliberately separate paths: **DEM Terrain** combines a georeferenced optical image with a supplied elevation model for credible metric mountain terrain, while **Photo AI** converts one optical image into an explicitly relative surface/depth proxy. Both render as inspectable textured 3D height fields and preserve a traceable evidence bundle.
 
 > A PNG or JPG does not contain enough evidence to recover elevation in metres. A georeferenced GeoTIFF adds horizontal location and scale, not a trustworthy vertical scale. TerraFly unlocks metric DSM output only after a documented vertical calibration succeeds.
 

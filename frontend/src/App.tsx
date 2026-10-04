@@ -187,8 +187,8 @@ export default function App() {
 
   return (
     <main className="app-shell">
-      <nav className="topbar" aria-label="TerraFly project">
-        <div className="wordmark"><ContourMark /><span>TerraFly</span></div>
+      <nav className="topbar" aria-label="FlatEarth3D project">
+        <div className="wordmark"><ContourMark /><span>FlatEarth3D</span></div>
         <span className="project-id">SIH 2026 / PS 26175</span>
       </nav>
 
@@ -223,6 +223,8 @@ export default function App() {
             <span>Experimental</span><strong>Photo AI</strong><small>One image · relative shape only</small>
           </button>
         </div>
+
+        {workflow === "photo" && <p className="deployment-note"><strong>Photo AI:</strong> Local GPU inference demo. <strong>Online:</strong> DEM processing is fully available.</p>}
 
         <div className="input-layout">
           {workflow === "photo" ? <label
@@ -260,7 +262,7 @@ export default function App() {
               <span>2 · Elevation geometry</span>
               <input aria-label="Choose source DEM" type="file" accept=".tif,.tiff,image/tiff" onChange={(event) => { setDemFile(event.target.files?.[0] ?? null); setJob(null); setError(null); }} />
               <strong>{demFile?.name ?? "Choose single-band DEM GeoTIFF"}</strong>
-              <small>{demFile ? `${fileSize(demFile.size)} · elevation ready` : "TerraFly aligns it to the optical grid"}</small>
+              <small>{demFile ? `${fileSize(demFile.size)} · elevation ready` : "FlatEarth3D aligns it to the optical grid"}</small>
             </label>
           </div>}
 
@@ -367,7 +369,7 @@ export default function App() {
           <div className="calibration-layout">
             <div className="calibration-copy">
               <h3>Use an independently sourced, pixel-aligned DSM</h3>
-              <p>It must have the exact same CRS, dimensions, and pixel grid as this input. TerraFly fits scale and offset on one spatial set, then judges the result on separate held-out pixels.</p>
+              <p>It must have the exact same CRS, dimensions, and pixel grid as this input. FlatEarth3D fits scale and offset on one spatial set, then judges the result on separate held-out pixels.</p>
               <dl className="alignment-facts">
                 <div><dt>Input CRS</dt><dd>{String(job.geospatial.crs)}</dd></div>
                 <div><dt>Input grid</dt><dd>{String(job.input.width)} × {String(job.input.height)} pixels</dd></div>
@@ -476,7 +478,7 @@ export default function App() {
               <b>Download · {fileSize(artifactRecord("error_geotiff")?.bytes ?? 0)}</b>
             </a>}
           </div>
-          <p className={`metric-lock ${metricAllowed ? "metric-open" : ""}`}>{sourceDemMode ? "Metric GeoTIFF and point analysis come directly from the named DEM. TerraFly checked alignment, preserved provenance, and kept display normalization separate from measurements." : metricAllowed ? "Metric GeoTIFF and metric 3D point analysis are available because the documented held-out gate passed. Geometry remains normalized only for stable display." : job.calibration.status === "rejected" ? "The submitted evidence was retained with its rejection report; no metric elevation file was produced." : "Metric GeoTIFF is intentionally absent. Submit valid vertical evidence above to evaluate the gate."}</p>
+          <p className={`metric-lock ${metricAllowed ? "metric-open" : ""}`}>{sourceDemMode ? "Metric GeoTIFF and point analysis come directly from the named DEM. FlatEarth3D checked alignment, preserved provenance, and kept display normalization separate from measurements." : metricAllowed ? "Metric GeoTIFF and metric 3D point analysis are available because the documented held-out gate passed. Geometry remains normalized only for stable display." : job.calibration.status === "rejected" ? "The submitted evidence was retained with its rejection report; no metric elevation file was produced." : "Metric GeoTIFF is intentionally absent. Submit valid vertical evidence above to evaluate the gate."}</p>
         </section>
 
         {job.warnings.length > 0 && <section className="warning-section">
@@ -486,7 +488,7 @@ export default function App() {
       </>}
 
       <details className="method-section">
-        <summary>What happens inside TerraFly?</summary>
+        <summary>What happens inside FlatEarth3D?</summary>
         <div>
           <p><strong>1. Validate.</strong> Check filename, format, size, pixel count, and geospatial metadata before decoding.</p>
           <p><strong>2. Choose evidence.</strong> DEM Terrain uses supplied metric elevation; Photo AI uses Depth Anything V2 for relative shape.</p>
@@ -495,7 +497,7 @@ export default function App() {
         </div>
       </details>
 
-      <footer><span>TerraFly · Final verified release</span><span>Local processing · held-out quality gates · reproducible outputs</span></footer>
+      <footer><span>FlatEarth3D · Final verified release</span><span>Local processing · held-out quality gates · reproducible outputs</span></footer>
     </main>
   );
 }
