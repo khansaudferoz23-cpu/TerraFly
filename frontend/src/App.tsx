@@ -220,11 +220,11 @@ export default function App() {
             <span>Recommended</span><strong>DEM Terrain</strong><small>Measured heights · best for mountains</small>
           </button>
           <button type="button" className={workflow === "photo" ? "active" : ""} aria-pressed={workflow === "photo"} onClick={() => selectWorkflow("photo")}>
-            <span>Experimental</span><strong>Photo AI</strong><small>One image · relative shape only</small>
+            <span>Local GPU</span><strong>Photo AI</strong><small>Needs powerful PC · use DEM online</small>
           </button>
         </div>
 
-        {workflow === "photo" && <p className="deployment-note"><strong>Photo AI:</strong> Local GPU inference demo. <strong>Online:</strong> DEM processing is fully available.</p>}
+        {workflow === "photo" && <p className="deployment-note"><strong>Photo AI:</strong> Local GPU inference demo. The public server does not have enough compute for the full ML model. <strong>Online:</strong> DEM processing is fully available.</p>}
 
         <div className="input-layout">
           {workflow === "photo" ? <label
@@ -282,7 +282,7 @@ export default function App() {
             <button className="primary-action" type="button" disabled={(workflow === "terrain" ? !terrainReady : !file) || busy} onClick={generate}>
               {busy ? "Analysing scene…" : workflow === "terrain" ? "Build measured terrain" : "Generate relative surface"}
             </button>
-            <p className="action-note">{workflow === "terrain" ? "The DEM supplies elevation in metres; imagery supplies colour. Reprojection is recorded and never described as added resolution." : "Photo AI estimates relative shape. Passing calibration creates separate metric evidence; display exaggeration never changes either source."}</p>
+            <p className="action-note">{workflow === "terrain" ? "The DEM supplies elevation in metres; imagery supplies colour. Reprojection is recorded and never described as added resolution." : "Photo AI needs local GPU-class compute for full inference. For the public online demo, use DEM Terrain."}</p>
             {error && <div className="error" role="alert">{error}</div>}
             {job?.status === "failed" && <div className="error" role="alert">{job.error}</div>}
           </div>
